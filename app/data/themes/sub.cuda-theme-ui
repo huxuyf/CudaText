@@ -36,7 +36,7 @@
   "EdFoldMarkFont": "#808080",
   "EdFoldMarkBorder": "#808080",
   "EdFoldMarkBg": "#39382E",
-  "EdGutterFont": "#505050",
+  "EdGutterFont": "#909090",
   "EdGutterBg": "#272822",
   "EdGutterCaretFont": "#808080",
   "EdGutterCaretBg": "#39382E",
