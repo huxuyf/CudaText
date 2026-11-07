@@ -13,4 +13,5 @@ suggest_readme = True
 install_confirm = True
 download_timeout = 9 # in seconds
 verify_https = True
+verify_sha256 = True # check SHA-256 of downloads when registry provides it
 sf_mirror = '' # SF.net mirror id, like 'voxel'

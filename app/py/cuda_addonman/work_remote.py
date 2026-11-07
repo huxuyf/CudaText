@@ -2,6 +2,7 @@ import os
 import re
 import json
 import time
+import hashlib
 import requests
 from urllib.parse import unquote
 import cudatext as app
@@ -100,10 +101,21 @@ def is_file_html(fn):
     return False
 
 
-def get_plugin_zip(url):
+def get_file_sha256(fn):
     '''
-    Returns .zip filename if downloaded ok.
-    Returns False if cannot download and Abort pressed.
+    Calculates SHA-256 of a file, returns lowercase hex string.
+    '''
+    h = hashlib.sha256()
+    with open(fn, 'rb') as f:
+        for chunk in iter(lambda: f.read(65536), b''):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def get_plugin_zip(url, sha256=''):
+    '''
+    Returns .zip filename if downloaded (and verified) ok.
+    Returns False if cannot download and Abort pressed, or SHA-256 failed.
     Returns None if cannot download and Ignore pressed.
     '''
     if not url: return
@@ -116,6 +128,16 @@ def get_plugin_zip(url):
         os.remove(fn)
 
     if os.path.isfile(fn):
+        if sha256 and opt.verify_sha256:
+            got = get_file_sha256(fn)
+            if got.lower() != sha256.lower():
+                try:
+                    os.remove(fn)
+                except Exception:
+                    pass
+                app.msg_box(_('SHA-256 check failed for downloaded file:\n{}\n\nExpected: {}\nActual: {}\n\nThe file was removed, installation cancelled.').format(url, sha256, got),
+                    app.MB_OK + app.MB_ICONERROR)
+                return False
         return fn
 
 
@@ -164,9 +186,32 @@ def get_channel(url):
 
     RE = r'http.+/(\w+)\.(.+?)\.zip'
     for item in d:
-        parse = re.findall(RE, item['url'])
-        item['kind'] = parse[0][0]
-        item['name'] = unquote(parse[0][1])
+        if not isinstance(item, dict):
+            continue
+        url = str(item.get('url', ''))
+        parse = re.findall(RE, url)
+        item['kind'] = parse[0][0] if parse else ''
+        item['name'] = unquote(parse[0][1]) if parse else unquote(os.path.basename(url))
+        item['v'] = str(item.get('v', ''))
+
+        #optional metadata; old registry entries don't have these fields
+        s = str(item.get('sha256', '')).strip().lower()
+        if s.startswith('sha256:'):
+            s = s[7:].strip()
+        item['sha256'] = s
+        item['min_app'] = str(item.get('min_app', '')).strip().lstrip('vV')
+        item['max_app'] = str(item.get('max_app', '')).strip().lstrip('vV')
+        item['updated'] = str(item.get('updated', '')).strip()
+
+        deps = item.get('deps', [])
+        if isinstance(deps, str):
+            deps = re.split(r'[,\s]+', deps)
+        elif isinstance(deps, (list, tuple)):
+            deps = [str(x) for x in deps]
+        else:
+            deps = []
+        item['deps'] = [x.strip() for x in deps if x and x.strip()]
+
     return d
 
 

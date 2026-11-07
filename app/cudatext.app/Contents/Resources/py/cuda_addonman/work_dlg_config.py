@@ -10,8 +10,9 @@ def do_config_dialog():
     id_readme = 4
     id_confirm = 5
     id_verify = 6
-    id_proxy = 8
-    id_ok = 9
+    id_sha = 7
+    id_proxy = 9
+    id_ok = 10
     all_size_x = 520
     all_size_y = 440
     btn_size = 90
@@ -20,10 +21,11 @@ def do_config_dialog():
       [c1.join(['type=label', 'pos=6,6,250,0', 'cap='+_('&Default channels:')])]+
       [c1.join(['type=memo', 'pos=6,24,%d,140'%(all_size_x-6), 'val='+'\t'.join(opt.ch_def), 'ex0=1', 'ex1=0', 'ex2=1'])]+
       [c1.join(['type=label', 'pos=6,146,256,0', 'cap='+_('&User channels:')])]+
-      [c1.join(['type=memo', 'pos=%d,%d,%d,%d'%(6, 164, all_size_x-6, all_size_y-150), 'val='+'\t'.join(opt.ch_user)])]+
-      [c1.join(['type=check', 'pos=%d,%d,%d,0'%(6, all_size_y-145, all_size_x-btn_size-12), 'cap='+_('Install: suggest &readme after'), 'val='+('1' if opt.suggest_readme else '0') ])]+
-      [c1.join(['type=check', 'pos=%d,%d,%d,0'%(6, all_size_y-115, all_size_x-btn_size-12), 'cap='+_('Install: show &confirmation and report'), 'val='+('1' if opt.install_confirm else '0') ])]+
-      [c1.join(['type=check', 'pos=%d,%d,%d,0'%(6, all_size_y-85, all_size_x-btn_size-12), 'cap='+_('Verify HTTPS certificates'), 'val='+('1' if opt.verify_https else '0') ])]+
+      [c1.join(['type=memo', 'pos=%d,%d,%d,%d'%(6, 164, all_size_x-6, all_size_y-180), 'val='+'\t'.join(opt.ch_user)])]+
+      [c1.join(['type=check', 'pos=%d,%d,%d,0'%(6, all_size_y-175, all_size_x-btn_size-12), 'cap='+_('Install: suggest &readme after'), 'val='+('1' if opt.suggest_readme else '0') ])]+
+      [c1.join(['type=check', 'pos=%d,%d,%d,0'%(6, all_size_y-145, all_size_x-btn_size-12), 'cap='+_('Install: show &confirmation and report'), 'val='+('1' if opt.install_confirm else '0') ])]+
+      [c1.join(['type=check', 'pos=%d,%d,%d,0'%(6, all_size_y-115, all_size_x-btn_size-12), 'cap='+_('Verify HTTPS certificates'), 'val='+('1' if opt.verify_https else '0') ])]+
+      [c1.join(['type=check', 'pos=%d,%d,%d,0'%(6, all_size_y-85, all_size_x-btn_size-12), 'cap='+_('Verify SHA-256 of downloads (if registry provides it)'), 'val='+('1' if opt.verify_sha256 else '0') ])]+
       [c1.join(['type=label', 'pos=%d,%d,%d,0'%(6, all_size_y-55, all_size_x-btn_size-12), 'cap='+_('&Proxy (HTTP or SOCKS5), e.g. http://proxy.myserver.com:2010') ])]+
       [c1.join(['type=edit', 'pos=%d,%d,%d,0'%(6, all_size_y-35, all_size_x-6), 'val='+opt.proxy ])]+
       [c1.join(['type=button', 'pos=%d,%d,%d,0'%(all_size_x-2*btn_size-12, all_size_y-0, all_size_x-btn_size-12), 'cap='+_('&OK')])]+
@@ -42,6 +44,7 @@ def do_config_dialog():
     opt.suggest_readme = text[id_readme]=='1'
     opt.install_confirm = text[id_confirm]=='1'
     opt.verify_https = text[id_verify]=='1'
+    opt.verify_sha256 = text[id_sha]=='1'
     opt.proxy = text[id_proxy]
 
     return True

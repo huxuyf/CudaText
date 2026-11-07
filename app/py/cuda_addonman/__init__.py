@@ -98,6 +98,73 @@ STD_SNIPPETS = (
   'Std.Php',
 )
 
+
+def get_app_compat(info):
+    '''
+    Checks CudaText version range of a registry item.
+    Returns (ok, reason). Missing fields mean no restriction.
+    '''
+    app_ver = app_exe_version()
+    s_min = str(info.get('min_app', '')).strip()
+    s_max = str(info.get('max_app', '')).strip()
+    if s_min and compare_versions(app_ver, s_min) < 0:
+        return False, _('requires CudaText {} or newer (current {})').format(s_min, app_ver)
+    if s_max and compare_versions(app_ver, s_max) > 0:
+        return False, _('supports CudaText up to {} (current {})').format(s_max, app_ver)
+    return True, ''
+
+
+def find_registry_item(items, dep):
+    '''
+    Finds a registry item by 'kind.name', module name, or zip file name.
+    '''
+    dep = (dep or '').strip()
+    if not dep:
+        return None
+    dep_zip = dep if dep.endswith('.zip') else dep+'.zip'
+    for i in items:
+        base = os.path.basename(i.get('url', ''))
+        if base == dep_zip:
+            return i
+        if i.get('module', '') == dep:
+            return i
+        if (i.get('kind', '')+'.'+i.get('name', '')) == dep:
+            return i
+    return None
+
+
+def show_addon_details(info):
+    '''
+    Shows metadata of a registry item in a message box.
+    '''
+    lines = []
+    lines.append(_('Kind:') + ' ' + info.get('kind', ''))
+    lines.append(_('Name:') + ' ' + info.get('name', ''))
+    if info.get('module'):
+        lines.append(_('Module:') + ' ' + info['module'])
+    lines.append(_('Local version:') + ' ' + str(info.get('v_local', '?') or '?'))
+    lines.append(_('Web version:') + ' ' + str(info.get('v', '') or '?'))
+    lines.append(_('Updated:') + ' ' + str(info.get('updated', '') or info.get('v', '') or '?'))
+
+    s = _('App version range:') + ' '
+    if info.get('min_app') or info.get('max_app'):
+        s += '{}..{}'.format(info.get('min_app') or '*', info.get('max_app') or '*')
+    else:
+        s += '*..*'
+    ok, reason = get_app_compat(info)
+    if not ok:
+        s += ' (' + reason + ')'
+    lines.append(s)
+
+    lines.append(_('SHA-256:') + ' ' + (_('present') if info.get('sha256') else _('not provided')))
+    lines.append(_('Dependencies:') + ' ' + (', '.join(info.get('deps', [])) or _('none')))
+    if info.get('req'):
+        lines.append(_('Requirements:') + ' ' + str(info['req']))
+    lines.append(_('URL:') + ' ' + str(info.get('url', '')))
+
+    msg_box('\n'.join(lines), MB_OK+MB_ICONINFO)
+
+
 class Command:
 
     def __init__(self):
@@ -107,6 +174,7 @@ class Command:
             opt.suggest_readme = data.get('suggest_readme', True)
             opt.install_confirm = data.get('install_confirm', True)
             opt.verify_https = data.get('verify_https', True)
+            opt.verify_sha256 = data.get('verify_sha256', True)
             opt.proxy = data.get('proxy', '')
             opt.sf_mirror = data.get('sf_mirror', '')
 
@@ -120,6 +188,7 @@ class Command:
         data['suggest_readme'] = opt.suggest_readme
         data['install_confirm'] = opt.install_confirm
         data['verify_https'] = opt.verify_https
+        data['verify_sha256'] = opt.verify_sha256
         data['proxy'] = opt.proxy
         data['sf_mirror'] = opt.sf_mirror
 
@@ -218,10 +287,10 @@ class Command:
 
         v_remote = item.get('v', '')
         v_local = work_local.get_addon_version(item.get('url', ''))
-        if not v_remote or v_local>=v_remote:
+        if not v_remote or compare_versions(v_local, v_remote)>=0:
             res = ' ◄local {}►'.format(v_local or '?')
         else:
-            res = ' ◄local {}, web {}►'.format(v_local or '?', v_remote)
+            res = ' ▲local {}, web {} ◄'.format(v_local or '?', v_remote)
         return res
 
 
@@ -286,7 +355,7 @@ class Command:
         #print('Chosen addon:', info)
         name = info['name']
         req = info.get('req', '')
-        req_names = req.split(',')
+        req_names = req.split(',') if req else []
 
         if info['kind']=='linter':
             if not 'cuda_lint' in installed_modules:
@@ -296,9 +365,15 @@ class Command:
             if not 'cuda_fmt' in installed_modules:
                 req_names.append('plugin.CudaFormatter')
 
+        #new optional metadata: dependencies
+        for s in info.get('deps', []):
+            req_names.append(s)
+
         req_items = []
         for s in req_names:
-            req_items += [i for i in items if s+'.zip'==os.path.basename(i['url']) ]
+            item_dep = find_registry_item(items, s)
+            if item_dep and not item_dep in req_items:
+                req_items.append(item_dep)
 
         if req_items:
             nice_names = '* '+'\n* '.join([i['kind']+' '+i['name'] for i in req_items])
@@ -326,8 +401,15 @@ class Command:
         version = info['v']
         kind = info['kind']
 
+        ok_compat, reason = get_app_compat(info)
+        if not ok_compat:
+            msg_box(_('Cannot install add-on "{}":\n\n{}\n\nPlease update CudaText or skip this add-on.').format(name, reason),
+                MB_OK+MB_ICONWARNING)
+            msg_status(_('Installation cancelled'))
+            return
+
         #download
-        fn = get_plugin_zip(url)
+        fn = get_plugin_zip(url, info.get('sha256', ''))
         if fn is None or fn==False or not os.path.isfile(fn):
             msg_status(_('Cannot download file'))
             return
@@ -470,7 +552,6 @@ class Command:
                     s = s[:n]
             return s
 
-        dir_data = DIR_DATA
         dir_py = DIR_PY
 
         # msg_status(_('Downloading list...'))
@@ -519,7 +600,11 @@ class Command:
             v_local = get_addon_version(url) or v_local
             a['v_local'] = v_local
 
-            a['check'] = (v_local!=PREINST) and ((v_local=='?') or (v_local<v_remote))
+            a['outdated'] = (v_local!=PREINST) and bool(v_remote) and compare_versions(v_local, v_remote)<0
+            ok_compat, reason = get_app_compat(a)
+            a['compat'] = ok_compat
+            a['compat_reason'] = reason
+            a['check'] = a['outdated'] and ok_compat
 
         for m in modules_git:
             d = {}
@@ -531,6 +616,12 @@ class Command:
             d['v'] = 'Git'
             d['url'] = ''
             d['check'] = False
+            d['outdated'] = False
+            d['compat'] = True
+            d['compat_reason'] = ''
+            d['sha256'] = ''
+            d['deps'] = []
+            d['updated'] = ''
             addons.append(d)
 
         KIND_ORDER = {
@@ -560,29 +651,55 @@ class Command:
             i.get('module', ''),
             ))
 
-        text_headers = '\r'.join((_('Name=260'), _('Folder=180'), _('Local=125'), _('Available=125')))
-        text_columns = ['\r'.join(('['+i['kind']+'] '+i['name'], i['dir'], i['v_local'], i['v'])) for i in addons]
+        def name_cell(i):
+            if i.get('check'):
+                prefix = '▲ '
+            elif i.get('outdated'):
+                prefix = '! '
+            else:
+                prefix = '  '
+            return prefix+'['+i['kind']+'] '+i['name']
+
+        def date_cell(i):
+            return i.get('updated', '') or i.get('v', '')
+
+        text_headers = '\r'.join((_('Name=245'), _('Folder=150'), _('Local=105'), _('Available=105'), _('Date=95')))
+        text_columns = ['\r'.join((name_cell(i), i['dir'], i['v_local'], i['v'], date_cell(i))) for i in addons]
         text_items = '\t'.join([text_headers]+text_columns)
         text_checks = ['1' if i['check'] else '0' for i in addons]
         text_val = '0;'+','.join(text_checks)
         text_val_initial = text_val
+
+        n_upd = len([i for i in addons if i.get('check')])
+        n_bad = len([i for i in addons if i.get('outdated') and not i.get('compat')])
+        s_sum = _('Upgradable add-ons: {}').format(n_upd)
+        if n_bad:
+            s_sum += _('; incompatible: {}').format(n_bad)
+        if not n_upd:
+            s_sum += ' - '+_('nothing to update')
 
         RES_OK = 0
         RES_CANCEL = 1
         RES_LIST = 2
         RES_SEL_NONE = 3
         RES_SEL_NEW = 4
+        RES_DETAILS = 5
+        RES_ALL = 6
         c1 = chr(1)
         DLG_W = 750
         DLG_H = 600
+        addons_selected = []
 
         while True:
             text = '\n'.join([
               c1.join(['type=button', 'pos=%d,%d,%d,%d'%(DLG_W-212, DLG_H-32, DLG_W-112, 0), 'cap='+_('Update'), 'ex0=1']),
               c1.join(['type=button', 'pos=%d,%d,%d,%d'%(DLG_W-106, DLG_H-32, DLG_W-6, 0), 'cap='+_('Cancel')]),
-              c1.join(['type=checklistview', 'pos=%d,%d,%d,%d'%(6, 6, DLG_W-6, DLG_H-42), 'items='+text_items, 'val='+text_val, 'ex0=1']),
+              c1.join(['type=checklistview', 'pos=%d,%d,%d,%d'%(6, 6, DLG_W-6, DLG_H-64), 'items='+text_items, 'val='+text_val, 'ex0=1']),
               c1.join(['type=button', 'pos=%d,%d,%d,%d'%(6, DLG_H-32, 100, 0), 'cap='+_('Deselect all')]),
               c1.join(['type=button', 'pos=%d,%d,%d,%d'%(106, DLG_H-32, 200, 0), 'cap='+_('Select new')]),
+              c1.join(['type=button', 'pos=%d,%d,%d,%d'%(206, DLG_H-32, 300, 0), 'cap='+_('Details')]),
+              c1.join(['type=button', 'pos=%d,%d,%d,%d'%(306, DLG_H-32, 420, 0), 'cap='+_('Upgrade all')]),
+              c1.join(['type=label', 'pos=%d,%d,%d,%d'%(6, DLG_H-58, DLG_W-6, 0), 'cap='+s_sum]),
               ])
 
             res = dlg_custom(_('Update add-ons'), DLG_W, DLG_H, text)
@@ -595,69 +712,140 @@ class Command:
             if res == RES_SEL_NEW:
                 text_val = text_val_initial
                 continue
+            if res == RES_DETAILS:
+                # keep current checks, show details for the focused row
+                lines = text.splitlines()
+                if len(lines) > RES_LIST:
+                    parts = lines[RES_LIST].split(';')
+                    sel = parts[0] if parts else '0'
+                    checks = parts[1] if len(parts)>1 else ''
+                    text_val = sel+';'+checks
+                    try:
+                        idx = int(sel)
+                    except Exception:
+                        idx = -1
+                    if 0<=idx<len(addons):
+                        show_addon_details(addons[idx])
+                continue
             if res == RES_CANCEL:
                 return
+            if res == RES_ALL:
+                addons_selected = [i for i in addons if i.get('check')]
+                break
             if res == RES_OK:
+                lines = text.splitlines()[RES_LIST]
+                states = lines.split(';')[1].split(',')
+                addons_selected = [a for (i, a) in enumerate(addons) if i<len(states) and states[i]=='1']
                 break
 
-        text = text.splitlines()[RES_LIST]
-        text = text.split(';')[1].split(',')
-
-        addons = [a for (i, a) in enumerate(addons) if 0<=i<len(text) and text[i]=='1']
-        if not addons:
+        if not addons_selected:
             return
-        print(_('Updating addons:'))
+
+        self.init_progress(_('Updating add-ons'))
+        self.stopped = False
+        self.stopped_force = False
+        self.stopped_msg = ''
+        dlg_proc(self.h_pro, DLG_SHOW_NONMODAL)
+
+        ok_count = 0
+        skip_count = 0
         fail_count = 0
+        skipped = []
+        failed = []
+        print(_('Updating addons:'))
 
-        for (a_index, a) in enumerate(addons):
-            print('  [%s] %s' % (a['kind'], a['name']))
-            msg_status(
-                '({}/{}) '.format(a_index+1, len(addons))+
-                _('Updating: [{}] {}').format(a['kind'], a['name']),
-                True)
+        try:
+            for (a_index, a) in enumerate(addons_selected):
+                if self.stopped:
+                    self.stopped_force = True
+                    self.stopped_msg = _('(got {} of {})').format(a_index, len(addons_selected))
+                    break
 
-            dir_to_remove = ''
-            m = a.get('module', '')
-            if m:
-                # special update for Git repos
-                m_dir = os.path.join(DIR_PY, m)
-                if os.path.isdir(os.path.join(m_dir, '.git')):
-                    msg_status(
-                        '({}/{}) '.format(a_index+1, len(addons))+
-                        _('Running "git pull" in "%s"')%m_dir,
-                        True)
-                    try:
-                        subprocess.call(['git', 'stash', 'save'], cwd=m_dir)
-                        subprocess.call(['git', 'pull'], cwd=m_dir)
-                    except Exception:
-                        msg_status(_('Error running Git'), True)
-                        print(_('  Error running Git'))
+                percent = (a_index*100)//max(1, len(addons_selected))
+                self.show_progress(percent,
+                    '({}/{}) '.format(a_index+1, len(addons_selected))+
+                    _('Updating: [{}] {}').format(a['kind'], a['name']))
+                print('  [%s] %s' % (a['kind'], a['name']))
+
+                try:
+                    status, reason = self.update_one(a)
+                except Exception as e:
+                    status, reason = False, str(e)
+
+                if status is None:
+                    skip_count += 1
+                    skipped.append((a, reason))
+                    print(_('  Skipped: [{}] {} ({})').format(a['kind'], a['name'], reason))
+                elif status:
+                    ok_count += 1
                 else:
-                    dir_to_remove = m_dir
+                    fail_count += 1
+                    failed.append((a, reason))
+                    print(_('  Update failed: [{}] {} ({})').format(a['kind'], a['name'], reason))
+        finally:
+            self.hide_progress()
 
-            url = a['url']
-            if not url: continue
-
-            fn = get_plugin_zip(url)
-            if not fn:
-                fail_count += 1
-                print(_('  Update failed: [{}] {}').format(a['kind'], a['name']) )
-                continue
-
-            if dir_to_remove:
-                do_remove_dir(dir_to_remove)
-
-            if os.path.isfile(fn) and file_open(fn, options='/silent'):
-                do_save_version(url, fn, a['v'])
-            else:
-                fail_count += 1
-                print(_('  Update failed: [{}] {}').format(a['kind'], a['name']) )
-
-        s = _('Done')
-        if fail_count>0:
-            s += _(', with %d fail(s)')%fail_count
+        s = _('Updating finished: {} updated, {} skipped, {} failed').format(ok_count, skip_count, fail_count)
+        if self.stopped_force:
+            s += ' '+_('stopped')+' '+self.stopped_msg
         print(s)
         msg_status(s)
+
+        lines = [s]
+        if skipped:
+            lines.append('')
+            lines.append(_('Skipped:'))
+            for (a, reason) in skipped:
+                lines.append('  [{}] {}: {}'.format(a['kind'], a['name'], reason))
+        if failed:
+            lines.append('')
+            lines.append(_('Failed:'))
+            for (a, reason) in failed:
+                lines.append('  [{}] {}: {}'.format(a['kind'], a['name'], reason))
+        msg_box('\n'.join(lines), MB_OK+(MB_ICONERROR if failed else MB_ICONINFO))
+
+
+    def update_one(self, a):
+        '''
+        Updates one add-on.
+        Returns (True, '') on success, (False, reason) on failure,
+        (None, reason) when the add-on is skipped.
+        '''
+        if not a.get('compat', True):
+            return (None, a.get('compat_reason', _('incompatible with current CudaText')))
+
+        dir_to_remove = ''
+        m = a.get('module', '')
+        if m:
+            # special update for Git repos
+            m_dir = os.path.join(DIR_PY, m)
+            if os.path.isdir(os.path.join(m_dir, '.git')):
+                try:
+                    subprocess.call(['git', 'stash', 'save'], cwd=m_dir)
+                    subprocess.call(['git', 'pull'], cwd=m_dir)
+                    return (True, '')
+                except Exception as e:
+                    return (False, _('Error running Git')+': '+str(e))
+            dir_to_remove = m_dir
+
+        url = a.get('url', '')
+        if not url:
+            return (None, _('no download URL'))
+
+        fn = get_plugin_zip(url, a.get('sha256', ''))
+        if fn is False:
+            return (False, _('SHA-256 check failed or download aborted'))
+        if not fn or not os.path.isfile(fn):
+            return (False, _('cannot download file'))
+
+        if dir_to_remove:
+            do_remove_dir(dir_to_remove)
+
+        if file_open(fn, options='/silent'):
+            do_save_version(url, fn, a.get('v', ''))
+            return (True, '')
+
+        return (False, _('installation cancelled'))
 
 
     def check_cudatext_updates(self):
@@ -668,11 +856,11 @@ class Command:
 
         do_install_from_github()
 
-    def init_progress(self):
+    def init_progress(self, caption=None):
 
         self.h_pro = dlg_proc(0, DLG_CREATE)
         dlg_proc(self.h_pro, DLG_PROP_SET, prop={
-            'cap': _('Download add-ons'),
+            'cap': caption or _('Download add-ons'),
             'w': 400,
             'h': 110,
             'topmost': True,

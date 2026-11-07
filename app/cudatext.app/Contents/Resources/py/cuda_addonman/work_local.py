@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import collections
 import zipfile
 import configparser
@@ -324,6 +325,47 @@ def get_addon_version(url):
 
     fn = get_packages_ini()
     return ini_read(fn, os.path.basename(url), 'v', '')
+
+
+def _version_parts(s):
+    s = (s or '').strip()
+    if s[:1] in ('v', 'V'):
+        s = s[1:]
+    parts = re.split(r'[^0-9A-Za-z]+', s)
+    res = []
+    for p in parts:
+        if not p:
+            continue
+        if p.isdigit():
+            res.append((0, int(p)))
+        else:
+            res.append((1, p.lower()))
+    return res
+
+
+def compare_versions(a, b):
+    '''
+    Compares add-on versions (like '2026.03.05' and '2026.03.05.1').
+    Returns -1, 0 or 1. Empty and '?' are treated as older than any version.
+    '''
+    sa = (a or '').strip()
+    sb = (b or '').strip()
+    if sa in ('', '?'):
+        return 0 if sb in ('', '?') else -1
+    if sb in ('', '?'):
+        return 1
+
+    pa = _version_parts(sa)
+    pb = _version_parts(sb)
+    count = max(len(pa), len(pb))
+    for i in range(count):
+        va = pa[i] if i < len(pa) else (0, 0)
+        vb = pb[i] if i < len(pb) else (0, 0)
+        if va[0] != vb[0]:
+            return -1 if va[0] < vb[0] else 1
+        if va[1] != vb[1]:
+            return -1 if va[1] < vb[1] else 1
+    return 0
 
 
 def do_remove_version_of_plugin(mod):
