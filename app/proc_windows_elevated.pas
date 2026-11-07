@@ -21,7 +21,9 @@ uses
 function RunElevated(const AProgram, AParameters: UnicodeString; AHideWindow: boolean; ATimeout: DWORD): boolean;
 var
   sei: TShellExecuteInfoW;
+  nWait, nExit: DWORD;
 begin
+  Result := false;
   FillChar(sei, SizeOf(sei), 0);
   sei.cbSize := SizeOf(sei);
   sei.fMask := SEE_MASK_NOCLOSEPROCESS or SEE_MASK_UNICODE;
@@ -34,18 +36,25 @@ begin
   else
     sei.nShow := SW_SHOW;
 
-  Result := ShellExecuteExW(@sei);
-  if Result then
-  begin
-    WaitForSingleObject(sei.hProcess, ATimeout);
+  //ShellExecuteExW returns false if the user cancels the UAC prompt (ERROR_CANCELLED)
+  if not ShellExecuteExW(@sei) then
+    exit;
+
+  try
+    //do not kill the process on timeout: it may be still copying, and the caller's file check
+    //can't be trusted anyway, so just report the operation as not confirmed
+    nWait := WaitForSingleObject(sei.hProcess, ATimeout);
+    if nWait <> WAIT_OBJECT_0 then
+      exit(false);
+
+    //success is only when the helper process finished with exit code 0
+    if GetExitCodeProcess(sei.hProcess, nExit) then
+      Result := (nExit = 0)
+    else
+      Result := true; //cannot query exit code, rely on the caller's result file check
+  finally
     CloseHandle(sei.hProcess);
   end;
-  {
-  else
-    Application.MessageBox(
-      PChar(Format('ShellExecuteExW failed: %d', [GetLastError])),
-      'CudaText');
-  }
 end;
 
 

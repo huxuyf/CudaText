@@ -217,6 +217,7 @@ const
   msgCannotFindWithoutCaret: string = 'Cannot find/replace without caret';
   msgCannotCreateDir: string = 'Cannot create folder:';
   msgCannotSaveFile: string = 'Cannot save file:';
+  msgCannotSaveFileTempRemoved: string = 'The temporary copy was deleted; the text is still in the editor.';
   msgCannotSaveFileWithEnc: string = 'Could not save file because encoding "%s" cannot handle Unicode text. Program has saved file in UTF-8 encoding.';
   msgCannotSaveUserConf: string = 'Cannot save user config (read only?)';
   msgCannotLoadFileInUTF8: string = 'Cannot load file in UTF-8, incorrect UTF-8 sequence';
@@ -267,7 +268,6 @@ const
   msgStatusI18nEnglishAfterRestart: string = 'English translation will be applied after program restart';
   msgStatusI18nPluginsMenuAfterRestart: string = 'Translations of Plugins menu and plugin''s dialogs will be applied after program restart';
 
-  msgStatusSavedTempFile: string = 'Saved to a temporary file:';
   msgStatusSaveIsIgnored: string = '"Save" command ignored (file is not modified yet)';
   msgStatusPluginHotkeyBusy: string = 'Note: hotkey [%s] is busy, skipped it';
   msgStatusSyntaxThemesOff: string = 'Syntax themes are turned off by option "ui_lexer_themes": false. So the following dialog will have no effect. To customize styles, use "Lexer properties" dialog.';

@@ -490,6 +490,7 @@ begin
     DoLocString(msgCannotFindSublexerInLibrary   , ini, 'se', 'FindSublexerInLibrary');
     DoLocString(msgCannotCreateDir               , ini, 'se', 'CreateDir');
     DoLocString(msgCannotSaveFile                , ini, 'se', 'SaveFile');
+    DoLocString(msgCannotSaveFileTempRemoved     , ini, 'se', 'SaveTempRemoved');
     DoLocString(msgCannotSaveFileWithEnc         , ini, 'se', 'SaveWithEnc');
     DoLocString(msgCannotSaveUserConf            , ini, 'se', 'SaveUserConf');
     DoLocString(msgCannotReadConfig              , ini, 'se', 'ReadConf');

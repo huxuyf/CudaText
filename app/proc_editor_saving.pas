@@ -93,14 +93,34 @@ begin
     (not AllowEmpty and (FileUtil.FileSize(fn)=0));
 end;
 
+//timeout for the elevated copy helper: base time + time per KB of the copied file, with a cap
+function TimeoutForElevatedCopy(const fn: string): DWORD;
+const
+  cBaseMs = 6000;
+  cPerKbMs = 20;
+  cMaxExtraMs = 174000;
+var
+  nSize, nExtra: Int64;
+begin
+  nSize:= FileSizeUtf8(fn);
+  if nSize<0 then
+    nSize:= 0;
+  nExtra:= (nSize div 1024) * cPerKbMs;
+  if nExtra>cMaxExtraMs then
+    nExtra:= cMaxExtraMs;
+  Result:= DWORD(cBaseMs + nExtra);
+end;
+
 procedure SaveViaTempCopy(Ed: TATSynEdit; const fn: string);
 var
   fnTemp: string;
   //
-  procedure MsgBox_ErrorAndSavedTempFile;
+  procedure MsgBox_ErrorTempRemoved;
   begin
+    //do not keep the temp file on failure, so the message must not point to it
+    DeleteFile(fnTemp);
     MsgBox(msgCannotSaveFile+#10+AppCollapseHomeDirInFilename(fn)+#10#10+
-           msgStatusSavedTempFile+#10+AppCollapseHomeDirInFilename(fnTemp),
+           msgCannotSaveFileTempRemoved,
            MB_OK or MB_ICONERROR);
   end;
   //
@@ -129,16 +149,15 @@ begin
 
   if IsBadResultFile(fnTemp, bDocEmpty) then
   begin
-    MsgBox(msgCannotSaveFile+#10+AppCollapseHomeDirInFilename(fnTemp),
-           MB_OK or MB_ICONERROR);
+    MsgBox_ErrorTempRemoved;
     exit;
   end;
 
   {$ifdef windows}
   SCopyParams:= UnicodeFormat('/C echo F | xcopy "%s" "%s" /r /h /y', [fnTemp, fn]);
-  if not RunElevated('cmd.exe', SCopyParams, true, 6000) then
+  if not RunElevated('cmd.exe', SCopyParams, true, TimeoutForElevatedCopy(fnTemp)) then
   begin
-    MsgBox_ErrorAndSavedTempFile;
+    MsgBox_ErrorTempRemoved;
     exit;
   end;
   {$else}
@@ -148,32 +167,33 @@ begin
     begin
       if not CopyFile(fnTemp, fn) then
       begin
-        MsgBox_ErrorAndSavedTempFile;
+        MsgBox_ErrorTempRemoved;
         exit;
       end;
     end
     else
     if cCannotSaveToWriteProtectedDirButDontWantPkExec then
+      //this message shows the manual copy command with fnTemp, so the temp file must be kept
       MsgBox(msgCannotSaveAndDontWantToRunPkExec+#10#10+
              Format('cp -T "%s" "%s"', [fnTemp, fn]), MB_OK or MB_ICONWARNING)
     else
     if not RunCommand('pkexec', ['/bin/cp', '-T', fnTemp, fn], SOutput, [poWaitOnExit]) then
     begin
-      MsgBox_ErrorAndSavedTempFile;
+      MsgBox_ErrorTempRemoved;
       exit;
     end;
   end
   else
   if not CopyFile(fnTemp, fn) then
   begin
-    MsgBox_ErrorAndSavedTempFile;
+    MsgBox_ErrorTempRemoved;
     exit;
   end;
   {$endif}
 
   if IsBadResultFile(fn, bDocEmpty) then
   begin
-    MsgBox_ErrorAndSavedTempFile;
+    MsgBox_ErrorTempRemoved;
     exit;
   end;
 
