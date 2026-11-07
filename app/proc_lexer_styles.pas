@@ -18,7 +18,8 @@ uses
 procedure Lexer_SaveStyleToFile_JsonTheme(st: TecSyntaxFormat; cfg: TAppJsonConfig; skey: string);
 procedure Lexer_SaveStylesToFile_JsonLexerOps(an: TecSyntAnalyzer; const Filename: string);
 
-function Lexer_LoadStyleFromFile_JsonTheme(st: TecSyntaxFormat; cfg: TAppJsonConfig; skey: string): boolean;
+function Lexer_LoadStyleFromFile_JsonTheme(st: TecSyntaxFormat; cfg: TAppJsonConfig; skey: string;
+  APartial: boolean = false): boolean;
 procedure Lexer_LoadStylesFromFile_JsonLexerOps(an: TecSyntAnalyzer; const Filename: string; NoStyles: boolean);
 
 function Lexer_FontStylesToString(const f: TFontStyles): string;
@@ -280,7 +281,8 @@ end;
 
 
 
-function Lexer_LoadStyleFromFile_JsonTheme(st: TecSyntaxFormat; cfg: TAppJsonConfig; skey: string): boolean;
+function Lexer_LoadStyleFromFile_JsonTheme(st: TecSyntaxFormat; cfg: TAppJsonConfig; skey: string;
+  APartial: boolean = false): boolean;
 var
   Sep: TATStringSeparator;
   N, Len: integer;
@@ -291,8 +293,12 @@ begin
     skey+= '/';
 
   N:= cfg.GetValue(skey+'Type', -1);
-  if N<0 then exit(false);
-  st.FormatType:= TecFormatType(N);
+  if N<0 then
+  begin
+    if not APartial then exit(false);
+  end
+  else
+    st.FormatType:= TecFormatType(N);
 
   st.Font.Style:= Lexer_StringToFontStyles(cfg.GetValue(skey+'Styles', Lexer_FontStylesToString(st.Font.Style)));
 

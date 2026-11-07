@@ -250,6 +250,161 @@ begin
   end;
 end;
 
+function AppThemeColorIsDark(const C: TColor): boolean;
+var
+  N: LongInt;
+  R, G, B: byte;
+begin
+  if C=clNone then exit(false);
+  N:= ColorToRGB(C);
+  R:= Byte(N and $FF);
+  G:= Byte((N shr 8) and $FF);
+  B:= Byte((N shr 16) and $FF);
+  Result:= (R<=$60) and (G<=$60) and (B<=$60);
+end;
+
+function AppThemeSimilarStyle(id: TAppThemeStyle): TAppThemeStyle;
+begin
+  case id of
+    TAppThemeStyle.Id1,
+    TAppThemeStyle.Id2,
+    TAppThemeStyle.Id3,
+    TAppThemeStyle.Id4: Result:= TAppThemeStyle.Id;
+    TAppThemeStyle.String2: Result:= TAppThemeStyle.String_;
+    TAppThemeStyle.String3: Result:= TAppThemeStyle.String2;
+    TAppThemeStyle.Symbol2,
+    TAppThemeStyle.SymbolBad: Result:= TAppThemeStyle.Symbol;
+    TAppThemeStyle.Comment2: Result:= TAppThemeStyle.Comment;
+    TAppThemeStyle.CommentDoc: Result:= TAppThemeStyle.Comment2;
+    TAppThemeStyle.IncludeBG2,
+    TAppThemeStyle.IncludeBG3,
+    TAppThemeStyle.IncludeBG4: Result:= TAppThemeStyle.IncludeBG1;
+    TAppThemeStyle.SectionBG2,
+    TAppThemeStyle.SectionBG3,
+    TAppThemeStyle.SectionBG4: Result:= TAppThemeStyle.SectionBG1;
+    TAppThemeStyle.TagIdBad: Result:= TAppThemeStyle.TagId;
+    TAppThemeStyle.TagProp,
+    TAppThemeStyle.TagInclude: Result:= TAppThemeStyle.TagId;
+    TAppThemeStyle.TagPropBad: Result:= TAppThemeStyle.TagProp;
+    TAppThemeStyle.LightBG2,
+    TAppThemeStyle.LightBG3,
+    TAppThemeStyle.LightBG4,
+    TAppThemeStyle.LightBG5: Result:= TAppThemeStyle.LightBG1;
+  else
+    Result:= id;
+  end;
+end;
+
+procedure AppThemeFillMissingStyles(const AFileName: string; var D: TAppTheme);
+
+  procedure AssignStyle(ADest, ASrc: TecSyntaxFormat);
+  begin
+    ADest.FormatType:= ASrc.FormatType;
+    ADest.Font.Color:= ASrc.Font.Color;
+    ADest.Font.Style:= ASrc.Font.Style;
+    ADest.BgColor:= ASrc.BgColor;
+    ADest.BorderColorLeft:= ASrc.BorderColorLeft;
+    ADest.BorderColorRight:= ASrc.BorderColorRight;
+    ADest.BorderColorTop:= ASrc.BorderColorTop;
+    ADest.BorderColorBottom:= ASrc.BorderColorBottom;
+    ADest.BorderTypeLeft:= ASrc.BorderTypeLeft;
+    ADest.BorderTypeRight:= ASrc.BorderTypeRight;
+    ADest.BorderTypeTop:= ASrc.BorderTypeTop;
+    ADest.BorderTypeBottom:= ASrc.BorderTypeBottom;
+  end;
+
+var
+  cfg: TAppJsonConfig;
+  id, idSim: TAppThemeStyle;
+  st, stTmp: TecSyntaxFormat;
+  sKey, sRefName, sRefFile: string;
+  NCount: integer;
+  bDark: boolean;
+
+  function TryLoadRefStyle(const AKey: string; ADest: TecSyntaxFormat): boolean;
+  var
+    cfgRef: TAppJsonConfig;
+  begin
+    Result:= false;
+    if (sRefFile='') or SameFileName(sRefFile, AFileName) or not FileExists(sRefFile) then exit;
+    cfgRef:= TAppJsonConfig.Create(nil);
+    try
+      try
+        cfgRef.Filename:= sRefFile;
+        Result:= Lexer_LoadStyleFromFile_JsonTheme(ADest, cfgRef, AKey);
+      except
+        Result:= false;
+      end;
+    finally
+      cfgRef.Free;
+    end;
+  end;
+
+begin
+  if not FileExists(AFileName) then exit;
+
+  bDark:= AppThemeColorIsDark(D.Colors[TAppThemeColor.EdTextBg].Color);
+  if bDark then
+    sRefName:= UiOps.ThemeUi_Dark
+  else
+    sRefName:= UiOps.ThemeUi_Light;
+  if sRefName='' then
+  begin
+    if bDark then
+      sRefName:= 'sub'
+    else
+      sRefName:= 'syn';
+  end;
+  sRefFile:= AppDir_DataThemes+DirectorySeparator+sRefName+AppExtensionThemeSyntax;
+
+  cfg:= TAppJsonConfig.Create(nil);
+  try
+    try
+      cfg.Filename:= AFileName;
+    except
+      exit;
+    end;
+
+    NCount:= 0;
+    for id:= Low(id) to AppThemeLastStyle do
+    begin
+      st:= D.Styles[id];
+      sKey:= 'Lex_'+st.DisplayName;
+      if cfg.GetValue(sKey+'/Type', -1)>=0 then
+        Continue;
+
+      stTmp:= TecSyntaxFormat.Create(nil);
+      try
+        //base: built-in default of this style, so empty keys of a reference
+        //theme don't turn into hardcoded values (e.g. black border color)
+        AssignStyle(stTmp, st);
+
+        if not TryLoadRefStyle(sKey, stTmp) then
+        begin
+          idSim:= AppThemeSimilarStyle(id);
+          if idSim<>id then
+            AssignStyle(stTmp, D.Styles[idSim]);
+        end;
+
+        //keep any keys of a partially written section, only absent keys are filled
+        Lexer_LoadStyleFromFile_JsonTheme(stTmp, cfg, sKey, true);
+
+        Lexer_SaveStyleToFile_JsonTheme(stTmp, cfg, sKey);
+        AssignStyle(st, stTmp);
+        Inc(NCount);
+      finally
+        stTmp.Free;
+      end;
+    end;
+
+    if NCount>0 then
+      MsgLogConsole(Format('Theme "%s": auto-filled %d missing lexer style(s).',
+        [ExtractFileName(AFileName), NCount]));
+  finally
+    cfg.Free;
+  end;
+end;
+
 procedure AppThemeLoadFromFile(const AFileName: string; var D: TAppTheme; IsThemeUI: boolean);
 var
   cfg: TAppJsonConfig;
@@ -309,6 +464,8 @@ begin
           MsgLogConsole(Format(msgErrorInTheme,
             [ExtractFileName(AFileName), 'Lex_'+st.DisplayName]));
       end;
+      if UiOps.ThemeFillMissing and UiOps.LexerThemes then
+        AppThemeFillMissingStyles(AFileName, D);
       D.UpdateBoldAndItalicColors;
     end;
   finally

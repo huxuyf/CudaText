@@ -1468,6 +1468,16 @@
   //Layer 2 overrides layer 1 if "ui_lexer_themes" is true.
   "ui_lexer_themes": true,
 
+  //Auto-complete syntax-theme styles: when the current syntax-theme file lacks
+  //some "Lex_*" style (for example after installing a new lexer or updating
+  //CudaText), fill such missing styles from the default theme of the same
+  //light/dark class ("ui_theme_light"/"ui_theme_dark"), or from a similar
+  //style of the current theme, then write them back to the theme file.
+  //Only absent styles are added: existing values are never overwritten, so
+  //repeated runs don't modify the file again. Works only when "ui_lexer_themes"
+  //is true. Set to false to disable any writes to theme files.
+  "ui_theme_fill_missing": true,
+
   //[View/Web]
   //Underline HTML color codes, like #008080 / #0a0 / rgb(100, 0, 50).
   //Option should be used in lexer-specific config.

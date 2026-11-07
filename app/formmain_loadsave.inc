@@ -1960,6 +1960,7 @@ begin
   UiOps.AltTooltipTime:= cfg.GetValue('ui_alt_hint_time', UiOps.AltTooltipTime);
 
   UiOps.ThemeAutoMode:= cfg.GetValue('ui_theme_auto_mode', UiOps.ThemeAutoMode);
+  UiOps.ThemeFillMissing:= cfg.GetValue('ui_theme_fill_missing', UiOps.ThemeFillMissing);
   UiOps.ThemeUi_Light:= cfg.GetValue('ui_theme_light', UiOps.ThemeUi_Light);
   UiOps.ThemeUi_Dark:= cfg.GetValue('ui_theme_dark', UiOps.ThemeUi_Dark);
 

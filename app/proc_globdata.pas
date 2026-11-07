@@ -300,6 +300,7 @@ type
     ThemeUi_Light: UnicodeString;
     ThemeUi_Dark: UnicodeString;
     ThemeAutoMode: boolean;
+    ThemeFillMissing: boolean;
 
     SidebarShow: boolean;
     SidebarOnRight: boolean;
@@ -2157,6 +2158,7 @@ begin
     ThemeUi_Light:= 'syn';
     ThemeUi_Dark:= 'sub';
     ThemeAutoMode:= false;
+    ThemeFillMissing:= true;
 
     ThemedMainMenu:= true;
     ThemedMainMenuFontName:= 'default';
