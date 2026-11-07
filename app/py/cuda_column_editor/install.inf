@@ -1,0 +1,20 @@
+[info]
+title=Column Editor
+desc=Insert text or incrementing numbers into a column selection, or delete column content
+type=cudatext-plugin
+subdir=cuda_column_editor
+
+[item1]
+section=commands
+caption=Column Editor\Insert text...
+method=dlg_insert_text
+
+[item2]
+section=commands
+caption=Column Editor\Insert numbers...
+method=dlg_insert_numbers
+
+[item3]
+section=commands
+caption=Column Editor\Delete content...
+method=dlg_delete
