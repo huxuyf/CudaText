@@ -898,6 +898,7 @@ type
     procedure DoOnTabDblClick(Sender: TObject; AIndex: integer);
     function DoOnTabGetTick(Sender: TObject; ATabObject: TObject): Int64;
     procedure DoCodetree_UpdateVersion(Ed: TATSynEdit);
+    procedure DoCodetree_InvalidateCachedTree(Ed: TATSynEdit);
     procedure DoCodetree_Clear;
     procedure DoCodetree_PanelOnEnter(Sender: TObject);
     procedure DoCodetree_StopUpdate;
@@ -2890,6 +2891,20 @@ begin
   begin
     MsgLogConsole('ERROR: tree_proc(... TREE_ITEM_SET_RANGE ...) gets wrong node type: '+DataObj.ClassName);
   end;
+end;
+
+procedure TfmMain.DoCodetree_InvalidateCachedTree(Ed: TATSynEdit);
+var
+  Frame: TEditorFrame;
+begin
+  if Ed=nil then exit;
+  Frame:= TGroupsHelper.GetEditorFrame(Ed);
+  if Frame=nil then exit;
+
+  //drop the cached tree of a background editor, so that switching to it will refill,
+  //not show the stale cached nodes
+  if Frame.CachedTreeViewInited[Ed] then
+    Frame.CachedTreeView[Ed].Items.Clear;
 end;
 
 procedure TfmMain.DoCodetree_Clear;

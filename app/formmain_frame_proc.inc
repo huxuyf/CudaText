@@ -371,12 +371,20 @@ procedure TfmMain.FrameParseDone(Sender: TObject; ATime: integer);
 var
   Ada: TATAdapterEControl;
   Ed: TATSynEdit;
+  Frame: TEditorFrame;
 begin
   UpdateLexerProgressbar(0, true);
-  UpdateTreeByTimer;
 
   Ada:= Sender as TATAdapterEControl;
   Ed:= Ada.Editor;
+  Frame:= CurrentFrame;
+
+  //refill Code Tree only for the editor shown in it; parsing of a background tab
+  //must not cause a rebuild of the current tree
+  if Assigned(Frame) and (Ed=Frame.EdCurrent) then
+    UpdateTreeByTimer
+  else
+    DoCodetree_InvalidateCachedTree(Ed);
 
   //restoring of folded state from history is here, after parsing done
   if not TreeHelperInPascal(nil, Ada.GetLexerName, nil) then
@@ -408,12 +416,20 @@ end;
 procedure TfmMain.FrameOnChangeSlow(Sender: TObject);
 var
   Ed: TATSynEdit;
+  Frame: TEditorFrame;
 begin
   Ed:= Sender as TATSynEdit;
+  Frame:= CurrentFrame;
 
-  //run tree-helper for lite lexers
+  //run tree-helper for lite lexers, only for the editor shown in Code Tree;
+  //editing of a background tab must not rebuild the current tree
   if Ed.AdapterForHilite is TATLiteLexer then
-    UpdateTree(true);
+  begin
+    if Assigned(Frame) and (Ed=Frame.EdCurrent) then
+      UpdateTree(true)
+    else
+      DoCodetree_InvalidateCachedTree(Ed);
+  end;
 
   //call Find dialog's updating of 'Hi' results
   if Assigned(fmFind) and fmFind.Visible then
