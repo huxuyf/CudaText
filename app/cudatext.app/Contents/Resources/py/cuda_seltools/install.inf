@@ -3,7 +3,7 @@ title=选中文本工具
 desc=对选中文本执行 Base64、URL 编解码和安全算术求值
 type=cudatext-plugin
 subdir=cuda_seltools
-api=1.0.300
+api=1.0.348
 homepage=
 
 [item1]

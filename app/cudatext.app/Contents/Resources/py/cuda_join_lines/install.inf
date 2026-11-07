@@ -3,7 +3,8 @@ title=Join Lines
 desc=Join the current line with the next line (removes the line break)
 type=cudatext-plugin
 subdir=cuda_join_lines
-api=1.0.300
+homepage=https://github.com/huxuyf/CudaText
+api=1.0.442
 
 [item1]
 section=commands

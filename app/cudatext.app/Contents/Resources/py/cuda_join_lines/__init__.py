@@ -9,6 +9,7 @@ class Command:
 
         count = ed.get_line_count()
         if count < 2:
+            app.msg_status('Nothing to join: document has only one line')
             return
 
         carets = ed.get_carets()
@@ -30,3 +31,5 @@ class Command:
 
         if joined:
             app.msg_status('Joined line with next line')
+        else:
+            app.msg_status('Nothing to join: caret is on the last line')
