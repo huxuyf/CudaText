@@ -3,8 +3,8 @@
 本文档对应 `app/data/themes/*.cuda-theme-ui` 中的 115 个界面颜色 Token。
 目的：说明每个 Token 管什么、该用在哪、不该用在哪，避免改主题时"一对多"误伤。
 
-> 本文档源自本地安装版的主题改造实验。第 4、5 节为历史记录；本仓库只合并了由补丁生成的
-> `syn_wcag` / `sub_wcag` 派生主题与 `tools/theme_wcag/` 审计脚本，原主题保持上游原值。
+> 本仓库只合并了由补丁生成的 `syn_wcag` / `sub_wcag` 派生主题与 `tools/theme_wcag/` 审计脚本，
+> 原主题保持上游原值；历史安装版实验中的逐色值对照表未在本仓库保留。
 
 ---
 
@@ -27,12 +27,12 @@
 
 | 规则 | 阈值 | 适用范围 |
 |---|---|---|
-| 正文文字对比度 | ≥ 4.5:1 | 编辑器正文、行号、标签、列表、按钮、代码树 |
-| 非文本图形对比度 | ≥ 3:1 | 折行标记、滚动条滑块、边框 |
+| 正文文字对比度 | ≥ 4.5:1 | 编辑器正文、行号、标签、列表、按钮、代码树、折行标记符号 |
+| 非文本图形对比度 | ≥ 3:1 | 滚动条滑块、滚动条箭头、关闭叉号、内嵌下拉箭头、缩进参考线、括号连线、微缩图标记 |
 | 状态阶梯 | disabled < passive < over < checked | 按钮、标签 |
 | 层级阶梯 | 背景明度差 ≥ 3% | 页面底 / 面板 / 悬浮层 |
 
-对比度按 WCAG 2.1 相对亮度公式计算。校验方法见第 6 节。
+对比度按 WCAG 2.1 相对亮度公式计算。校验方法见第 4 节。
 
 ---
 
@@ -207,126 +207,25 @@
 
 ---
 
-## 4. 对比度修复记录（2026-11-05，本地安装版历史）
+## 4. 派生主题与校验
 
-> **本节是本地安装版的历史记录，未改动本仓库原主题。**对应改动以 `*_wcag` 派生主题和
-> `tools/theme_wcag/theme_patches.json` 的形式保留；如需在本仓库复现，先运行
-> `python tools/theme_wcag/apply_patches.py <主题名>`。
+本仓库的 8 套上游主题保持原值不动；`syn_wcag` / `sub_wcag` 是 `tools/theme_wcag/apply_patches.py`
+按修正建议生成的副本，只改色值，不改键名与顺序。
 
-修改范围：9 套主题（含第三方 monokai_pro），对比度修复 45 处；ebony 另做灰阶收敛 62 处（见第 5 节），合计 99 处键值改动。
+1. **审计**：`python tools/theme_wcag/audit_contrast.py` 扫描 `app/data/themes/*.cuda-theme-ui`，
+   按第 2 节的组合与阈值计算对比度，写出 `tools/theme_wcag/theme_contrast_report.md` 与
+   `theme_patches.json`。
+2. **人工覆盖**：`theme_overrides.json` 用于调整自动建议——值为颜色表示强制采用，值为 `null`
+   表示撤销该条建议、保留源主题原值。
+3. **生成**：`python tools/theme_wcag/apply_patches.py <主题名>`，只新增 `<主题名>_wcag` 副本。
+4. **校验 JSON**：`Get-Content <file> -Raw | ConvertFrom-Json`。
+5. **看实际效果**：重启 CudaText 后切换主题确认。
 
-### 4.1 行号 / 标尺（原本 5 套不达 AA）
+约束：
 
-| 主题 | 键 | 原值 | 新值 | 对比度 |
-|---|---|---|---|---|
-| amy | EdGutterFont / EdRulerFont | #78688F | #85759B | 3.86 → 4.63 |
-| darkwolf | EdGutterFont / EdRulerFont | #808080 | #BDBDBD | 2.19 → 4.61 |
-| ebony | EdGutterFont / EdRulerFont | #505050 / #555555 | #888888 | 2.02 / 2.19 → 4.60 |
-| monokai_pro | EdGutterFont / EdRulerFont | #727072 | #969496 | 2.88 → 4.70 |
-| sub | EdGutterFont / EdRulerFont | #505050 / #808080 | #909090 / #8F8F8F | 1.84 / 3.76 → 4.66 / 4.60 |
-| cobalt | EdRulerFont | #626262 | #8B8B8B | 2.64 → 4.73 |
-| green | EdRulerFont | #008080 | #005757 | 2.68 → 4.72 |
-
-### 4.2 选区文字（原本 4 套不达 AA）
-
-| 主题 | 键 | 原值 | 新值 | 对比度 |
-|---|---|---|---|---|
-| navy | EdSelBg | #B0B0F0 | #6363E1 | 2.04 → 4.77 |
-| syn | EdSelBg | #0078D7 | #0061AE | 3.41 → 4.79 |
-| ebony | EdSelFont | #00AEFF | #57CAFF | 3.47 → 4.61 |
-| cobalt | EdSelFont | #D0D0D0 | #DDDDDD | 4.07 → 4.63 |
-
-### 4.3 按钮状态（darkwolf 原为 bug 级）
-
-| 主题 | 键 | 原值 | 新值 | 对比度 |
-|---|---|---|---|---|
-| darkwolf | ButtonBgPassive | #C8C8C8 | #344243 | 1.08 → 7.34 |
-| darkwolf | ButtonBgOver | #ADAD27 | #46585A | 1.55 → 5.25 |
-| darkwolf | ButtonBgChecked | #808000 | #6B5A1A | 2.72 → 4.75 |
-| darkwolf | ButtonFont | #D0D0D0 | #D8D8D8 | — |
-| darkwolf | ButtonFontDisabled | #808080 | #8A8A8A | 禁用态 3.80 |
-| darkwolf | ButtonBgDisabled | #B0B0B0 | #2A3233 | 修掉与 Passive 撞色 |
-| darkwolf | ButtonBorderPassive | #80A0A0 | #4E6265 | 去亮青描边 |
-| darkwolf | ButtonBorderOver | #FF0000 | #7A9A9D | 去纯红警报色 |
-| darkwolf | ButtonBorderFocused | #808080 | #A8C0C3 | — |
-| ebony | ButtonFont | #999999 | #AFAFAF | Checked 3.21 → 4.73 |
-| ebony | ButtonBgDisabled | #303030 | #0A0A0A | 修掉与 Passive 撞色 |
-| green | ButtonFont | #505050 | #3C3C3C | 3.36 → 4.60 |
-| green | ButtonBgOver | #80B0B0 | #B8D4D4 | 3.36 → 7.04，并修掉与 Checked 同值 |
-| green | ButtonBgChecked | #80B0B0 | #8FB8B8 | 3.36 → 5.10 |
-| green | ButtonBgDisabled | #B0B0B0 | #DCDCDC | 与 Passive 拉开层级 |
-| navy | ButtonBgOver | #A0A0A0 | #D0D0F8 | 10.72，悬停改为提亮 |
-| navy | ButtonBgChecked | #808080 | #A8A8D8 | 4.05 → 7.06 |
-| navy | ButtonBgDisabled | #C0C0C0 | #D8D8D8 | 与 Passive 区分 |
-
-### 4.4 标签 / 树 / 列表
-
-| 主题 | 键 | 原值 | 新值 | 对比度 |
-|---|---|---|---|---|
-| ebony | TabFont | #999999 | #AFAFAF | 静默 4.12、悬停 3.31 → 5.35 / 4.73 |
-| ebony | TreeFont | #858585 | #888888 | 4.42 → 4.60 |
-| ebony | TreeSelFont | #BBBBBB | #C8C8C8 | 4.07 → 6.20 |
-| green | TabFont | #505050 | #4D4D4D | 4.43 → 4.65 |
-| green | ListSelFont | #505050 | #414141 | 3.72 → 4.71 |
-| sub | TabFont | #A0A0A4 | #C4C4C7 | 悬停 3.10 → 4.65 |
-| sub | TreeSelFont | #B0B0B0 | #C4C4C4 | 3.72 → 4.62 |
-| sub | ListSelFont | #B0B0B0 | #DEDEDE | 2.90 → 4.67 |
-| darkwolf | ListSelFont | #89B4B1 | #99BEBB | 4.14 → 4.69 |
-
-### 4.5 折行标记（按 3:1 图形标准）
-
-| 主题 | 键 | 原值 | 新值 | 对比度 |
-|---|---|---|---|---|
-| navy | EdFoldMarkFont | #8080E0 | #7070DC | 2.62 → 3.16 |
-| sub | EdFoldMarkFont | #808080 | #838383 | 2.99 → 3.11 |
-
-验证结果（历史记录）：9 套主题 × 16 组关键前景/背景组合，**0 处不达标**。
-
----
-
-## 5. 灰阶规范
-
-### 5.1 8 级主灰阶
-
-以基准画布色 `#202020`（g2）为锚点，向暗、向亮各展开：
-
-| 级 | 值 | 用途 | 可用作文字 | 禁用 |
-|---|---|---|---|---|
-| g1 | `#0A0A0A` | 最深底：当前行、锁定区、列表底、禁用按钮 | 否 | 不要用于大面积画布 |
-| g2 | `#202020` | 基准画布：编辑器、代码树、行号槽 | 否 | 不要用于浮起面板 |
-| g3 | `#303030` | 抬升面：标签栏、侧栏、浮层、选中块 | 否 | 不要用于画布 |
-| g4 | `#404040` | 边框、分隔、括号连线、次级块 | 否 | 不要用于大面积背景 |
-| g5 | `#6E6E6E` | 弱图标与弱文字：折行标记、滚动箭头、禁用文字 | 是（仅图标 3:1） | 不要用于正文 |
-| g6 | `#888888` | 次要文字：行号、标尺、代码树、列表 | 是 | 不要用于正文 |
-| g7 | `#AFAFAF` | 正文与控件主文字 | 是 | 不要用于弱化信息 |
-| g8 | `#C8C8C8` | 强调文字：选中项、激活标签、聚焦边框 | 是 | 不要用于正文（会与 g7 抢层级） |
-
-### 5.2 例外值
-
-| 值 | 用途 | 为什么不在 8 级内 |
-|---|---|---|
-| `#383838` | 仅 `TabPassive` | 8 级中 g3 与 g4 间距过大，非激活标签若吸附到 g3 会与标签栏底同色，若吸附到 g4 会亮于激活标签。保留一个状态中间级，才能维持 active < passive < over 的阶梯 |
-| `#FFFFFF` | 仅 `SideBadgeFont`（徽标文字） | 极白是"强调"而非灰阶，压在 `#000080` 徽标底上 |
-
-### 5.3 映射规则
-
-1. 纯灰 / 近灰（`max(R,G,B) - min(R,G,B) ≤ 6`）一律吸附到最近一级
-2. 彩色值（`#57CAFF`、`#E57124`、`#404070` 等）**不参与吸附**
-3. 同一控件内的状态键不得吸附到同一级；撞级时向相邻级或例外值调整
-4. 吸附后必须重新校验对比度，正文 ≥4.5、图形 ≥3
-
-### 5.4 ebony 收敛结果
-
-| 指标 | 收敛前 | 收敛后 |
-|---|---|---|
-| 唯一颜色数 | 59 | 29 |
-| 纯灰/近灰值 | 44 | 10 |
-| ΔE < 5 的近义色对 | 81 | 2 |
-| 改动键数 | — | 62 |
-
-剩余 2 组近义色（`#303030`↔`#383838` ΔE=3.66、`#383838`↔`#404040` ΔE=3.57）是标签三态的必要阶梯，不再合并。
-
-其余 7 套上游主题未做灰阶收敛，仍保留各自原有色相（amy 紫调、cobalt 蓝调等）。如需统一，应按"层级关系一致、色相各自保留"的原则逐主题映射，不能套用 ebony 的绝对色值。
+- 不要给 `MenuFont` / `MenuBg` / `StatusFont` / `StatusBg` 填值，除非确实要覆盖系统主题
+- 优先使用 `tools/theme_wcag/apply_patches.py` 生成 `*_wcag` 副本，不要直接改上游主题原文件
+- 不要修改 `app/py/cuda_palette/__init__.py` 里的颜色，那是调色板数据，不是界面 Token
 
 ---
 
