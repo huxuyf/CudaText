@@ -211,7 +211,7 @@ def audit():
         "> 只审计基主题（`app/data/themes/` 下除 `*_wcag` 之外的 UI 主题）；",
         "> `*_wcag` 是 `apply_patches.py` 的生成物，不参与审计。",
         "",
-        "> **应用前必读**：建议值只保证「对比度达标」，不保证满足 DESIGN-TOKENS.md 第 5 节灰阶规范。",
+        "> **应用前必读**：建议值只保证「对比度达标」，不代表色相与灰阶层级符合设计意图。",
         "> 图形类（缩进线、括号连线、滚动条滑块）与禁用态属于刻意弱化的视觉元素，",
         "> 是否强制拉到 3:1 应人工判断；强行拉高可能让辅助线抢走正文注意力。",
         "",
@@ -258,7 +258,11 @@ def audit():
         lines.append("无。")
     lines += ["", "## 修正值落盘", "",
               "全部建议值见 `tools/theme_wcag/theme_patches.json`。该脚本**不修改**任何主题文件；",
-              "应用方式：`python tools/theme_wcag/apply_patches.py syn sub`，只新增 `*_wcag` 主题副本。", ""]
+              "应用方式：`python tools/theme_wcag/apply_patches.py syn sub`，只新增 `*_wcag` 主题副本。",
+              "",
+              "> **人工覆盖**：`tools/theme_wcag/theme_overrides.json` 在应用时覆盖本报告的建议：",
+              "> 值为颜色表示强制采用；值为 `null` 表示撤销该条建议、保留源主题原值。",
+              "> 因此 `*_wcag` 副本的实际色值不一定与上表建议值完全一致。", ""]
 
     report = "\n".join(lines)
     (OUT_DIR / "theme_contrast_report.md").write_text(report, encoding="utf-8")
