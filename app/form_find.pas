@@ -190,6 +190,9 @@ type
   private
     { private declarations }
     FRegexObj: TRegExpr;
+    FRegexCheckedText: string;
+    FRegexCheckedOk: Boolean;
+    FRegexCheckedValid: Boolean;
     FTimerShow: TTimer;
     FTimerWrapped: TTimer;
     FTimerHiAll: TTimer;
@@ -2146,17 +2149,27 @@ end;
 
 function TfmFind.IsRegexInputOk: boolean;
 begin
+  if chkRegex.Checked and FRegexCheckedValid and (FRegexCheckedText = edFind.Text) then
+    Exit(FRegexCheckedOk);
+
   Result:= true;
+  FRegexCheckedValid:= false;
   if not edFind.IsEmpty and chkRegex.Checked then
     try
       try
         FRegexObj.Expression:= edFind.Text;
         FRegexObj.Compile;
+        FRegexCheckedText:= edFind.Text;
+        FRegexCheckedOk:= true;
+        FRegexCheckedValid:= true;
       finally
         FRegexObj.Expression:= '';
       end;
     except
       Result:= false;
+      FRegexCheckedText:= edFind.Text;
+      FRegexCheckedOk:= false;
+      FRegexCheckedValid:= true;
     end;
 end;
 
