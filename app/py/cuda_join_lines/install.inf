@@ -1,0 +1,11 @@
+[info]
+title=Join Lines
+desc=Join the current line with the next line (removes the line break)
+type=cudatext-plugin
+subdir=cuda_join_lines
+api=1.0.300
+
+[item1]
+section=commands
+caption=Edit\Join lines at caret
+method=join_lines
