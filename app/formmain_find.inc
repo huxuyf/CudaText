@@ -1069,14 +1069,18 @@ begin
       if not AFinder.OptDisableOnProgress then
         Application.ProcessMessages;
 
-      //not DoGotoPos, we may need to show marker, not caret
-      Ed.DoShowPos(
-        AFinder.MatchEdPos,
-        AFinder.IndentHorz,
-        AFinder.IndentVert,
-        true,
-        true,
-        true);
+      //ProcessMessages can close the ui-tab, then DoOnTabClose resets
+      //Finder.Editor to nil (or to another editor): using the old Ed
+      //would be use-after-free, so check that the editor is still attached
+      if AFinder.Editor=Ed then
+        //not DoGotoPos, we may need to show marker, not caret
+        Ed.DoShowPos(
+          AFinder.MatchEdPos,
+          AFinder.IndentHorz,
+          AFinder.IndentVert,
+          true,
+          true,
+          true);
     end;
   end
   else

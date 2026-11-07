@@ -3615,6 +3615,10 @@ begin
 
   Application.ProcessMessages; //for DoGotoPos
 
+  //ProcessMessages can close this ui-tab and free the frame (e.g. a plugin
+  //command closes the tab), so don't touch Ed if the frame is already removed
+  if AppFrameList1.IndexOf(Self)<0 then exit;
+
   Ed.DoGotoPos(
     PrevCaret,
     Point(-1, -1),
@@ -4564,7 +4568,11 @@ begin
     //scroll to caret: needed for caret on a huge wrapped line
     if Ed.OptWrapMode=TATEditorWrapMode.ModeOff then
       if Caret.PosX>=Ed.GetVisibleColumns then
+      begin
         Application.ProcessMessages;
+        //ProcessMessages can close this ui-tab and free the frame
+        if AppFrameList1.IndexOf(Self)<0 then exit;
+      end;
 
     Ed.DoGotoPos(
       Caret.AsPoint,
