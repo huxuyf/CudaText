@@ -1368,10 +1368,13 @@ begin
   end;
 
   if Assigned(Ada) then
-    while Ada.TreeBusy do
+    if Ada.TreeBusy then
     begin
-      Application.ProcessMessages;
-      if Application.Terminated then exit;
+      //don't busy-wait with ProcessMessages; requeue the fill, it will run
+      //after the filling which is in progress now
+      if AFill then
+        UpdateTreeByTimer;
+      exit;
     end;
 
   if AFill then
