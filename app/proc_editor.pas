@@ -2909,6 +2909,7 @@ var
   Caret: TATCaretItem;
   STextW: UnicodeString;
   bWordChar, bIdentChar: boolean;
+  FrameObj: TObject;
   //SLexerName: string;
   //bLexerHTML: boolean;
 begin
@@ -2966,7 +2967,13 @@ begin
     if ACharsTyped>=Ed.OptAutocompleteAutoshowCharCount then
     begin
       //ACharsTyped:= 0; //don't reset, fix #4479
+
+      //remember the owning frame, because ProcessMessages (below) can close
+      //the ui-tab and thus free the frame with Ed
+      FrameObj:= Ed.ParentFrameObject;
       Application.ProcessMessages; //give time to lexer-parser, to fix https://github.com/CudaText-addons/cuda_lsp/issues/137
+      if (FrameObj=nil) or (AppFrameList1.IndexOf(FrameObj)<0) then
+        exit;
       AppRunAutocomplete(Ed, true);
       exit;
     end;

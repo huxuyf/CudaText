@@ -3072,6 +3072,11 @@ begin
     AAllowLoadUndo,
     AOpenMode);
 
+  //loading a huge file pumps messages (progress form), the ui-tab may be
+  //closed there and the frame removed: don't open the 2nd file then
+  if AppFrameList1.IndexOf(Self)<0 then
+    exit;
+
   if bFilename2Valid then
   begin
     SplitHorz:= false;
@@ -3156,12 +3161,22 @@ var
   St: TATStrings;
   LoadOptions: TATLoadStreamOptions;
   EdIndex: integer;
+  FormProgress: TForm;
 begin
   EdIndex:= EditorObjToIndex(Ed);
   if EdIndex<0 then exit;
 
   St:= Ed.Strings;
   InitProgressForm(Ed, AFileName, FileSize(AFileName));
+  FormProgress:= FProgressForm; //local copy, safe to use if the frame is closed below
+
+  //InitProgressForm pumps messages: the ui-tab may be closed there, and then
+  //the frame is already removed from the list (it is freed later, deferred)
+  if AppFrameList1.IndexOf(Self)<0 then
+  begin
+    FreeAndNil(FormProgress);
+    exit;
+  end;
 
   try
     UpdateLocked(Ed, true);
@@ -3177,13 +3192,22 @@ begin
       TabCaptionReason:= TAppTabCaptionReason.FromFilename;
       UpdateCaptionFromFilename;
     finally
-      UpdateLocked(Ed, false);
-      St.EncodingDetect:= true;
-      HideProgressForm(Ed);
+      //ProcessMessages during loading (HandleStringsProgress) can close the
+      //ui-tab, so don't touch Self/Ed if the frame is already removed
+      if AppFrameList1.IndexOf(Self)>=0 then
+      begin
+        UpdateLocked(Ed, false);
+        St.EncodingDetect:= true;
+        HideProgressForm(Ed);
+      end
+      else
+        FreeAndNil(FormProgress);
     end;
   except
     on E: Exception do
     begin
+      if AppFrameList1.IndexOf(Self)<0 then exit;
+
       if AAllowErrorMsgBox then
         MsgBox(msgCannotOpenFile+#10+AFileName+#10+E.Message, MB_OK or MB_ICONERROR);
 
@@ -3194,6 +3218,9 @@ begin
       exit
     end;
   end;
+
+  //messages pumped during loading may have closed the ui-tab
+  if AppFrameList1.IndexOf(Self)<0 then exit;
 
   //turn off opts for huge files
   FileWasBig[Ed]:= St.Count>EditorOps.OpWrapEnabledMaxLines;

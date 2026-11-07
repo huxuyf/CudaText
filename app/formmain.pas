@@ -5755,6 +5755,15 @@ begin
         bEnableLoadUndo,
         bAllowDeleted,
         nOpenMode);
+
+      //loading a huge file pumps messages (progress form), the ui-tab may be
+      //closed there and the frame removed: don't use Result anymore
+      if AppFrameList1.IndexOf(Result)<0 then
+      begin
+        Result:= nil;
+        exit;
+      end;
+
       MsgStatusFileOpened(AFileName, AFileName2);
 
       if bEnableEventOpened then
@@ -5781,6 +5790,11 @@ begin
           bEnableLoadUndo,
           bAllowDeleted,
           nOpenMode);
+
+        //loading a huge file pumps messages (progress form), the ui-tab may be
+        //closed there and the frame removed: don't use F anymore
+        if AppFrameList1.IndexOf(F)<0 then exit;
+
         Result:= F;
         //tick:= (GetTickCount64-tick) div 1000;
 
@@ -5837,6 +5851,11 @@ begin
       bEnableLoadUndo,
       bAllowDeleted,
       nOpenMode);
+
+    //loading a huge file pumps messages (progress form), the new ui-tab may
+    //be closed there and the frame removed: don't use F anymore
+    if AppFrameList1.IndexOf(F)<0 then exit;
+
     Result:= F;
 
     //use AndActivate=false in CreateTab() and focus here manually,
@@ -8104,6 +8123,10 @@ begin
 
   //auto-completion plugins
   if DoAutoComplete_FromPlugins(Ed) then exit;
+
+  //on_complete event can close the ui-tab and thus free Frame with Ed
+  if AppFrameList1.IndexOf(Frame)<0 then
+    exit;
 
   bNeedHtml:= false;
   bNeedCss:= false;
