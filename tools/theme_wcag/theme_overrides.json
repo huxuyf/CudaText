@@ -1,0 +1,7 @@
+{
+  "_comment": "人工覆盖 theme_patches.json：值为颜色则强制使用；值为 null 则撤销该条自动建议、保留源主题原值。",
+  "syn": {
+    "EdSelFont": null,
+    "EdSelBg": "#0061AE"
+  }
+}
