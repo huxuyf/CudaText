@@ -39,6 +39,7 @@ type
     EventTime: QWord;
     EventTimes: TAppPythonEventTimes;
     LoadedLocals: TStringList;
+    FailedLocals: TStringList;
     LoadedModules: TStringList;
     ModuleMain: PPyObject;
     ModuleCud: PPyObject;
@@ -49,9 +50,10 @@ type
     procedure TimeTrackEnd(const AModule: string; var tick: QWord);
     procedure InitModuleMain;
     procedure InitModuleCud;
-    procedure ImportCommand(const AObjectName, AModule: string);
+    function ImportCommand(const AObjectName, AModule: string): boolean;
     function ImportModuleCached(const AModule: string): PPyObject;
     function IsLoadedLocal(const S: string): boolean;
+    function IsFailedLocal(const S: string): boolean;
     function MethodEvalEx(const AObject, AMethod: string; const AParams: array of PPyObject): TAppPyEventResult;
     function MethodEvalObjects(const AObject, AFunc: string; const AParams: array of PPyObject): PPyObject;
   public
@@ -113,6 +115,10 @@ begin
   LoadedLocals.Sorted:= true;
   LoadedLocals.UseLocale:= false;
 
+  FailedLocals:= TStringList.Create;
+  FailedLocals.Sorted:= true;
+  FailedLocals.UseLocale:= false;
+
   LoadedModules:= TStringList.Create;
   LoadedModules.Sorted:= true;
   LoadedModules.UseLocale:= false;
@@ -126,6 +132,7 @@ begin
   if Assigned(EventTimes) then
     FreeAndNil(EventTimes);
   FreeAndNil(LoadedModules);
+  FreeAndNil(FailedLocals);
   FreeAndNil(LoadedLocals);
   inherited Destroy;
 end;
@@ -172,6 +179,13 @@ var
   N: integer;
 begin
   Result:= LoadedLocals.Find(S, N);
+end;
+
+function TAppPython.IsFailedLocal(const S: string): boolean; inline;
+var
+  N: integer;
+begin
+  Result:= FailedLocals.Find(S, N);
 end;
 
 procedure TAppPython.DisableTiming;
@@ -277,43 +291,64 @@ function TAppPython.MethodEvalObjects(const AObject, AFunc: string;
   const AParams: array of PPyObject): PPyObject;
 var
   CurrObject, Func, Params: PPyObject;
-  i: integer;
+  i, k: integer;
 begin
   Result:=nil;
   with FEngine do
   begin
-    CurrObject:=PyDict_GetItemString(GlobalsMain,PChar(AObject));
-    if Assigned(CurrObject) then
+    //this function always takes ownership of AParams references
+    //(they are released here if they cannot be passed to Python)
+    CurrObject:=PyDict_GetItemString(GlobalsMain,PChar(AObject)); //borrowed ref
+    if not Assigned(CurrObject) then
     begin
-      Func:=PyObject_GetAttrString(CurrObject,PChar(AFunc));
-      if Func=nil then
+      for i:=0 to Length(AParams)-1 do
+        Py_XDECREF(AParams[i]);
+      Exit;
+    end;
+
+    Func:=PyObject_GetAttrString(CurrObject,PChar(AFunc)); //new ref
+    if Func=nil then
+    begin
+      for i:=0 to Length(AParams)-1 do
+        Py_XDECREF(AParams[i]);
+      RaiseError;
+    end;
+
+    try
+      Params:=PyTuple_New(Length(AParams)); //new ref
+      if Params=nil then
+      begin
+        for i:=0 to Length(AParams)-1 do
+          Py_XDECREF(AParams[i]);
         RaiseError;
+      end;
 
       try
-        Params:=PyTuple_New(Length(AParams));
-        if Assigned(Params) then
-        try
-          for i:=0 to Length(AParams)-1 do
-            if PyTuple_SetItem(Params,i,AParams[i])<>0 then
-              RaiseError;
-
-          try
-            MaskFPU(true);
-            Result:=PyObject_Call(Func,Params,nil);
-            if Result = nil then
-              CheckError(False);
-            if PyErr_Occurred <> nil then
-              CheckError(False);
-          except
-            on E: Exception do
-              MsgLogConsole(Format('ERROR: Exception in CudaText for %s: %s', [AFunc, E.Message]));
+        for i:=0 to Length(AParams)-1 do
+          if PyTuple_SetItem(Params,i,AParams[i])<>0 then
+          begin
+            //items [i..] were not stolen by the tuple, release them here
+            for k:=i to Length(AParams)-1 do
+              Py_XDECREF(AParams[k]);
+            RaiseError;
           end;
-        finally
-          Py_DECREF(Params);
+
+        try
+          MaskFPU(true);
+          Result:=PyObject_Call(Func,Params,nil);
+          if Result = nil then
+            CheckError(False);
+          if PyErr_Occurred <> nil then
+            CheckError(False);
+        except
+          on E: Exception do
+            MsgLogConsole(Format('ERROR: Exception in CudaText for %s: %s', [AFunc, E.Message]));
         end;
       finally
-        Py_DECREF(Func);
+        Py_DECREF(Params);
       end;
+    finally
+      Py_DECREF(Func);
     end;
   end;
 end;
@@ -328,26 +363,32 @@ begin
 end;
 
 
-procedure TAppPython.ImportCommand(const AObjectName, AModule: string);
+function TAppPython.ImportCommand(const AObjectName, AModule: string): boolean;
 var
   ObjModule, ObjDict, ObjClass, ObjObject: PPyObject;
 begin
+  Result:= false;
+  ObjObject:= nil;
+
   with FEngine do
   begin
     ObjModule:= ImportModuleCached(AModule);
     if Assigned(ObjModule) then
     begin
-      ObjDict:= PyModule_GetDict(ObjModule);
+      ObjDict:= PyModule_GetDict(ObjModule); //borrowed reference
       if Assigned(ObjDict) then
       begin
+        //PyDict_GetItemString returns a borrowed reference: don't DECREF it
         ObjClass:= PyDict_GetItemString(ObjDict, 'Command');
         if Assigned(ObjClass) then
         try
           try
             MaskFPU(true);
-            ObjObject:= PyObject_CallObject(ObjClass, nil);
+            ObjObject:= PyObject_CallObject(ObjClass, nil); //new reference
             if Assigned(ObjObject) then
-              PyDict_SetItemString(GlobalsMain, PChar(AObjectName), ObjObject);
+              //PyDict_SetItemString stores its own reference, doesn't steal ours
+              if PyDict_SetItemString(GlobalsMain, PChar(AObjectName), ObjObject)=0 then
+                Result:= true;
             if PyErr_Occurred <> nil then
               CheckError(False);
           except
@@ -355,7 +396,7 @@ begin
               MsgLogConsole(Format('ERROR: Exception in CudaText for importing %s: %s', [AModule, E.Message]));
           end;
         finally
-          Py_DECREF(ObjClass);
+          Py_XDECREF(ObjObject);
         end;
       end;
     end;
@@ -393,8 +434,10 @@ begin
     try
       if not IsLoadedLocal(ObjName) then
       begin
-        ImportCommand(ObjName, AModule);
-        LoadedLocals.Add(ObjName);
+        if ImportCommand(ObjName, AModule) then
+          LoadedLocals.Add(ObjName)
+        else
+          FailedLocals.Add(ObjName);
       end;
 
       ParamObjs:= nil;
@@ -494,6 +537,8 @@ var
 var
   ObjName: string;
   tick: QWord;
+  i: integer;
+  bParamsOwned: boolean;
 begin
   Result.Val:= TAppPyEventValue.Other;
   Result.Str:= '';
@@ -507,24 +552,42 @@ begin
   TimeTrackBegin(tick);
 
   ObjName:= NamePrefix+AModule;
+  bParamsOwned:= false;
 
   try
     if not ALazy then
     begin
       if not IsLoadedLocal(ObjName) then
       begin
-        ImportCommand(ObjName, AModule);
-        LoadedLocals.Add(ObjName);
+        //do not retry import of a module which already failed (e.g. bad syntax
+        //or exception in Command ctor): failed modules are remembered
+        if not IsFailedLocal(ObjName) then
+        begin
+          if ImportCommand(ObjName, AModule) then
+            LoadedLocals.Add(ObjName)
+          else
+            FailedLocals.Add(ObjName);
+        end;
       end;
 
-      InitParamsObj;
-      Result:= MethodEvalEx(ObjName, ACmd, ParamsObj);
+      //run the event only if the module's Command object was created
+      if IsLoadedLocal(ObjName) then
+      begin
+        bParamsOwned:= true;
+        InitParamsObj;
+        //MethodEvalObjects always takes ownership of ParamsObj
+        bParamsOwned:= false;
+        Result:= MethodEvalEx(ObjName, ACmd, ParamsObj);
+      end;
     end
     else
     //lazy event: run only if ObjName is already created
     if IsLoadedLocal(ObjName) then
     begin
+      bParamsOwned:= true;
       InitParamsObj;
+      //MethodEvalObjects always takes ownership of ParamsObj
+      bParamsOwned:= false;
       Result:= MethodEvalEx(ObjName, ACmd, ParamsObj);
     end;
 
@@ -532,7 +595,13 @@ begin
       FEngine.CheckError(False);
   except
     on E: Exception do
+    begin
+      //release params which were allocated but not yet passed to the call
+      if bParamsOwned then
+        for i:= 0 to Length(ParamsObj)-1 do
+          FEngine.Py_XDECREF(ParamsObj[i]);
       MsgLogConsole(Format('ERROR: Exception in CudaText for %s.%s: %s', [AModule, ACmd, E.Message]));
+    end;
   end;
 
   FRunning:= false;
@@ -722,6 +791,7 @@ var
 begin
   if not FInited then exit;
   LoadedLocals.Clear;
+  FailedLocals.Clear;
 
   with FEngine do
     for i:= 0 to LoadedModules.Count-1 do
