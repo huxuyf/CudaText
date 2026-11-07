@@ -1,0 +1,37 @@
+[info]
+title=选中文本工具
+desc=对选中文本执行 Base64、URL 编解码和安全算术求值
+type=cudatext-plugin
+subdir=cuda_seltools
+api=1.0.300
+homepage=
+
+[item1]
+section=commands
+caption=选中文本工具\Base64 编码
+method=b64_encode
+
+[item2]
+section=commands
+caption=选中文本工具\Base64 解码
+method=b64_decode
+
+[item3]
+section=commands
+caption=选中文本工具\URL 编码
+method=url_encode
+
+[item4]
+section=commands
+caption=选中文本工具\URL 解码
+method=url_decode
+
+[item7]
+section=commands
+caption=选中文本工具\表达式求值
+method=evaluate
+
+[item8]
+section=commands
+caption=选中文本工具\切换输出模式（替换 / 剪贴板）
+method=toggle_output
