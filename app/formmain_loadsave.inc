@@ -283,8 +283,7 @@ var
   bModified, bUntitled, bUntitled2: boolean;
   bSessionUpdated, bSessionFileExisted, bSaved: boolean;
   currFramesEditState: array of TFrameEditState;
-  fileWriteTimeBeforeSaving,
-  fileWriteTimeAfterSaving: TDateTime;
+  fnTempSession: string;
   iFrame, iGroup: integer;
 begin
   Result:= false;
@@ -298,8 +297,19 @@ begin
   bSessionFileExisted:= FileExists(sSessionFileName);
   sSaveError:= '';
   bSaved:= false;
-  fileWriteTimeBeforeSaving:= Default(TDateTime);
-  fileWriteTimeAfterSaving:= Default(TDateTime);
+
+  fnTempSession:= AppTempFileNameInDir(ExtractFileDir(sSessionFileName), '.cudatext-session-');
+  if fnTempSession='' then
+    sSaveError:= 'cannot create temporary file'
+  else
+  if bSessionFileExisted then
+    if not FileUtil.CopyFile(sSessionFileName, fnTempSession) then
+    begin
+      AppFileDeleteForced(fnTempSession);
+      fnTempSession:= '';
+      sSaveError:= 'cannot copy session file';
+    end;
+
   nCountFiles:= 0;
   nCountUntitled:= 0;
   iSavingTabIndex:= 0;
@@ -321,7 +331,7 @@ begin
   cfg_bookmarks:= TAppJsonConfig.Create(nil);
   try
     try
-      cfg.Filename:= sSessionFileName;
+      cfg.Filename:= fnTempSession;
       if sRootPath<>'' then
         cfg.DeletePath(sRootPath); //otherwise sections '000' will not be removed
     except
@@ -556,37 +566,39 @@ begin
       if not bSessionFileExisted then
         bSessionUpdated:= true;
 
-      if bSessionUpdated then
-      begin
-        if not FileAge(sSessionFileName, fileWriteTimeBeforeSaving) then
-          fileWriteTimeBeforeSaving:= Default(TDateTime);
-      end;
-
       FreeAndNil(cfg_bookmarks);
       FreeAndNil(cfg); //saves json file when its property Modified is True
+
+      if bSessionUpdated and Result then
+      begin
+        if (fnTempSession<>'') and FileExists(fnTempSession) then
+        begin
+          AppFileFlushToDisk(fnTempSession);
+          bSaved:= AppFileReplaceAtomic(fnTempSession, sSessionFileName);
+        end;
+      end;
+      if (fnTempSession<>'') and (not bSaved) then
+        AppFileDeleteForced(fnTempSession);
     except
       //session folder can be non-writable, report it below instead of suppressing silently
       on E: Exception do
+      begin
         sSaveError:= E.Message;
+        if fnTempSession<>'' then
+          AppFileDeleteForced(fnTempSession);
+      end;
     end;
   end;
 
   DoPyEvent_AppState(APPSTATE_SESSION_SAVE_AFTER);
 
-  if FileExists(sSessionFileName) then
-  begin
-    if not FileAge(sSessionFileName, fileWriteTimeAfterSaving) then
-      fileWriteTimeAfterSaving:= Default(TDateTime);
-  end;
-
-  bSaved:= fileWriteTimeBeforeSaving<>fileWriteTimeAfterSaving;
   if bSessionUpdated then
     Result:= bSaved; //don't report success when the file was not actually written
   if bSaved then
     FSessionSaveWarned:= false
   else
   if bSessionUpdated and (sSaveError='') then
-    sSaveError:= 'file was not modified';
+    sSaveError:= 'session file was not written';
 
   if UiOps.LogSessions and (bSessionUpdated or not bSessionFileExisted) then
   begin
