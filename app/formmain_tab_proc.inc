@@ -449,6 +449,11 @@ begin
 
   if ACanClose then
   begin
+    //the closed editors may be the source of the current fill signature;
+    //forget it, so that a new editor which reuses the same address can't skip a fill
+    if (FTreeFillEd=Frame.EdFirst) or (FTreeFillEd=Frame.EdSecond) then
+      DoCodetree_InvalidateFillSignature;
+
     Frame.Hide;
     AppFrameList1.Remove(Frame);
     AppFrameListDeleting.Add(Frame);

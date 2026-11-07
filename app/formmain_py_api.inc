@@ -8147,6 +8147,8 @@ begin
             end;
 
             TreeContainer.Tree.Invalidate;
+            if bStandardCodeTree then
+              fmMain.DoCodetree_InvalidateFillSignature;
             Result:= PyHelper_ObjectHandle(Node1);
           end;
 
@@ -8172,6 +8174,8 @@ begin
             if Assigned(TreeNode) then
               TreeNode.Text:= StrText;
             TreeContainer.Tree.Invalidate;
+            if bStandardCodeTree then
+              fmMain.DoCodetree_InvalidateFillSignature;
             Result:= ReturnNone;
           end;
 
@@ -8200,6 +8204,8 @@ begin
             end;
 
             TreeContainer.Tree.Invalidate;
+            if bStandardCodeTree then
+              fmMain.DoCodetree_InvalidateFillSignature;
             Result:= ReturnNone;
           end;
 
@@ -8335,6 +8341,8 @@ begin
             Sep.GetItemInt(Pnt2.X, 0);
             Sep.GetItemInt(Pnt2.Y, 0);
             fmMain.DoCodetree_SetSyntaxRange(TreeNode, Pnt1, Pnt2);
+            if bStandardCodeTree then
+              fmMain.DoCodetree_InvalidateFillSignature;
             Result:= ReturnNone;
           end;
 
@@ -9654,6 +9662,8 @@ begin
                   Ed.FileName,
                   @MsgLogConsoleOnDuplicateTreeNode
                   );
+              if TreeContainer=fmMain.CodeTree then
+                fmMain.DoCodetree_InvalidateFillSignature;
               Result:= ReturnTrue;
             end
             else

@@ -765,6 +765,10 @@ type
     FLastPyMenuFilter: UnicodeString;
     FLastPyMenuHashOfLines: integer;
     FDisableTreeClearing: boolean;
+    FTreeFillEd: TATSynEdit;
+    FTreeFillVersion: Int64;
+    FTreeFillLexer: string;
+    FTreeFillSort: TSortType;
     FLexerProgressIndex: integer;
     FOption_WindowPos: string;
     FOption_AllowSessionLoad: TAppAllowSomething;
@@ -898,6 +902,8 @@ type
     procedure DoOnTabDblClick(Sender: TObject; AIndex: integer);
     function DoOnTabGetTick(Sender: TObject; ATabObject: TObject): Int64;
     procedure DoCodetree_UpdateVersion(Ed: TATSynEdit);
+    procedure DoCodetree_SetFillSignature(Frame: TEditorFrame; Ed: TATSynEdit);
+    procedure DoCodetree_InvalidateFillSignature;
     procedure DoCodetree_InvalidateCachedTree(Ed: TATSynEdit);
     procedure DoCodetree_Clear;
     procedure DoCodetree_PanelOnEnter(Sender: TObject);
@@ -2893,6 +2899,19 @@ begin
   end;
 end;
 
+procedure TfmMain.DoCodetree_SetFillSignature(Frame: TEditorFrame; Ed: TATSynEdit);
+begin
+  FTreeFillEd:= Ed;
+  FTreeFillVersion:= Ed.Strings.ModifiedVersion;
+  FTreeFillLexer:= Frame.LexerName[Ed];
+  FTreeFillSort:= Frame.CodetreeSortType;
+end;
+
+procedure TfmMain.DoCodetree_InvalidateFillSignature;
+begin
+  FTreeFillEd:= nil;
+end;
+
 procedure TfmMain.DoCodetree_InvalidateCachedTree(Ed: TATSynEdit);
 var
   Frame: TEditorFrame;
@@ -2909,6 +2928,8 @@ end;
 
 procedure TfmMain.DoCodetree_Clear;
 begin
+  DoCodetree_InvalidateFillSignature;
+
   { //is it needed to fix #4459 ?
   if Assigned(FCodetreeBuffer) then
     FCodetreeBuffer.Items.Clear;

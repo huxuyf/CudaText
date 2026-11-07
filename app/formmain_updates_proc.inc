@@ -1324,6 +1324,7 @@ var
   Ed: TATSynEdit;
   Ada: TATAdapterEControl;
   bLiteLexer: boolean;
+  bSkipFill: boolean;
   //Tick: QWord;
 begin
   Frame:= CurrentFrame;
@@ -1379,6 +1380,16 @@ begin
 
   if AFill then
   begin
+    //skip the whole fill when nothing which affects the tree has changed;
+    //external tree modifications reset FTreeFillEd (see DoCodetree_InvalidateFillSignature)
+    bSkipFill:=
+      (Ed=FTreeFillEd)
+      and (Ed.Strings.ModifiedVersion=FTreeFillVersion)
+      and (Frame.LexerName[Ed]=FTreeFillLexer)
+      and (Frame.CodetreeSortType=FTreeFillSort);
+
+    if not bSkipFill then
+    begin
     InitImageListCodetree;
     UpdateTreeImagelistActivity;
 
@@ -1426,6 +1437,8 @@ begin
 
     DoCodetree_UpdateVersion(Ed);
     DoPyEvent_AppState(APPSTATE_CODETREE_AFTER_FILL);
+    DoCodetree_SetFillSignature(Frame, Ed);
+    end;
   end;
 
   UpdateTreeFilter;
