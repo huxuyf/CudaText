@@ -839,6 +839,7 @@ type
     procedure DoFileDialog_PrepareDir(Dlg: TFileDialog);
     procedure DoFileDialog_SaveDir(Dlg: TFileDialog);
     procedure DoCommands_OnMsg(Sender: TObject; const ARes: string);
+    procedure DoCommands_GetSymbols(AList: TStringList);
     procedure DoFindFirst;
     procedure DoFindNext(ANext: boolean);
     procedure DoFindNextAndReplace;
@@ -936,6 +937,7 @@ type
     procedure DoPyCommand_CommandLineParam(const AModuleAndMethod: string);
     procedure DoDialogCharMap;
     procedure DoGotoFromInput(Frame: TEditorFrame; const AInput: string);
+    procedure DoGotoAnything(Frame: TEditorFrame; const AInput: string; ALineIndex: integer);
     procedure DoGotoDefinition(Ed: TATSynEdit);
     procedure DoShowFuncHint(Ed: TATSynEdit);
     procedure DoApplyGutterVisible(AValue: boolean);
@@ -6112,9 +6114,13 @@ end;
 function TfmMain.DoDialogCommands_Custom(Ed: TATSynEdit; const AProps: TDlgCommandsProps): integer;
 var
   bKeysChanged: boolean;
+  SGoText: string;
+  NGoLine: integer;
   Form: TfmCommands;
 begin
   Result:= 0;
+  SGoText:= '';
+  NGoLine:= -1;
   Form:= TfmCommands.Create(Self);
   try
     Form.OptShowUsual:= AProps.ShowUsual;
@@ -6126,6 +6132,7 @@ begin
     Form.OptAllowConfigForLexer:= AProps.AllowConfigForLexer;
     Form.OptFocusedCommand:= AProps.FocusedCommand;
     Form.OnMsg:= @DoCommands_OnMsg;
+    Form.OnGetSymbols:= @DoCommands_GetSymbols;
     Form.CurrentLexerName:= AProps.LexerName;
     Form.Keymap:= Ed.Keymap;
     Form.ListCaption:= AProps.Caption;
@@ -6153,10 +6160,15 @@ begin
 
     UiOps.CmdPaletteFilterText:= Form.CurrentFilterText;
     Result:= Form.ResultCommand;
+    SGoText:= Form.ResultGoto;
+    NGoLine:= Form.ResultGotoLine;
     bKeysChanged:= Form.ResultHotkeysChanged;
   finally
     FreeAndNil(Form);
   end;
+
+  if SGoText<>'' then
+    DoGotoAnything(CurrentFrame, SGoText, NGoLine);
 
   if bKeysChanged then
   begin
@@ -6255,6 +6267,81 @@ begin
   end;
 
   Frame.SetFocus;
+end;
+
+procedure TfmMain.DoGotoAnything(Frame: TEditorFrame; const AInput: string; ALineIndex: integer);
+var
+  S: string;
+  NLine, NCount: integer;
+  bValid: boolean;
+begin
+  if Frame=nil then exit;
+
+  S:= Trim(AInput);
+  if S='' then exit;
+
+  if Frame.FrameKind<>TAppFrameKind.Editor then
+  begin
+    if S[1]='@' then
+      MsgBox(msgCmdPaletteNoSymbols, MB_OK or MB_ICONWARNING)
+    else
+      MsgStatus(msgStatusBadLineNum);
+    exit;
+  end;
+
+  //symbol was picked from the palette symbol list: line index is already resolved
+  if ALineIndex>=0 then
+  begin
+    Frame.EdCurrent.DoGotoPos(
+      Point(0, ALineIndex),
+      Point(-1, -1),
+      UiOps.FindIndentHorz,
+      UiOps.FindIndentVert,
+      true{PlaceCaret},
+      TATEditorActionIfFolded.Unfold{Unfold}
+      );
+    Frame.EdCurrent.Update;
+    Frame.SetFocus;
+    MsgStatus(Format('Go to symbol: %s (line %d)', [Copy(AInput, 2, MaxInt), ALineIndex+1]));
+    exit;
+  end;
+
+  if S[1]='@' then
+  begin
+    //palette closed with '@' text but the current file has no code-tree symbols
+    MsgBox(msgCmdPaletteNoSymbols, MB_OK or MB_ICONWARNING);
+    Frame.SetFocus;
+    exit;
+  end;
+
+  if S[1]=':' then
+  begin
+    bValid:= TryStrToInt(Trim(Copy(S, 2, MaxInt)), NLine);
+    if not bValid then
+    begin
+      MsgStatus(msgStatusBadLineNum);
+      Frame.SetFocus;
+      exit;
+    end;
+
+    NCount:= Frame.EdCurrent.Strings.Count;
+    if NCount<=0 then exit;
+
+    if NLine<1 then
+      NLine:= 1
+    else
+    if NLine>NCount then
+    begin
+      NLine:= NCount;
+      MsgStatus(Format('Line %s is out of range; jumped to the last line %d',
+        [Copy(S, 2, MaxInt), NLine]));
+    end
+    else
+      MsgStatus('');
+
+    EditorGotoFromString(Frame.EdCurrent, IntToStr(NLine));
+    Frame.SetFocus;
+  end;
 end;
 
 type
@@ -9438,6 +9525,36 @@ end;
 procedure TfmMain.DoCommands_OnMsg(Sender: TObject; const ARes: string);
 begin
   MsgStatus(ARes);
+end;
+
+procedure TfmMain.DoCommands_GetSymbols(AList: TStringList);
+var
+  Frame: TEditorFrame;
+  Ed: TATSynEdit;
+  Node: TTreeNode;
+  Range: TATRangeInCodeTree;
+  i: integer;
+begin
+  AList.Clear;
+  Frame:= CurrentFrame;
+  if Frame=nil then exit;
+  if Frame.FrameKind<>TAppFrameKind.Editor then exit;
+  Ed:= Frame.EdCurrent;
+  if Ed=nil then exit;
+
+  //fill the code tree even if its side panel is currently hidden
+  UpdateTree(true, false);
+
+  for i:= 0 to CodeTree.Tree.Items.Count-1 do
+  begin
+    Node:= CodeTree.Tree.Items[i];
+    if Node.Data=nil then Continue;
+    if not (TObject(Node.Data) is TATRangeInCodeTree) then Continue;
+    Range:= TATRangeInCodeTree(TObject(Node.Data));
+    if Range.PosBegin.Y<0 then Continue;
+    if Range.PosBegin.Y>=Ed.Strings.Count then Continue;
+    AList.AddObject(Node.Text, TObject(PtrInt(Range.PosBegin.Y)));
+  end;
 end;
 
 procedure TfmMain.MenuTabsizeClick(Sender: TObject);

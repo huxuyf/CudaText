@@ -35,6 +35,8 @@ uses
   math;
 
 type
+  TCommandsGetSymbolsEvent = procedure(AList: TStringList) of object;
+
   { TfmCommands }
 
   TfmCommands = class(TForm)
@@ -65,9 +67,17 @@ type
     FColorFontHilite: TColor;
     FColorFontHotkey: TColor;
     PanelInfo: TStaticText;
+    FGoMode: boolean;
+    FGoSymbolMode: boolean;
+    FGoSymbolsLoaded: boolean;
+    FGoSymbols: TStringList;
+    FGoFiltered: TFPList;
+    FOnGetSymbols: TCommandsGetSymbolsEvent;
     procedure DoConfigKey(Cmd: integer);
     procedure DoFilter;
+    procedure DoFilterSymbols(const AQuery: string);
     procedure DoResetKey(K: TATKeymapItem);
+    procedure EnsureGoSymbols;
     function GetListCaption: string;
     function GetResultCmd: integer;
     function IsFiltered(Item: TATKeymapItem; out AWordMatch: boolean): boolean;
@@ -79,6 +89,8 @@ type
     { public declarations }
     Keymap: TATKeymap;
     ResultCommand: integer;
+    ResultGoto: string;
+    ResultGotoLine: integer; //0-based line resolved from '@' symbol list; -1 if none
     ResultHotkeysChanged: boolean;
     CurrentLexerName: string;
     CurrentFilterText: string;
@@ -91,6 +103,7 @@ type
     OptAllowConfigForLexer: boolean;
     OptFocusedCommand: integer;
     property OnMsg: TAppStringEvent read FOnMsg write FOnMsg;
+    property OnGetSymbols: TCommandsGetSymbolsEvent read FOnGetSymbols write FOnGetSymbols;
     property ListCaption: string read GetListCaption write SetListCaption;
   end;
 
@@ -159,11 +172,11 @@ begin
     edit.DoSelect_All;
     if Assigned(edit.OnChange) then
       edit.OnChange(nil);
-  end;
+  end
+  else
+    DoFilter;
 
-  DoFilter;
-
-  if OptFocusedCommand>0 then
+  if (OptFocusedCommand>0) and not FGoMode then
     for i:= 0 to keymapList.Count-1 do
       if TATKeymapItem(keymapList.Items[i]).Command = OptFocusedCommand then
       begin
@@ -213,11 +226,15 @@ begin
   edit.Keymap:= AppKeymapMain;
 
   ResultCommand:= 0;
+  ResultGoto:= '';
+  ResultGotoLine:= -1;
   ResultHotkeysChanged:= false;
 
   keymapList:= TFPList.Create;
   keymapList_Simple:= TFPList.Create;
   keymapList_Fuzzy:= TFPList.Create;
+  FGoSymbols:= TStringList.Create;
+  FGoFiltered:= TFPList.Create;
 
   PanelInfo:= TStaticText.Create(Self);
   PanelInfo.Hide;
@@ -239,14 +256,100 @@ end;
 
 procedure TfmCommands.editChange(Sender: TObject);
 var
+  S: string;
   bHelp: boolean;
 begin
   CurrentFilterText:= edit.Text;
-  bHelp:= edit.Text='#';
-  PanelInfo.Visible:= bHelp;
-  list.Visible:= not bHelp;
-  if not bHelp then
+  S:= Trim(edit.Text);
+  bHelp:= S='#';
+
+  FGoMode:= (Length(S)>1) and ((S[1]='@') or (S[1]=':'));
+  FGoSymbolMode:= FGoMode and (S[1]='@');
+
+  if bHelp then
+  begin
+    PanelInfo.Caption:= msgCmdPalettePrefixHelp;
+    PanelInfo.Visible:= true;
+    list.Visible:= false;
+    exit;
+  end;
+
+  if not FGoMode then
+  begin
+    PanelInfo.Visible:= false;
+    list.Visible:= true;
     DoFilter;
+    exit;
+  end;
+
+  if FGoSymbolMode then
+  begin
+    EnsureGoSymbols;
+    if FGoSymbols.Count=0 then
+    begin
+      PanelInfo.Caption:= msgCmdPaletteNoSymbols;
+      PanelInfo.Visible:= true;
+      list.Visible:= false;
+      exit;
+    end;
+    DoFilterSymbols(Copy(S, 2, MaxInt));
+    PanelInfo.Visible:= false;
+    list.Visible:= true;
+    exit;
+  end;
+
+  //':' mode: no candidates, Enter jumps to the typed line number
+  PanelInfo.Caption:= Format(msgCmdPaletteGotoLine, [Copy(S, 2, MaxInt)]);
+  PanelInfo.Visible:= true;
+  list.Visible:= false;
+end;
+
+procedure TfmCommands.EnsureGoSymbols;
+begin
+  if FGoSymbolsLoaded then exit;
+  FGoSymbolsLoaded:= true;
+  FGoSymbols.Clear;
+  if Assigned(FOnGetSymbols) then
+    FOnGetSymbols(FGoSymbols);
+end;
+
+procedure TfmCommands.DoFilterSymbols(const AQuery: string);
+var
+  SQuery: string;
+  SItem: string;
+  bAdd: boolean;
+  iPass, i, N: integer;
+begin
+  FGoFiltered.Clear;
+  SQuery:= LowerCase(Trim(AQuery));
+
+  if SQuery='' then
+  begin
+    for i:= 0 to FGoSymbols.Count-1 do
+      FGoFiltered.Add(Pointer(PtrInt(i)));
+  end
+  else
+  begin
+    //rank: exact match, then prefix match, then substring match
+    for iPass:= 0 to 2 do
+      for i:= 0 to FGoSymbols.Count-1 do
+      begin
+        SItem:= LowerCase(FGoSymbols[i]);
+        case iPass of
+          0: bAdd:= SItem=SQuery;
+          1: bAdd:= SBeginsWith(SItem, SQuery);
+          else bAdd:= Pos(SQuery, SItem)>0;
+        end;
+        if bAdd and (FGoFiltered.IndexOf(Pointer(PtrInt(i)))<0) then
+          FGoFiltered.Add(Pointer(PtrInt(i)));
+      end;
+  end;
+
+  N:= FGoFiltered.Count;
+  list.ItemIndex:= 0;
+  list.ItemTop:= 0;
+  list.VirtualItemCount:= N;
+  list.Invalidate;
 end;
 
 procedure TfmCommands.ButtonCancelClick(Sender: TObject);
@@ -256,6 +359,8 @@ end;
 
 procedure TfmCommands.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(FGoFiltered);
+  FreeAndNil(FGoSymbols);
   FreeAndNil(keymapList_Fuzzy);
   FreeAndNil(keymapList_Simple);
   FreeAndNil(keymapList);
@@ -263,6 +368,8 @@ end;
 
 procedure TfmCommands.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+var
+  N: integer;
 begin
   if (key=VK_DOWN) or ((key=VK_J) and (Shift=[ssCtrl])) then
   begin
@@ -321,17 +428,45 @@ begin
 
   if key=VK_RETURN then
   begin
+    key:= 0;
+    if FGoMode then
+    begin
+      if FGoSymbolMode and (FGoSymbols.Count>0) then
+      begin
+        if (list.ItemIndex>=0) and (list.ItemIndex<FGoFiltered.Count) then
+        begin
+          N:= PtrInt(FGoFiltered[list.ItemIndex]);
+          ResultGotoLine:= PtrInt(FGoSymbols.Objects[N]);
+          ResultGoto:= '@'+FGoSymbols[N];
+          Close;
+        end
+        else
+          DoMsgStatus(msgCmdPaletteNoMatch);
+      end
+      else
+      begin
+        //':' input, or '@' when the file has no symbols: caller validates it
+        ResultGoto:= edit.Text;
+        Close;
+      end;
+      exit
+    end;
+
     if (list.ItemIndex>=0) and (list.ItemCount>0) then
     begin
       ResultCommand:= GetResultCmd;
       Close;
     end;
-    key:= 0;
     exit
   end;
 
   if (key=VK_F9) and (shift=[]) then
   begin
+    if FGoMode then
+    begin
+      key:= 0;
+      exit
+    end;
     if OptAllowConfig then
     begin
       DoConfigKey(GetResultCmd);
@@ -412,9 +547,34 @@ var
   TextSize: TSize;
   bFound: boolean;
   cl: TColor;
-  n, nPrevSize, i: integer;
+  n, nPrevSize, i, nIdx: integer;
 begin
-  if (AIndex<0) or (AIndex>=keymapList.Count) then exit;
+  if FGoSymbolMode and FGoMode then
+  begin
+    if (AIndex<0) or (AIndex>=FGoFiltered.Count) then exit;
+    nIdx:= PtrInt(FGoFiltered[AIndex]);
+    strname:= FGoSymbols[nIdx];
+    strkey:= IntToStr(PtrInt(FGoSymbols.Objects[nIdx])+1);
+    strfind:= Copy(Trim(edit.Text), 2, MaxInt);
+  end
+  else
+  begin
+    if (AIndex<0) or (AIndex>=keymapList.Count) then exit;
+
+    //name, key
+    strname:= TATKeymapItem(keymapList[AIndex]).Name;
+    strkey:= TATKeymapItem(keymapList[AIndex]).Keys1.ToString;
+    //add key2
+    strfind:= TATKeymapItem(keymapList[AIndex]).Keys2.ToString;
+    if strfind<>'' then
+      strkey:= strkey+' / '+strfind;
+
+    strfind:= Trim(edit.Text);
+    _GetPrefix(strfind, 'p');
+    _GetPrefix(strfind, 'l');
+    _GetPrefix(strfind, 'f');
+    _GetPrefix(strfind, 'r');
+  end;
 
   if AIndex=list.ItemIndex then
   begin
@@ -429,20 +589,6 @@ begin
   c.Brush.Color:= cl;
   c.Pen.Color:= cl;
   c.FillRect(ARect);
-
-  //name, key
-  strname:= TATKeymapItem(keymapList[AIndex]).Name;
-  strkey:= TATKeymapItem(keymapList[AIndex]).Keys1.ToString;
-  //add key2
-  strfind:= TATKeymapItem(keymapList[AIndex]).Keys2.ToString;
-  if strfind<>'' then
-    strkey:= strkey+' / '+strfind;
-
-  strfind:= Trim(edit.Text);
-  _GetPrefix(strfind, 'p');
-  _GetPrefix(strfind, 'l');
-  _GetPrefix(strfind, 'f');
-  _GetPrefix(strfind, 'r');
 
   pnt:= Point(ARect.Left+4, ARect.Top);
   c.TextOut(pnt.x, pnt.y, strname);

@@ -82,8 +82,11 @@ const
   msgErrorNullBytesInFile = 'Config file is broken, because its leading bytes are NULLs:'#10'%s'#10'Press OK to delete it.';
 
   msgCmdPaletteCaption: string = 'Command palette';
-  msgCmdPaletteTextHint: string = 'F9 to set hotkey, @ to find hotkey, # for help';
-  msgCmdPalettePrefixHelp: string = '#p – plugins'+EOL+'#l – lexers'+EOL+'#f – opened files'+EOL+'#r – recent files';
+  msgCmdPaletteTextHint: string = 'F9 to set hotkey, @ to go to symbol, : to go to line, # for help';
+  msgCmdPalettePrefixHelp: string = '#p – plugins'+EOL+'#l – lexers'+EOL+'#f – opened files'+EOL+'#r – recent files'+EOL+'@name – go to symbol in current file'+EOL+':N – go to line N';
+  msgCmdPaletteGotoLine: string = 'Go to line: %s — press Enter';
+  msgCmdPaletteNoSymbols: string = 'No symbols found for the current file (no code-tree helper for this lexer).';
+  msgCmdPaletteNoMatch: string = 'No matching symbols.';
 
   msgErrorPluginIgnored = 'NOTE: Plugin %s is in ignore-list, please remove it';
   msgErrorTooManyFileTabs = 'NOTE: Too many editor-tabs are opened, cannot add tab';
