@@ -30,6 +30,13 @@ function AppIsFileReadonly(const fn: string): boolean;
 procedure AppFileAttrPrepare(const fn: string; out attr: Longint);
 procedure AppFileAttrRestore(const fn: string; attr: Longint);
 
+function AppFileIsSymlink(const fn: string): boolean;
+function AppTempFileNameInDir(const ADir, APrefix: string): string;
+procedure AppFileFlushToDisk(const fn: string);
+procedure AppFileCopyMetadata(const fnSrc, fnDest: string);
+function AppFileReplaceAtomic(const fnTemp, fnTarget: string): boolean;
+procedure AppFileDeleteForced(const fn: string);
+
 function AppExpandFilename(fn: string): string;
 procedure AppBrowseToFilenameInShell(const fn: string);
 function AppFileExtentionCreatable(const fn: string): boolean;
@@ -60,6 +67,9 @@ implementation
 uses
   {$ifdef windows}
   Windows,
+  {$endif}
+  {$ifdef unix}
+  BaseUnix,
   {$endif}
   SysUtils, StrUtils,
   LCLIntf, LCLType,
@@ -335,6 +345,154 @@ begin
   if attr=0 then exit;
   FileSetAttrUTF8(fn, attr);
   {$endif}
+end;
+
+function AppFileIsSymlink(const fn: string): boolean;
+{$ifdef windows}
+var
+  Attr: Longint;
+{$else}
+var
+  Rec: stat;
+{$endif}
+begin
+  Result:= false;
+  if fn='' then exit;
+  {$ifdef windows}
+  //faSymLink has the same value as FILE_ATTRIBUTE_REPARSE_POINT, so it also
+  //covers junctions and other reparse points
+  Attr:= FileGetAttrUTF8(fn);
+  Result:= (Attr<>-1) and ((Attr and faSymLink)<>0);
+  {$else}
+  //lstat() must be used, so the link itself is detected instead of its target
+  if FpLStat(fn, Rec)=0 then
+    Result:= FpS_ISLNK(Rec.st_mode);
+  {$endif}
+end;
+
+function AppTempFileNameInDir(const ADir, APrefix: string): string;
+var
+  n: integer;
+begin
+  Result:= '';
+  for n:= 0 to 999 do
+  begin
+    Result:= IncludeTrailingPathDelimiter(ADir)+APrefix+IntToStr(n)+'.tmp';
+    if not FileExists(Result) then exit;
+  end;
+  Result:= '';
+end;
+
+procedure AppFileFlushToDisk(const fn: string);
+var
+  fs: TFileStream;
+begin
+  if not FileExists(fn) then exit;
+  try
+    fs:= TFileStream.Create(fn, fmOpenReadWrite or fmShareDenyNone);
+  except
+    exit; //the file was already closed by the writer, its data is flushed anyway
+  end;
+  try
+    {$ifdef windows}
+    FlushFileBuffers(fs.Handle);
+    {$else}
+    FpFsync(fs.Handle);
+    {$endif}
+  finally
+    FreeAndNil(fs);
+  end;
+end;
+
+{$ifdef windows}
+procedure AppFileCopyMetadata(const fnSrc, fnDest: string);
+var
+  Attr: Longint;
+  hSrc, hDest: THandle;
+  ftCreate: TFileTime;
+begin
+  if not FileExists(fnSrc) then exit;
+  if not FileExists(fnDest) then exit;
+
+  //keep the file attributes (hidden, system, archive, read-only)
+  Attr:= FileGetAttrUTF8(fnSrc);
+  if Attr<>-1 then
+    FileSetAttrUTF8(fnDest, Attr);
+
+  //keep the creation time, but the modified time must stay the fresh one
+  hSrc:= CreateFileW(
+    PWChar(UTF8Decode(fnSrc)),
+    GENERIC_READ,
+    FILE_SHARE_READ or FILE_SHARE_WRITE or FILE_SHARE_DELETE,
+    nil,
+    OPEN_EXISTING,
+    FILE_ATTRIBUTE_NORMAL,
+    0);
+  if hSrc=INVALID_HANDLE_VALUE then exit;
+  try
+    if not GetFileTime(hSrc, @ftCreate, nil, nil) then exit;
+    hDest:= CreateFileW(
+      PWChar(UTF8Decode(fnDest)),
+      FILE_WRITE_ATTRIBUTES,
+      FILE_SHARE_READ or FILE_SHARE_WRITE or FILE_SHARE_DELETE,
+      nil,
+      OPEN_EXISTING,
+      FILE_ATTRIBUTE_NORMAL,
+      0);
+    if hDest=INVALID_HANDLE_VALUE then exit;
+    try
+      SetFileTime(hDest, @ftCreate, nil, nil);
+    finally
+      Windows.CloseHandle(hDest);
+    end;
+  finally
+    Windows.CloseHandle(hSrc);
+  end;
+end;
+{$else}
+procedure AppFileCopyMetadata(const fnSrc, fnDest: string);
+var
+  Rec: stat;
+begin
+  if not FileExists(fnSrc) then exit;
+  if not FileExists(fnDest) then exit;
+  if FpStat(fnSrc, Rec)<>0 then exit;
+  FpChmod(fnDest, Rec.st_mode);
+  //changing the owner needs root rights, ignore a possible failure
+  FpChown(fnDest, Rec.st_uid, Rec.st_gid);
+end;
+{$endif}
+
+function AppFileReplaceAtomic(const fnTemp, fnTarget: string): boolean;
+const
+  //not defined in the FPC 3.2.2 Windows unit
+  cMoveFileWriteThrough = $00000008;
+begin
+  {$ifdef windows}
+  Result:= MoveFileExW(
+    PWChar(UTF8Decode(fnTemp)),
+    PWChar(UTF8Decode(fnTarget)),
+    MOVEFILE_REPLACE_EXISTING or cMoveFileWriteThrough);
+  {$else}
+  //rename() inside one folder is atomic on POSIX
+  Result:= FpRename(fnTemp, fnTarget)=0;
+  {$endif}
+end;
+
+procedure AppFileDeleteForced(const fn: string);
+{$ifdef windows}
+var
+  Attr: Longint;
+{$endif}
+begin
+  if not FileExists(fn) then exit;
+  {$ifdef windows}
+  //a read-only file cannot be deleted
+  Attr:= FileGetAttrUTF8(fn);
+  if (Attr<>-1) and ((Attr and faReadOnly)<>0) then
+    FileSetAttrUTF8(fn, Attr and not faReadOnly);
+  {$endif}
+  DeleteFile(fn);
 end;
 
 function AppCopyDir(const DirSrc, DirTarget: string): boolean;

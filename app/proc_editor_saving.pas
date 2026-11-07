@@ -111,6 +111,94 @@ begin
   Result:= DWORD(cBaseMs + nExtra);
 end;
 
+procedure MsgBox_CannotSaveFile(const fn: string);
+begin
+  MsgBox(msgCannotSaveFile+#10+AppCollapseHomeDirInFilename(fn)+#10#10+
+         msgCannotSaveFileTempRemoved,
+         MB_OK or MB_ICONERROR);
+end;
+
+//save the editor text to a temp file in the target's folder, then replace the
+//target atomically, so a crash or a power loss cannot destroy the original file.
+//returns true when the save is complete (also when an error was reported),
+//and false when the legacy save path must be used instead
+function SaveAtomic(Ed: TATSynEdit; const fn: string): boolean;
+var
+  fnTemp: string;
+  bDocEmpty: boolean;
+  bOK: boolean;
+  dir: string;
+begin
+  Result:= false;
+
+  dir:= ExtractFileDir(fn);
+  //missing folder: let SaveSimple either re-create it or show its error
+  if not DirectoryExists(dir) then exit;
+
+  //don't replace a symlink, the link itself must stay; use the legacy path
+  if AppFileIsSymlink(fn) then exit;
+
+  fnTemp:= AppTempFileNameInDir(dir, '.cudatext-');
+  if fnTemp='' then exit;
+
+  bDocEmpty:= Ed.IsEmpty;
+  bOK:= false;
+  try
+    try
+      SaveSimple(Ed, fnTemp);
+      bOK:= true;
+    finally
+      //Ed.SaveToFile changes the editor filename
+      Ed.FileName:= fn;
+    end;
+  except
+    on E: EConvertError do
+    begin
+      //let the caller retry with UTF-8 encoding
+      AppFileDeleteForced(fnTemp);
+      raise;
+    end;
+    on E: Exception do
+      bOK:= false;
+  end;
+
+  if not bOK then
+  begin
+    //if the temp file was created, the failure can be "no disk space"; then don't
+    //retry by writing the target directly, because it would truncate the original
+    if FileExists(fnTemp) then
+    begin
+      AppFileDeleteForced(fnTemp);
+      MsgBox_CannotSaveFile(fn);
+      exit(true); //error is reported, the original file is intact
+    end;
+    //no temp file at all: write-protected folder or bad path, let the legacy path
+    //re-create the folder or use the elevated copy
+    exit(false);
+  end;
+
+  if IsBadResultFile(fnTemp, bDocEmpty) then
+  begin
+    AppFileDeleteForced(fnTemp);
+    MsgBox_CannotSaveFile(fn);
+    exit(true);
+  end;
+
+  //flush the data and close the file, only then the temp file may replace the target
+  AppFileFlushToDisk(fnTemp);
+
+  //keep attributes, permissions, owner and creation time of the original file
+  AppFileCopyMetadata(fn, fnTemp);
+
+  if AppFileReplaceAtomic(fnTemp, fn) then
+    exit(true);
+
+  //the replacement failed (e.g. the target is locked by another program), the
+  //original is still intact: remove the temp and use the legacy path
+  AppFileDeleteForced(fnTemp);
+  Result:= false;
+end;
+
 procedure SaveViaTempCopy(Ed: TATSynEdit; const fn: string);
 var
   fnTemp: string;
@@ -119,9 +207,7 @@ var
   begin
     //do not keep the temp file on failure, so the message must not point to it
     DeleteFile(fnTemp);
-    MsgBox(msgCannotSaveFile+#10+AppCollapseHomeDirInFilename(fn)+#10#10+
-           msgCannotSaveFileTempRemoved,
-           MB_OK or MB_ICONERROR);
+    MsgBox_CannotSaveFile(fn);
   end;
   //
 var
@@ -205,6 +291,19 @@ function EditorSaveFileAs(Ed: TATSynEdit; const AFileName: string): boolean;
 var
   OldEncoding: string;
   OldAttr: Longint;
+
+  procedure SaveLegacy;
+  begin
+    try
+      SaveSimple(Ed, AFileName);
+    except
+      on E: EFOpenError do
+        SaveViaTempCopy(Ed, AFileName);
+      on E: EWriteError do //on Linux, saving to smb folder fails, issue #3435
+        SaveViaTempCopy(Ed, AFileName);
+    end;
+  end;
+
 begin
   Result:= true;
   while true do //loop attempts forever, until correct saving which calls Break
@@ -212,22 +311,17 @@ begin
       AppFileAttrPrepare(AFileName, OldAttr);
 
       try
-        SaveSimple(Ed, AFileName);
+        //main path: temp file in the target folder + atomic replacement
+        if not SaveAtomic(Ed, AFileName) then
+          SaveLegacy;
       except
         on E: EConvertError do
           begin
             OldEncoding:= Ed.EncodingName;
             Ed.EncodingName:= cEncNameUtf8_NoBom;
-            SaveSimple(Ed, AFileName);
+            if not SaveAtomic(Ed, AFileName) then
+              SaveLegacy;
             MsgBox(Format(msgCannotSaveFileWithEnc, [OldEncoding]), MB_OK or MB_ICONWARNING);
-          end;
-        on E: EFOpenError do
-          begin
-            SaveViaTempCopy(Ed, AFileName);
-          end;
-        on E: EWriteError do //on Linux, saving to smb folder fails, issue #3435
-          begin
-            SaveViaTempCopy(Ed, AFileName);
           end;
         else
           raise;
