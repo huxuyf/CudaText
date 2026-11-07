@@ -276,12 +276,12 @@ var
   TempGrp: TATGroups;
   TempPages: TATPages;
   sSessionFileName, sTabFilename, sTabFilename2,
-  sRootPath, sJsonPath, sTabKind, sConsole, sUndo: string;
+  sRootPath, sJsonPath, sTabKind, sConsole, sUndo, sSaveError: string;
   nLocalGroup, nGlobalGroup, nTabInGroup: integer;
   nCountFiles, nCountUntitled, iSavingTabIndex: integer;
   nNewFrameCount, nPrevFrameCount: integer;
   bModified, bUntitled, bUntitled2: boolean;
-  bSessionUpdated, bSessionFileExisted: boolean;
+  bSessionUpdated, bSessionFileExisted, bSaved: boolean;
   currFramesEditState: array of TFrameEditState;
   fileWriteTimeBeforeSaving,
   fileWriteTimeAfterSaving: TDateTime;
@@ -296,6 +296,8 @@ begin
 
   bSessionUpdated:= false;
   bSessionFileExisted:= FileExists(sSessionFileName);
+  sSaveError:= '';
+  bSaved:= false;
   fileWriteTimeBeforeSaving:= Default(TDateTime);
   fileWriteTimeAfterSaving:= Default(TDateTime);
   nCountFiles:= 0;
@@ -563,7 +565,9 @@ begin
       FreeAndNil(cfg_bookmarks);
       FreeAndNil(cfg); //saves json file when its property Modified is True
     except
-      //supress exception if bad or non-writable session folder is used
+      //session folder can be non-writable, report it below instead of suppressing silently
+      on E: Exception do
+        sSaveError:= E.Message;
     end;
   end;
 
@@ -575,17 +579,34 @@ begin
       fileWriteTimeAfterSaving:= Default(TDateTime);
   end;
 
+  bSaved:= fileWriteTimeBeforeSaving<>fileWriteTimeAfterSaving;
+  if bSessionUpdated then
+    Result:= bSaved; //don't report success when the file was not actually written
+  if bSaved then
+    FSessionSaveWarned:= false
+  else
+  if bSessionUpdated and (sSaveError='') then
+    sSaveError:= 'file was not modified';
+
   if UiOps.LogSessions and (bSessionUpdated or not bSessionFileExisted) then
   begin
-    if fileWriteTimeBeforeSaving<>fileWriteTimeAfterSaving then
+    if bSaved then
       sConsole:= Format('Saved session: "%s", %d file(s)', [ExtractFileName(sSessionFileName), nCountFiles])
     else
-      sConsole:= Format('Failed to save session: "%s", %d file(s)', [ExtractFileName(sSessionFileName), nCountFiles]);
+      sConsole:= Format('Failed to save session: "%s", %d file(s): %s', [ExtractFileName(sSessionFileName), nCountFiles, sSaveError]);
     if nCountUntitled>0 then
       sConsole+= Format(' + %d untitled', [nCountUntitled]);
     if AByTimer then
       sConsole+= Format(', by timer at %s', [TimeToStr(Now)]);
     MsgLogConsole(sConsole);
+  end;
+
+  //failure must be visible: log always, and show statusbar message once per failure streak
+  if (not bSaved) and bSessionUpdated and (not FSessionSaveWarned) then
+  begin
+    FSessionSaveWarned:= true;
+    MsgLogConsole(Format('ERROR: Cannot save session "%s": %s', [sSessionFileName, sSaveError]));
+    MsgStatus(msgCannotSaveFile+' '+ExtractFileName(sSessionFileName));
   end;
 end;
 
@@ -740,13 +761,22 @@ begin
         MsgFileFromSessionNotFound(sTabFilename2);
       end;
 
-      sText:= cfg.GetValue(sItemPath+'text', '');
-      nLineEnds:= ConvertIntegerToLineEndings(cfg.GetValue(sItemPath+'ends', -1));
-      sUndoString:= cfg.GetValue(sItemPath+'undo', '');
-      sRedoString:= cfg.GetValue(sItemPath+'redo', '');
       sTabKind:= cfg.GetValue(sItemPath+'kind', '');
       bModified:= cfg.GetValue(sItemPath+'modified', false);
       bModified2:= cfg.GetValue(sItemPath2+'modified', false);
+
+      //read heavy text/undo/redo only for modified tabs; unmodified tabs load file from disk
+      sText:= '';
+      sUndoString:= '';
+      sRedoString:= '';
+      nLineEnds:= TATLineEnds.Unix;
+      if bModified then
+      begin
+        sText:= cfg.GetValue(sItemPath+'text', '');
+        nLineEnds:= ConvertIntegerToLineEndings(cfg.GetValue(sItemPath+'ends', -1));
+        sUndoString:= cfg.GetValue(sItemPath+'undo', '');
+        sRedoString:= cfg.GetValue(sItemPath+'redo', '');
+      end;
 
       //support old sessions with 1-based group index
       nGroupIndex:= cfg.GetValue(sItemPath+'group', 1)-1;

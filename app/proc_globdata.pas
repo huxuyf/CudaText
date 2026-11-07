@@ -3290,6 +3290,9 @@ begin
   begin
     D:= AStatus.GetPanelData(NIndex);
     if Assigned(D) then
+      if (D.Caption<>AText) or
+        (D.ColorFont<>AColorFont) or
+        (D.FontBold<>AFontBold) then
     begin
       D.Caption:= AText;
       D.ColorFont:= AColorFont;

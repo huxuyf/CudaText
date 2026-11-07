@@ -26,7 +26,10 @@ mkdir $pydir
 rm $outdir/$zipname
 rm $outdir/$zipname2
 
-zip -r -x*.pyc $outdir/$zipname data readme settings_default *.manifest py/*.py py/cuda_addonman py/cuda_project_man py/cuda_tabs_list py/cuda_make_plugin py/cuda_insert_time py/sys py/cuda_comments py/cuda_new_file py/cuda_palette py/cuda_prefs py/cuda_multi_installer py/cuda_sort py/cuda_snippet_panel py/cuda_lexer_detecter
+#include all plugin dirs from app/py (except test plugins and caches), so new plugins are packaged automatically
+py_plugins=`cd py && for d in */; do case "$d" in __pycache__/|cuda_testing*/) continue;; esac; echo "py/${d%/}"; done`
+
+zip -r -x*.pyc $outdir/$zipname data readme settings_default *.manifest py/*.py $py_plugins
 
 # Take exe
 cd $exedir

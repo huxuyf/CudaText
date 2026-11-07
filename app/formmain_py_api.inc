@@ -97,8 +97,7 @@ end;
 //func at begin
 function PyHelper_EditorFromHandle(Handle: Int64): TATSynEdit;
 var
-  Obj: TObject;
-  nTab: Integer;
+  i, nTab: Integer;
   Frame: TEditorFrame;
 begin
   Result:= nil;
@@ -106,13 +105,19 @@ begin
 
   if (Handle<0) or (Handle>cPyEditorHandleMax) then
   begin
-    Obj:= TObject(PtrInt(Handle));
-    if not (Obj is TATSynEdit) then
+    //handle is a raw pointer (from ed.get_handle()); accept only live editors
+    for i:= 0 to fmMain.FrameCount-1 do
     begin
-      MsgLogConsole('ERROR: Editor() gets bad handle, of type '+Obj.ClassName);
-      exit;
+      Frame:= fmMain.Frames[i];
+      if Frame=nil then Continue;
+      if PtrInt(Frame.EdFirst)=Handle then
+        exit(Frame.EdFirst);
+      if Assigned(Frame.EdSecond) then
+        if PtrInt(Frame.EdSecond)=Handle then
+          exit(Frame.EdSecond);
     end;
-    exit(TATSynEdit(Obj)); //Access Violation for incorrect handle
+    MsgLogConsole('ERROR: Editor() gets invalid handle, plugin must not use handles of closed tabs');
+    exit;
   end;
 
   case Handle of
@@ -855,6 +860,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Lsi:save', @H, @PtrName, @bSaveAsCopy)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       StrName:= string(PtrName);
 
       if bSaveAsCopy then
@@ -972,10 +978,17 @@ end;
 function api_ed_get_text_sel(Self, Args: PPyObject): PPyObject; cdecl;
 var
   H: Int64;
+  Ed: TATSynEdit;
 begin
   with AppPython.Engine do
     if Bool(PyArg_ParseTuple(Args, 'L:get_text_sel', @H)) then
-      Result:= PyUnicodeFromString(PyHelper_EditorFromHandle(H).TextSelected)
+    begin
+      Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then
+        Result:= ReturnNone
+      else
+        Result:= PyUnicodeFromString(Ed.TextSelected);
+    end
   else
     Result:= ReturnNone;
 end;
@@ -991,6 +1004,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Lii:get_text_line', @H, @Index, @MaxLen)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Strs:= Ed.Strings;
       if Strs.IsIndexValid(Index) then
       begin
@@ -1017,6 +1031,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Li:get_line_len', @H, @Index)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Strs:= Ed.Strings;
       if Strs.IsIndexValid(Index) then
         Result:= PyLong_FromLong(Strs.LinesLen[Index])
@@ -1038,6 +1053,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Li:get_line_end', @H, @Index)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Strs:= Ed.Strings;
       if Strs.IsIndexValid(Index) then
         Result:= PyLong_FromLong(Ord(Strs.LinesEnds[Index]))
@@ -1059,6 +1075,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Lii:set_line_end', @H, @NIndex, @NValue)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Strs:= Ed.Strings;
       if Strs.IsIndexValid(NIndex) and (NValue>=0) and (NValue<=Ord(High(TATLineEnds))) then
         Strs.LinesEnds[NIndex]:= TATLineEnds(NValue);
@@ -1078,6 +1095,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Li:get_text_all', @H, @bEnds)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Result:= PyUnicodeFromString(
         Ed.Strings.TextString_Unicode(0, not bEnds)
         );
@@ -1098,6 +1116,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liiii:get_text_substr', @H, @X1, @Y1, @X2, @Y2)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Str:= Ed.Strings.TextSubstring(X1, Y1, X2, Y2);
       Result:= PyUnicodeFromString(Str);
     end
@@ -1116,6 +1135,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liiiiii:set_caret', @H, @X1, @Y1, @X2, @Y2, @Id, @NOptions)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
 
       case Id of
         CARET_ADD:
@@ -1255,6 +1275,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liiiiiii:markers', @H, @Id, @X, @Y, @NTag, @NLenX, @NLenY, @NLineLen)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
 
       case Id of
         MARKERS_GET_DICT:
@@ -1400,6 +1421,7 @@ begin
       )) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
 
       {
       type for 'x', 'y', 'len' is string, to support this API:
@@ -1683,6 +1705,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liiss:hotspots', @H, @Id, @NTag, @PtrTag, @PtrPos)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       StrTag:= string(PtrTag);
       StrPos:= string(PtrPos);
 
@@ -1766,6 +1789,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'L:get_sel_mode', @H)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Result:= PyLong_FromLong(cSelModes[Ed.IsSelColumn]);
     end
   else
@@ -1775,13 +1799,20 @@ end;
 function api_ed_get_sel_rect(Self, Args: PPyObject): PPyObject; cdecl;
 var
   H: Int64;
+  Ed: TATSynEdit;
   R: TRect;
 begin
   with AppPython.Engine do
     if Bool(PyArg_ParseTuple(Args, 'L:get_sel_rect', @H)) then
     begin
-      R:= PyHelper_EditorFromHandle(H).SelRect;
-      Result:= Py_BuildValue('(iiii)', R.Left, R.Top, R.Right, R.Bottom);
+      Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then
+        Result:= ReturnNone
+      else
+      begin
+        R:= Ed.SelRect;
+        Result:= Py_BuildValue('(iiii)', R.Left, R.Top, R.Right, R.Bottom);
+      end;
     end
   else
     Result:= ReturnNone;
@@ -1797,6 +1828,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'L:get_sel_lines', @H)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       if Ed.Carets.Count=0 then
       begin
         N1:= -1;
@@ -1820,6 +1852,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liiii:set_sel_rect', @H, @X1, @Y1, @X2, @Y2)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
 
       Ed.DoSelect_None;
       Ed.DoSelect_ColumnBlock_FromPoints(Point(X1, Y1), Point(X2, Y2));
@@ -1843,6 +1876,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Ls:set_text_all', @H, @PtrText)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       if not Ed.ModeReadOnly then
         EditorSetAllTextFromAPI(Ed, string(PtrText));
       Result:= ReturnNone;
@@ -1863,6 +1897,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Lis:set_text_line', @H, @NIndex, @Ptr)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Str:= UTF8Decode(string(Ptr));
       if SStringHasEol(Str) then
         Exit(ReturnFalse);
@@ -1885,6 +1920,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liiii:delete', @H, @X1, @Y1, @X2, @Y2)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       if not Ed.ModeReadOnly then
         EditorDeleteRangeFromAPI(Ed, X1, Y1, X2, Y2);
       Result:= ReturnNone;
@@ -1906,6 +1942,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liis:insert', @H, @X1, @Y1, @Ptr)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       if Ed.ModeReadOnly then
         exit(ReturnNone);
       Str:= UTF8Decode(string(Ptr));
@@ -1934,6 +1971,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liiiis:replace', @H, @X1, @Y1, @X2, @Y2, @PtrText)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       StrText:= string(PtrText);
       if Ed.ModeReadOnly then
         exit(ReturnNone);
@@ -1988,6 +2026,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'LiiO:replace_lines', @H, @Y1, @Y2, @ListPy)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       if Ed.ModeReadOnly then
         exit(ReturnNone);
       Strs:= Ed.Strings;
@@ -2048,6 +2087,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'L:get_line_count', @H)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Result:= PyLong_FromLong(Ed.Strings.Count);
     end
   else
@@ -2068,6 +2108,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Ls:get_filename', @H, @PtrOps)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       F:= TGroupsHelper.GetEditorFrame(Ed);
       StrOps:= string(PtrOps);
 
@@ -2098,6 +2139,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Lis:cmd', @H, @NCode, @Ptr)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Str:= string(Ptr);
 
       Ed.DoCommand(NCode, TATCommandInvoke.AppAPI, UTF8Decode(Str));
@@ -2127,6 +2169,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'L:focus', @H)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       PyHelper_EditorFocus(Ed);
       Result:= ReturnNone;
     end
@@ -2189,6 +2232,7 @@ begin
             @NAutoDelete, @NShowInList, @NTag)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       StrText:= string(PtrText);
 
       //check range of NKind
@@ -2342,6 +2386,7 @@ begin
             @NImageIndex, @NAutoDelete)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
 
       case NId of
         DECOR_GET_ALL:
@@ -2693,6 +2738,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Lsiiii:complete', @H, @Ptr, @NChars1, @NChars2, @NSelIndex, @NAltOrder)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Str:= string(Ptr);
 
       if Ed.Carets.Count=0 then exit(ReturnNone);
@@ -2733,6 +2779,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Lssii:complete_alt', @H, @PtrText, @PtrId, @NChars, @NSelIndex)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       StrText:= string(PtrText);
       StrId:= string(PtrId);
 
@@ -3450,6 +3497,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Lii:get_wrapinfo', @H, @NParam1, @NParam2)) then
       begin
         Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
         Result:= PyHelper_GetWrapInfo(Ed, NParam1, NParam2);
       end
   else
@@ -6744,6 +6792,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liiis:convert', @H, @Id, @X, @Y, @PtrValue)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       Strs:= Ed.Strings;
       StrValue:= string(PtrValue);
 
@@ -6896,6 +6945,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'L:get_sublexer_ranges', @H)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
 
       if not (Ed.AdapterForHilite is TATAdapterEControl) then
         exit(ReturnNone);
@@ -8406,6 +8456,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liiii:dim', @H, @Id, @NIndex1, @NIndex2, @NValue)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
 
       case Id of
         DIM_ADD:
@@ -8577,6 +8628,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liii:get_token', @H, @Id, @NIndex1, @NIndex2)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
 
       case Id of
         TOKEN_GET_KIND:
@@ -9105,6 +9157,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'LiLLiii|i:gap', @H, @Id, @Num1, @Num2, @NTag, @NSize, @NColor, @NOnTop)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
 
       case Id of
         GAP_GET_ALL:
@@ -9444,6 +9497,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Lisss:action', @HEditor, @IdAction, @PtrText1, @PtrText2, @PtrText3)) then
     begin
       Ed:= PyHelper_EditorFromHandle(HEditor);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       StrText1:= string(PtrText1);
       StrText2:= string(PtrText2);
       StrText3:= string(PtrText3);
@@ -9643,6 +9697,7 @@ begin
     if Bool(PyArg_ParseTuple(Args, 'Liiii:micromap', @HEditor, @IdAction, @NTag, @NWidth, @NColor)) then
     begin
       Ed:= PyHelper_EditorFromHandle(HEditor);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
 
       case IdAction of
         MICROMAP_GET:
@@ -9707,6 +9762,7 @@ begin
             @H, @Id, @NItem, @NX, @NY, @NX2, @NY2, @NStaple, @PtrText, @NTag)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       StrText:= string(PtrText);
 
       case Id of
@@ -9847,6 +9903,7 @@ begin
             @H, @NMaxChars, @NMaxTime)) then
     begin
       Ed:= PyHelper_EditorFromHandle(H);
+      if Ed=nil then Exit(AppPython.Engine.ReturnNone);
       NResult:= EditorGetCharCount(Ed, NMaxChars, NMaxTime);
       Result:= PyLong_FromLongLong(NResult);
     end
@@ -10957,6 +11014,7 @@ var
   OldX, OldY: integer;
   OldFromCaret, OldBack: boolean;
   Obj: TObject;
+  EdTarget: TATSynEdit;
   i: integer;
 begin
   with AppPython.Engine do
@@ -11043,7 +11101,10 @@ begin
             NValue:= StrToInt64Def(StrValue, -1); //0 is allowed, ed's handle
             if NValue=-1 then
               exit(ReturnNone);
-            Finder.Editor:= PyHelper_EditorFromHandle(NValue);
+            EdTarget:= PyHelper_EditorFromHandle(NValue);
+            if EdTarget=nil then
+              exit(ReturnNone);
+            Finder.Editor:= EdTarget;
             Result:= ReturnNone;
           end;
 

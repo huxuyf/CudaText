@@ -752,6 +752,7 @@ type
     FLastStatusbarMessage: string;
     FLastStatusbarMessageIsFoundIndexes: boolean;
     FLastStatusbarMessageTick: QWord;
+    FSessionSaveWarned: boolean;
     FLastSelectedCommand: integer;
     FLastMousePos: TPoint;
     FLastMaximized: boolean;
@@ -7650,7 +7651,16 @@ var
 begin
   F:= DoFileOpen('', '');
   if F=nil then exit;
-  F.EdFirst.Strings.LoadFromFile(fn, []);
+  try
+    F.EdFirst.Strings.LoadFromFile(fn, []);
+  except
+    on E: Exception do
+    begin
+      MsgBox(msgCannotOpenFile+#10+fn+#10#10+E.Message, MB_OK or MB_ICONERROR);
+      EditorClear(F.EdFirst);
+      exit;
+    end;
+  end;
   F.DoLexerFromFilename(F.EdFirst, fn);
   UpdateFrameEx(F, true);
   UpdateStatusbar;

@@ -142,8 +142,10 @@ var
   Matches: TStringList;
   Frame: TEditorFrame;
   Ed: TATSynEdit;
+  bWasRegex: boolean;
 begin
   Matches:= TStringList.Create;
+  bWasRegex:= FFinder.OptRegex;
   try
     FFinder.OptRegex:= true;
     FFinder.DoAction_ExtractAll(false, Matches, false, FFinder.OptCase, dupAccept);
@@ -164,6 +166,7 @@ begin
     else
       FinderShowResult(false, false, false, FFinder);
   finally
+    FFinder.OptRegex:= bWasRegex;
     FreeAndNil(Matches);
   end;
 end;

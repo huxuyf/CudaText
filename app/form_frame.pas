@@ -2941,6 +2941,8 @@ begin
     ImageBox.Show;
     ImageBox.LoadFromFile(AFileName);
   except
+    on E: Exception do
+      MsgBox(msgCannotOpenFile+#10+AFileName+#10#10+E.Message, MB_OK or MB_ICONERROR);
   end;
 
   if AIsReload then
