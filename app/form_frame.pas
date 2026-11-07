@@ -3115,7 +3115,8 @@ procedure TEditorFrame.InitProgressForm(AEd: TATSynEdit; const AFileName: string
 var
   St: TATStrings;
 begin
-  if AppFormShowCompleted then exit;
+  //show progress also after app startup: loading of a big file must be
+  //visible and cancellable from the ui
   if AFileSize<=UiOps.MaxFileSizeWithoutProgressForm then exit;
 
   St:= AEd.Strings;

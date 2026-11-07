@@ -94,6 +94,47 @@ begin
     EditorFocus(Ed);
 end;
 
+//find editor control, created by dlg_proc(), among live custom dialogs;
+//don't cast Handle itself, to avoid touching freed memory
+function PyHelper_EditorFromDlgControl(Handle: Int64): TATSynEdit;
+var
+  Form: TFormDummy;
+  i: integer;
+
+  function FindInParent(AParent: TWinControl): TATSynEdit;
+  var
+    Ctl: TControl;
+    j: integer;
+  begin
+    Result:= nil;
+    for j:= 0 to AParent.ControlCount-1 do
+    begin
+      Ctl:= AParent.Controls[j];
+      if Ctl is TATSynEdit then
+      begin
+        if PtrInt(Ctl)=Handle then
+          exit(TATSynEdit(Ctl));
+      end
+      else
+      if Ctl is TWinControl then
+      begin
+        Result:= FindInParent(TWinControl(Ctl));
+        if Assigned(Result) then exit;
+      end;
+    end;
+  end;
+
+begin
+  Result:= nil;
+  if not Assigned(AppCustomDialogs) then exit;
+  for i:= 0 to AppCustomDialogs.Count-1 do
+  begin
+    Form:= TFormDummy(AppCustomDialogs[i]);
+    Result:= FindInParent(Form);
+    if Assigned(Result) then exit;
+  end;
+end;
+
 //func at begin
 function PyHelper_EditorFromHandle(Handle: Int64): TATSynEdit;
 var
@@ -116,6 +157,9 @@ begin
         if PtrInt(Frame.EdSecond)=Handle then
           exit(Frame.EdSecond);
     end;
+    //editor can be a control in a dlg_proc() dialog, not only in a ui-tab
+    Result:= PyHelper_EditorFromDlgControl(Handle);
+    if Assigned(Result) then exit;
     MsgLogConsole('ERROR: Editor() gets invalid handle, plugin must not use handles of closed tabs');
     exit;
   end;
