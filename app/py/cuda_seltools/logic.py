@@ -41,9 +41,12 @@ def b64_decode(text):
         except Exception:
             raise ValueError('Base64 内容无效')
     try:
-        return data.decode('utf-8')
+        text = data.decode('utf-8')
     except UnicodeDecodeError:
         raise ValueError('Base64 结果不是有效的 UTF-8 文本')
+    if '\x00' in text:
+        raise ValueError('Base64 结果包含 NUL 字符')
+    return text
 
 
 def url_encode(text):
@@ -121,10 +124,6 @@ def transform(kind, text):
         return url_encode(text)
     if kind == 'url_decode':
         return url_decode(text)
-    if kind == 'upper':
-        return text.upper()
-    if kind == 'lower':
-        return text.lower()
     if kind == 'eval':
         return eval_expr(text)
     raise ValueError('未知的转换类型')

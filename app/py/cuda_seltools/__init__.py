@@ -178,6 +178,10 @@ class Command:
             )
 
     def _run(self, kind):
+        if ed.get_sel_mode() == SEL_COLUMN:
+            msg_status(_('不支持列选择模式，请改用普通选择'))
+            return
+
         one = self._single_selection()
         if one is not None:
             self._run_single(kind, one)
@@ -269,12 +273,6 @@ class Command:
 
     def url_decode(self):
         self._run('url_decode')
-
-    def uppercase(self):
-        self._run('upper')
-
-    def lowercase(self):
-        self._run('lower')
 
     def evaluate(self):
         self._run('eval')
