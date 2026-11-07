@@ -200,6 +200,7 @@ begin
         UpdateTreeFilter;
         UpdateTreeSelection(Ed);
         DoCodetree_UpdateVersion(Ed);
+        DoCodetree_SetFillSignature(F, Ed);
       end;
     end;
 
@@ -426,7 +427,8 @@ begin
   if Ed.AdapterForHilite is TATLiteLexer then
   begin
     if Assigned(Frame) and (Ed=Frame.EdCurrent) then
-      UpdateTree(true)
+      //use the same quiet-window as other tree-fill sources
+      UpdateTreeByTimer
     else
       DoCodetree_InvalidateCachedTree(Ed);
   end;
