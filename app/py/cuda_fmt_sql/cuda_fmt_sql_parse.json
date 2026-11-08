@@ -1,0 +1,10 @@
+{                        
+  "keyword_case": "upper", // null, "upper", "lower", "capitalize"
+  "identifier_case": null, // null, "upper", "lower", "capitalize"
+  "strip_comments": false, // true, false
+  "strip_whitespace": false, // true, false
+  "indent_tabs": false, // true, false
+  "indent_width": 2, // int>0
+  "reindent": true, // true, false
+  "right_margin": null // null, int>=10
+}

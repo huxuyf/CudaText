@@ -1,0 +1,106 @@
+[info]
+title=CudaFormatter
+desc=Framework to use code formatters as 2nd-level plugins
+type=cudatext-plugin
+subdir=cuda_fmt
+homepage=https://github.com/CudaText-addons/cuda_fmt
+
+[item1]
+section=commands
+caption=CudaFormatter\Formatter (menu)
+method=format
+
+[item10]
+section=commands
+caption=CudaFormatter\Formatter per-lexer: A
+method=format_a
+
+[item11]
+section=commands
+caption=CudaFormatter\Formatter per-lexer: B
+method=format_b
+
+[item12]
+section=commands
+caption=CudaFormatter\Formatter per-lexer: C
+method=format_c
+
+[item13]
+section=commands
+caption=CudaFormatter\Formatter per-lexer: D
+method=format_d
+
+[item19]
+section=commands
+caption=CudaFormatter\-
+method=_
+
+[item21]
+section=commands
+caption=CudaFormatter\Formatter cross-lexer: 1
+method=format_1
+
+[item22]
+section=commands
+caption=CudaFormatter\Formatter cross-lexer: 2
+method=format_2
+
+[item23]
+section=commands
+caption=CudaFormatter\Formatter cross-lexer: 3
+method=format_3
+
+[item24]
+section=commands
+caption=CudaFormatter\Formatter cross-lexer: 4
+method=format_4
+
+[item28]
+section=commands
+caption=CudaFormatter\Minify to separate file
+method=minify
+
+[item29]
+section=commands
+caption=CudaFormatter\-
+method=_
+
+[item100]
+section=commands
+caption=CudaFormatter\Configure per-lexer labels...
+method=config_labels
+menu=op
+
+[item101]
+section=commands
+caption=CudaFormatter\Configure cross-lexer labels...
+method=config_labels_cross
+menu=op
+
+[item105]
+section=commands
+caption=CudaFormatter\Configure on_save...
+method=config_label_save
+menu=op
+
+[item200]
+section=commands
+caption=CudaFormatter\Configure formatter...
+method=config_global
+menu=op
+
+[item201]
+section=commands
+caption=CudaFormatter\Configure formatter (local)...
+method=config_local
+menu=op
+
+[item202]
+section=commands
+caption=CudaFormatter\格式化器帮助...
+method=config_help
+menu=op
+
+[item400]
+section=events
+events=on_save_pre

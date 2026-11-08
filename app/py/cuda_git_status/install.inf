@@ -1,0 +1,36 @@
+[info]
+title=Git 状态
+desc=状态栏显示分支，装订线显示相对 HEAD 的新增/修改行
+type=cudatext-plugin
+subdir=cuda_git_status
+api=1.0.482
+homepage=
+
+[item1]
+section=events
+events=on_open,on_save,on_focus
+
+[item2]
+section=commands
+caption=Git\刷新差异标记
+method=refresh
+
+[item3]
+section=commands
+caption=Git\清除差异标记
+method=clear
+
+[item4]
+section=commands
+caption=Git\显示仓库与分支信息
+method=show_info
+
+[item5]
+section=commands
+caption=Git\切换自动刷新
+method=toggle_auto
+
+[item6]
+section=commands
+caption=Git\移除状态栏 Git 单元格
+method=remove_cell

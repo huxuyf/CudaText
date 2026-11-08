@@ -1,0 +1,12 @@
+[info]
+title=Formatter for SQL, using sqlparse
+desc=Formats SQL code, using sqlparse library
+type=cudatext-plugin
+subdir=cuda_fmt_sql_parse
+homepage=https://github.com/CudaText-addons/cuda_fmt_sql_parse
+
+[fmt1]
+caption=SQL Parse
+method=do_format
+lexers=regex:SQL.*
+config=cuda_fmt_sql_parse.json

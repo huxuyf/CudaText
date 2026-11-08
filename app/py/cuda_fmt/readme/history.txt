@@ -1,0 +1,63 @@
+2025.03.07
++ add: handle formatter's exception (e.g. visible in the Black formatter on wrongly indented source code)
+
+2026.02.23
+- fix: avoid deprecated API ed.lock
+
+2026.01.03 (work by @Hanatarou)
++ add: added menu item "CudaFormatter / Formatter help...", which can call the method specified by key [info] help=method_name
++ add: added ability to set install.inf keys "config_global"/"config_local" both in [info] section and in [fmtX] sections
+
+2025.12.30
++ add: formatting now tries to keep line-states (code from @Hanatarou)
+
+2024.04.08
++ add: added some API in fmtconfig module
+
+2022.04.03
++ add: command "Minify to separate file". It needs the line "minifier=1" in the [fmtX] section of formatter's install.inf.
+
+2021.11.16
++ add: consider selection inside sub-lexer block (thanks @smartmic)
+
+2021.08.01
++ add: reworked config, now we have per-lexer labels (A B C D) + cross-lexer labels (1 2 3 4)
+
+2021.06.30
++ add: editor is locked during formatting
+
+2021.06.17
+- fix: avoid deprecated API
+
+2021.01.31
++ add: support translations (from Markus)
+
+2020.05.15
++ add: after formatting some block, move caret to begin of block 
+
+2019.09.03
++ add: on CudaText 1.86+, avoid loosing Undo information on formatting entire file
+
+2019.07.14
+- fix: wrong local config filename was used for passive editors
+
+2019.07.12
++ add: support auto formatting on file save (even for "Save all" with saving passive tabs)
++ add: command "Configure on_save" to choose which formatters are active on file save
+
+2019.07.11
++ add: support multi-selections
++ add: specially handle EOL at end of selected text, gives better result with Markdown Table Format
++ add: check if selection is already formatted
+
+2019.07.09
++ add: can specify lexers via RegEx (example: formatters for JS)
+* refactored
+
+2019.07.08
++ added commands to run formatter by label A, B, C, D
++ added command to configure labels
++ added items to Options / Settings-plugins
+
+2019.07.07
+initial version
