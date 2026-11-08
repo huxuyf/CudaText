@@ -157,14 +157,14 @@ begin
     s_os:= ini.ReadString('info', 'os', '');
     if not CheckValue_OS(s_os) then
     begin
-      MsgLogConsole(Format('NOTE: Plugin "%s" is not supported on this OS', [s_module]));
+      MsgLogConsole(Format('注意：此操作系统不支持插件 "%s"', [s_module]));
       exit;
     end;
 
     s_api:= ini.ReadString('info', 'api', '');
     if not CheckValue_ReqAPI(s_api) then
     begin
-      MsgLogConsole(Format('NOTE: Plugin "%s" was ignored, it requires API "%s", but current API is "%s"', [s_module, s_api, cAppApiVersion]));
+      MsgLogConsole(Format('注意：插件 "%s" 已被忽略，它需要 API "%s"，但当前 API 为 "%s"', [s_module, s_api, cAppApiVersion]));
       exit;
     end;
 
@@ -172,7 +172,7 @@ begin
 
     if sections.IndexOf('info')=-1 then
     begin
-      MsgLogConsole(Format('NOTE: Plugin "%s" has no section [info] in install.inf', [s_module]));
+      MsgLogConsole(Format('注意：插件 "%s" 的 install.inf 中没有 [info] 节', [s_module]));
       exit;
     end;
 
@@ -180,7 +180,7 @@ begin
     //commented, to allow cuda_lint_xxx, cuda_fmt_xxx and other specials in future
     if sections.Count<=1 then
     begin
-      MsgLogConsole(Format('NOTE: Plugin "%s" has no data sections in install.inf', [s_module]));
+      MsgLogConsole(Format('注意：插件 "%s" 的 install.inf 中没有数据节', [s_module]));
       exit;
     end;
     }
@@ -275,7 +275,7 @@ begin
               CmdItem.ItemInMenu:= s_inmenu;
 
               if AppCommandList.Count>(cmdLastPluginCommand-cmdFirstPluginCommand) then
-                MsgLogConsole('ERROR: Too many plugin commands: '+IntToStr(AppCommandList.Count));
+                MsgLogConsole('错误：插件命令过多：'+IntToStr(AppCommandList.Count));
               AppCommandList.Add(CmdItem);
             end;
           'events':

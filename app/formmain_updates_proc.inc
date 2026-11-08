@@ -1514,7 +1514,7 @@ begin
       'ro':      begin NTag:= StatusbarTag_ReadOnly; bHotTrack:= false; end;
       else
         begin
-          MsgLogConsole(Format('ERROR: Unknown cell in the option "ui_statusbar_panels": "%s"', [SItem]));
+          MsgLogConsole(Format('错误：选项 "ui_statusbar_panels" 中存在未知单元格："%s"', [SItem]));
           Continue;
         end;
     end;
@@ -1606,7 +1606,7 @@ begin
 
   if not SParseIconFilenameWithWidthHeight(UiOps.SidebarTheme, W, H) then
   begin
-    MsgLogConsole('ERROR: Sidebar theme name doesn''t contain sizes: '+UiOps.SidebarTheme);
+    MsgLogConsole('错误：侧边栏主题名称不包含尺寸：'+UiOps.SidebarTheme);
     UiOps.SidebarTheme:= cDefaultTheme;
     if not SParseIconFilenameWithWidthHeight(UiOps.SidebarTheme, W, H) then exit;
   end;
@@ -1640,7 +1640,7 @@ begin
   if UiOps.LogConsoleDetailedStartupTime then
   begin
     NTick:= GetTickCount64-NTick;
-    MsgLogConsole(Format('Loaded sidebar icons: %dms', [NTick]));
+    MsgLogConsole(Format('已加载侧边栏图标：%dms', [NTick]));
   end;
 end;
 
@@ -1655,7 +1655,7 @@ var
 begin
   if not SParseIconFilenameWithWidthHeight(UiOps.TreeTheme, W, H) then
   begin
-    MsgLogConsole('ERROR: Code-tree theme name doesn''t contain sizes: '+UiOps.TreeTheme);
+    MsgLogConsole('错误：代码树主题名称不包含尺寸：'+UiOps.TreeTheme);
     UiOps.TreeTheme:= cDefaultTheme;
     if not SParseIconFilenameWithWidthHeight(UiOps.TreeTheme, W, H) then exit;
   end;
@@ -1699,7 +1699,7 @@ begin
 
   if not SParseIconFilenameWithWidthHeight(UiOps.ToolBarTheme, W, H) then
   begin
-    MsgLogConsole('ERROR: Toolbar theme name doesn''t contain sizes: '+UiOps.ToolBarTheme);
+    MsgLogConsole('错误：工具栏主题名称不包含尺寸：'+UiOps.ToolBarTheme);
     UiOps.ToolBarTheme:= cDefaultTheme;
     if not SParseIconFilenameWithWidthHeight(UiOps.ToolBarTheme, W, H) then exit;
   end;
@@ -1742,7 +1742,7 @@ begin
   if UiOps.LogConsoleDetailedStartupTime then
   begin
     NTick:= GetTickCount64-NTick;
-    MsgLogConsole(Format('Loaded toolbar icons: %dms', [NTick]));
+    MsgLogConsole(Format('已加载工具栏图标：%dms', [NTick]));
   end;
 end;
 

@@ -33,14 +33,14 @@ begin
   if (Length(S)>=3) and (S[1]='<') and (S[Length(S)]='>') and IsCharWordA(S[2]) then
     exit;
 
-  S:= 'NOTE: Duplicate code-tree caption, cannot restore its folding: ';
+  S:= '注意：代码树标题重复，无法恢复其折叠状态：';
   Obj:= TObject(ANode.Data);
   if Obj is TATRangeInCodeTree then
   begin
     NLine:= (Obj as TATRangeInCodeTree).PosBegin.Y;
-    S+= Format('file "%s", line %d, ', [ExtractFileName(AFileName), NLine+1]);
+    S+= Format('文件 "%s"，第 %d 行，', [ExtractFileName(AFileName), NLine+1]);
   end;
-  S+= Format('node "%s"', [ANode.Text]);
+  S+= Format('节点 "%s"', [ANode.Text]);
   MsgLogConsole(S);
 end;
 
@@ -160,7 +160,7 @@ begin
     //editor can be a control in a dlg_proc() dialog, not only in a ui-tab
     Result:= PyHelper_EditorFromDlgControl(Handle);
     if Assigned(Result) then exit;
-    MsgLogConsole('ERROR: Editor() gets invalid handle, plugin must not use handles of closed tabs');
+    MsgLogConsole('错误：Editor() 收到无效句柄，插件不得使用已关闭标签页的句柄');
     exit;
   end;
 
@@ -178,7 +178,7 @@ begin
             Result:= Frame.EdFirst;
           end
           else
-            MsgLogConsole('ERROR: API "ed" is Nil, and no frames; report to author what you are doing');
+            MsgLogConsole('错误：API "ed" 为 Nil 且没有编辑器框架；请向作者报告你的操作');
         end;
       end;
 
@@ -487,7 +487,7 @@ begin
       exit(TMenuItem(Obj))
     else
     begin
-      MsgLogConsole(Format('ERROR: %s() gets bad handle, of type %s', [ApiFunctionName, Obj.ClassName]));
+      MsgLogConsole(Format('错误：%s() 收到无效句柄，类型为 %s', [ApiFunctionName, Obj.ClassName]));
       exit;
     end;
   end;
@@ -1289,7 +1289,7 @@ begin
       Ed:= PyHelper_EditorFromHandle(H);
       if Ed=nil then
       begin
-        MsgLogConsole('ERROR: API "ed" is Nil, report to author what are you doing please');
+        MsgLogConsole('错误：API "ed" 为 Nil，请向作者报告你的操作');
         exit(PyList_New(0));
       end;
       NLen:= Ed.Carets.Count;
@@ -3341,7 +3341,7 @@ begin
   STime:= FormatDateTime('yyyy-mm-dd_hh-mm-ss', Now);
   SLog:= Format(GetTempDir+'dlg_'+STime+'_%dx%d.txt', [ASizeX, ASizeY]);
 
-  MsgLogConsole('Dialog logged: '+SLog);
+  MsgLogConsole('对话框已记录：'+SLog);
 
   with TFileStream.Create(SLog, fmCreate) do
   try
@@ -7267,7 +7267,7 @@ begin
       Obj:= TObject(PtrInt(IdList));
       if not (Obj is TATListbox) then
       begin
-        MsgLogConsole('ERROR: listbox_proc() gets bad handle, of type '+Obj.ClassName);
+        MsgLogConsole('错误：listbox_proc() 收到无效句柄，类型为 '+Obj.ClassName);
         exit(ReturnNone);
       end;
       Listbox:= TATListbox(Obj);
@@ -7563,7 +7563,7 @@ begin
             Obj:= TObject(PtrInt(StrToInt64Def(StrText, 0)));
             if not (Obj is TImageList) then
             begin
-              MsgLogConsole('ERROR: listbox_proc(LISTBOX_SET_HEADER_IMAGELIST) gets bad handle, of type '+Obj.ClassName);
+              MsgLogConsole('错误：listbox_proc(LISTBOX_SET_HEADER_IMAGELIST) 收到无效句柄，类型为 '+Obj.ClassName);
               exit(ReturnNone);
             end;
             Listbox.HeaderImages:= TImageList(Obj);
@@ -7617,7 +7617,7 @@ begin
       Obj:= TObject(PtrInt(IdBtn));
       if not (Obj is TATButton) then
       begin
-        MsgLogConsole('ERROR: button_proc() gets bad handle, of type '+Obj.ClassName);
+        MsgLogConsole('错误：button_proc() 收到无效句柄，类型为 '+Obj.ClassName);
         exit(ReturnNone);
       end;
       Btn:= TATButton(Obj);
@@ -7745,7 +7745,7 @@ begin
               if MnuItem.Owner is TPopupMenu then
                 Btn.PopupDropdown:= MnuItem.Owner as TPopupMenu
               else
-                MsgLogConsole('ERROR: button_proc(..., BTN_SET_MENU, ...) gets bad menuitem owner, of type '+MnuItem.Owner.ClassName);
+                MsgLogConsole('错误：button_proc(..., BTN_SET_MENU, ...) 收到无效的菜单项所有者，类型为 '+MnuItem.Owner.ClassName);
             end;
             Result:= ReturnNone;
           end;
@@ -7944,7 +7944,7 @@ begin
           Obj2:= TObject(PtrInt(Num64));
           if not (Obj2 is TComponent) then
           begin
-            MsgLogConsole('ERROR: imagelist_proc(IMAGELIST_CREATE) gets bad owner handle, of type '+Obj2.ClassName);
+            MsgLogConsole('错误：imagelist_proc(IMAGELIST_CREATE) 收到无效的所有者句柄，类型为 '+Obj2.ClassName);
             exit(ReturnNone);
           end;
           Obj:= TComponent(Obj2);
@@ -7959,7 +7959,7 @@ begin
       Obj2:= TObject(PtrInt(IdList));
       if not (Obj2 is TImageList) then
       begin
-        MsgLogConsole('ERROR: imagelist_proc() gets bad handle, of type '+Obj2.ClassName);
+        MsgLogConsole('错误：imagelist_proc() 收到无效句柄，类型为 '+Obj2.ClassName);
         exit(ReturnNone);
       end;
       List:= TImageList(Obj2);
@@ -8015,7 +8015,7 @@ begin
             Canvas:= PyHelper_CanvasId_to_CanvasObject(Num64);
             if Canvas=nil then
             begin
-              MsgLogConsole('ERROR: imagelist_proc(...IMAGELIST_PAINT...) gets bad canvas handle');
+              MsgLogConsole('错误：imagelist_proc(...IMAGELIST_PAINT...) 收到无效的画布句柄');
               exit(ReturnNone);
             end;
             Sep.GetItemInt(NX, 0);
@@ -8063,7 +8063,7 @@ begin
       Obj:= TObject(PtrInt(IdTree));
       if not (Obj is TAppTreeContainer) then
       begin
-        MsgLogConsole('ERROR: tree_proc() gets bad handle of tree, of type '+Obj.ClassName);
+        MsgLogConsole('错误：tree_proc() 收到无效的代码树句柄，类型为 '+Obj.ClassName);
         exit(ReturnNone);
       end;
       TreeContainer:= TAppTreeContainer(Obj);
@@ -8072,7 +8072,7 @@ begin
       Obj:= TObject(PtrInt(IdItem));
       if Assigned(Obj) and not (Obj is TTreeNode) then
       begin
-        MsgLogConsole('ERROR: tree_proc() gets bad handle of tree-node, of type '+Obj.ClassName);
+        MsgLogConsole('错误：tree_proc() 收到无效的代码树节点句柄，类型为 '+Obj.ClassName);
         exit(ReturnNone);
       end;
       TreeNode:= TTreeNode(Obj);
@@ -8398,7 +8398,7 @@ begin
             Obj:= TObject(PtrInt(IdImgList));
             if Assigned(Obj) and not (Obj is TImageList) then
             begin
-              MsgLogConsole('ERROR: tree_proc(...TREE_SET_IMAGELIST...) gets bad handle of image-list, of type '+Obj.ClassName);
+              MsgLogConsole('错误：tree_proc(...TREE_SET_IMAGELIST...) 收到无效的图像列表句柄，类型为 '+Obj.ClassName);
               exit(ReturnNone);
             end;
             if bStandardCodeTree then
@@ -8723,7 +8723,7 @@ begin
         Obj:= TObject(PtrInt(IdBitmap));
         if not (Obj is TBitmap) then
         begin
-          MsgLogConsole('ERROR: bitmap_proc() gets bad handle, of type '+Obj.ClassName);
+          MsgLogConsole('错误：bitmap_proc() 收到无效句柄，类型为 '+Obj.ClassName);
           Result:= ReturnNone;
           exit;
         end;
@@ -8732,7 +8732,7 @@ begin
 
       if (IdAction<>BITMAP_CREATE) and (Bmp=nil) then
       begin
-        MsgLogConsole('ERROR: bitmap_proc() gets zero bitmap handle');
+        MsgLogConsole('错误：bitmap_proc() 收到零位图句柄');
         Result:= ReturnNone;
         exit;
       end;
@@ -8740,7 +8740,7 @@ begin
       if (IdAction=BITMAP_CREATE) or (IdAction=BITMAP_SET_SIZE) then
         if (NParam1<=0) or (NParam2<=0) then
         begin
-          MsgLogConsole(Format('ERROR: bitmap_proc() gets bad w=%d, h=%d', [NParam1, NParam2]));
+          MsgLogConsole(Format('错误：bitmap_proc() 收到无效的 w=%d, h=%d', [NParam1, NParam2]));
           Result:= ReturnNone;
           exit;
         end;
@@ -8807,7 +8807,7 @@ begin
       C:= PyHelper_CanvasId_to_CanvasObject(IdCanvas);
       if C=nil then
       begin
-        MsgLogConsole('ERROR: canvas_proc() gets bad canvas handle');
+        MsgLogConsole('错误：canvas_proc() 收到无效的画布句柄');
         exit(ReturnNone);
       end;
       StrText:= string(PtrText);
@@ -8895,12 +8895,12 @@ begin
           begin
             Num64:= NP1;
             if Num64=0 then
-              MsgLogConsole('ERROR: canvas_proc(...CANVAS_BITMAP...) gets bad or zero bitmap handle')
+              MsgLogConsole('错误：canvas_proc(...CANVAS_BITMAP...) 收到无效或为零的位图句柄')
             else
             begin
               Obj:= TObject(PtrInt(Num64));
               if not (Obj is TBitmap) then
-                MsgLogConsole('ERROR: canvas_proc(...CANVAS_BITMAP...) gets bad bitmap handle, of type '+Obj.ClassName)
+                MsgLogConsole('错误：canvas_proc(...CANVAS_BITMAP...) 收到无效的位图句柄，类型为 '+Obj.ClassName)
               else
               begin
                 if IdAction=CANVAS_BITMAP then
@@ -8917,12 +8917,12 @@ begin
           begin
             Num64:= NP1;
             if Num64=0 then
-              MsgLogConsole('ERROR: canvas_proc(...CANVAS_IMAGE...) gets bad or zero image handle')
+              MsgLogConsole('错误：canvas_proc(...CANVAS_IMAGE...) 收到无效或为零的图像句柄')
             else
             begin
               Obj:= TObject(PtrInt(Num64));
               if not (Obj is TImage) then
-                MsgLogConsole('ERROR: canvas_proc(...CANVAS_IMAGE...) gets bad image handle, of type '+Obj.ClassName)
+                MsgLogConsole('错误：canvas_proc(...CANVAS_IMAGE...) 收到无效的图像句柄，类型为 '+Obj.ClassName)
               else
               begin
                 if IdAction=CANVAS_IMAGE then
@@ -8946,7 +8946,7 @@ begin
             if Length(TempPntArray)>2 then
               C.Polygon(TempPntArray)
             else
-              MsgLogConsole('ERROR: canvas_proc(...CANVAS_POLYGON...) gets bad coords: '+StrText);
+              MsgLogConsole('错误：canvas_proc(...CANVAS_POLYGON...) 收到无效的坐标：'+StrText);
             Result:= ReturnNone;
           end;
 
@@ -8954,12 +8954,12 @@ begin
           begin
             Num64:= NP1;
             if Num64=0 then
-              MsgLogConsole('ERROR: canvas_proc(...CANVAS_COPY_RECT...) gets bad or zero source-canvas handle')
+              MsgLogConsole('错误：canvas_proc(...CANVAS_COPY_RECT...) 收到无效或为零的源画布句柄')
             else
             begin
               Obj:= TObject(PtrInt(Num64));
               if not (Obj is TCanvas) then
-                MsgLogConsole('ERROR: canvas_proc(...CANVAS_COPY_RECT...) gets bad source-canvas handle, of type '+Obj.ClassName)
+                MsgLogConsole('错误：canvas_proc(...CANVAS_COPY_RECT...) 收到无效的源画布句柄，类型为 '+Obj.ClassName)
               else
               begin
                 Sep.Init(StrText, ',');
@@ -8971,7 +8971,7 @@ begin
                    (TempRect.Top=MaxInt) or
                    (TempRect.Right=MaxInt) or
                    (TempRect.Bottom=MaxInt) then
-                  MsgLogConsole('ERROR: canvas_proc(...CANVAS_COPY_RECT...) gets bad source-rect: '+StrText)
+                  MsgLogConsole('错误：canvas_proc(...CANVAS_COPY_RECT...) 收到无效的源矩形：'+StrText)
                 else
                   C.CopyRect(
                     Rect(NX, NY, NX2, NY2),
@@ -8985,7 +8985,7 @@ begin
         CANVAS_GRADIENT:
           begin
             if not ((NStyle>=0) and (NStyle<=Ord(High(TGradientDirection)))) then
-              MsgLogConsole('ERROR: canvas_proc(...CANVAS_GRADIENT...) gets bad direction')
+              MsgLogConsole('错误：canvas_proc(...CANVAS_GRADIENT...) 收到无效的方向')
             else
               C.GradientFill(
                 Rect(NX, NY, NX2, NY2),
@@ -9048,7 +9048,7 @@ begin
           Obj2:= TObject(PtrInt(Num64));
           if not (Obj2 is TComponent) then
           begin
-            MsgLogConsole('ERROR: image_proc(...IMAGE_CREATE...) gets bad owner handle, of type '+Obj2.ClassName);
+            MsgLogConsole('错误：image_proc(...IMAGE_CREATE...) 收到无效的所有者句柄，类型为 '+Obj2.ClassName);
             exit(ReturnNone);
           end;
           Obj:= TComponent(Obj2);
@@ -9064,7 +9064,7 @@ begin
       Obj2:= TObject(PtrInt(IdImage));
       if not (Obj2 is TImage) then
       begin
-        MsgLogConsole('ERROR: image_proc() gets bad image handle, of type '+Obj2.ClassName);
+        MsgLogConsole('错误：image_proc() 收到无效的图像句柄，类型为 '+Obj2.ClassName);
         exit(ReturnNone);
       end;
       Image:= TImage(Obj2);
@@ -9110,7 +9110,7 @@ begin
             Canvas:= PyHelper_CanvasId_to_CanvasObject(Num64);
             if Canvas=nil then
             begin
-              MsgLogConsole('ERROR: image_proc(...IMAGE_PAINT...) gets bad canvas handle');
+              MsgLogConsole('错误：image_proc(...IMAGE_PAINT...) 收到无效的画布句柄');
               exit(ReturnNone);
             end;
             Sep.GetItemInt(NX, 0);
@@ -9126,7 +9126,7 @@ begin
             Canvas:= PyHelper_CanvasId_to_CanvasObject(Num64);
             if Canvas=nil then
             begin
-              MsgLogConsole('ERROR: image_proc(...IMAGE_PAINT_SIZED...) gets bad canvas handle');
+              MsgLogConsole('错误：image_proc(...IMAGE_PAINT_SIZED...) 收到无效的画布句柄');
               exit(ReturnNone);
             end;
             Sep.GetItemInt(NX, 0);
@@ -9647,7 +9647,7 @@ begin
             Obj:= TObject(PtrInt(NValue));
             if not (Obj is TAppTreeContainer) then
             begin
-              MsgLogConsole('ERROR: Editor.action(EDACTION_CODETREE_FILL) gets bad handle of tree, of type '+Obj.ClassName);
+              MsgLogConsole('错误：Editor.action(EDACTION_CODETREE_FILL) 收到无效的代码树句柄，类型为 '+Obj.ClassName);
               exit(ReturnFalse);
             end;
             TreeContainer:= TAppTreeContainer(Obj);
@@ -10774,7 +10774,7 @@ begin
         if not (Obj is TFormDummy) then
         begin
           if Assigned(Obj) then
-            MsgLogConsole('ERROR: dlg_proc() gets bad handle, of type '+Obj.ClassName);
+            MsgLogConsole('错误：dlg_proc() 收到无效句柄，类型为 '+Obj.ClassName);
           exit(ReturnNone);
         end;
         Form:= TFormDummy(Obj);
@@ -10783,7 +10783,7 @@ begin
       else
       if NAction<>DLG_CREATE then
         begin
-          MsgLogConsole('ERROR: dlg_proc() gets zero handle');
+          MsgLogConsole('错误：dlg_proc() 收到零句柄');
           exit(ReturnNone);
         end;
 
@@ -10829,7 +10829,7 @@ begin
               Form.ShowInTaskBar:= Form.ShowInTaskbar_Pending; //after xxShow, for #4456
             end
             else
-              MsgLogConsole('ERROR: dlg_proc(...DLG_SHOW_MODAL...) was called for docked form');
+              MsgLogConsole('错误：对停靠窗体调用了 dlg_proc(...DLG_SHOW_MODAL...)');
             Result:= ReturnNone;
           end;
 
@@ -10963,7 +10963,7 @@ begin
               Obj:= TObject(PtrInt(NIndex));
               if not (Obj is TForm) and not (Obj is TFrame) then
               begin
-                MsgLogConsole('ERROR: dlg_proc(...DLG_DOCK...) gets bad form handle, of type '+Obj.ClassName);
+                MsgLogConsole('错误：dlg_proc(...DLG_DOCK...) 收到无效的窗体句柄，类型为 '+Obj.ClassName);
                 exit(ReturnNone);
               end;
               Form.Parent:= TForm(Obj);
@@ -11079,14 +11079,14 @@ begin
 
       if (IdFinder=0) and (IdAction<>FINDER_CREATE) then
       begin
-        MsgLogConsole('ERROR: finder_proc() gets handle==0');
+        MsgLogConsole('错误：finder_proc() 收到句柄==0');
         exit(ReturnNone);
       end;
 
       Obj:= TObject(PtrInt(IdFinder));
       if (IdAction<>FINDER_CREATE) and not (Obj is TATEditorFinder) then
       begin
-        MsgLogConsole('ERROR: finder_proc() gets bad handle, of type '+Obj.ClassName);
+        MsgLogConsole('错误：finder_proc() 收到无效句柄，类型为 '+Obj.ClassName);
         exit(ReturnNone);
       end;
       Finder:= TATEditorFinder(Obj);

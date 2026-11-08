@@ -73,27 +73,27 @@ const
   msgPythonListError = 'Cannot create new list object'; //no need i18n
   msgCallbackBad = 'NOTE: Bad API callback, report to plugin author: %s'; //no i18n
   msgApiDeprecated = 'NOTE: Deprecated API usage: %s'; //no i18n
-  msgErrorInTheme = 'NOTE: Theme "%s" misses item "%s"';
-  msgRescannedAllPlugins = 'Rescanned all plugins';
-  msgWelcomeTabTitle = 'Welcome';
-  msgSavedPythonLibOption = 'Saved the option "pylib'+cOptionSystemSuffix+'". Restart CudaText to apply it.';
-  msgSearchingInDir = 'Searching:';
-  msgErrorLowDiskSpaceMb = 'Free disk space is less than %d Mb. Try to free additional space, then press Retry.';
-  msgErrorNullBytesInFile = 'Config file is broken, because its leading bytes are NULLs:'#10'%s'#10'Press OK to delete it.';
+  msgErrorInTheme = '注意：主题 “%s” 缺少条目 “%s”';
+  msgRescannedAllPlugins = '已重新扫描所有插件';
+  msgWelcomeTabTitle = '欢迎';
+  msgSavedPythonLibOption = '已保存选项 "pylib'+cOptionSystemSuffix+'"。重启 CudaText 后生效。';
+  msgSearchingInDir = '正在搜索：';
+  msgErrorLowDiskSpaceMb = '磁盘可用空间小于 %d Mb。请释放一些空间，然后点击“重试”。';
+  msgErrorNullBytesInFile = '配置文件已损坏，因为其前导字节为 NULL：'#10'%s'#10'按“确定”删除它。';
 
   msgCmdPaletteCaption: string = 'Command palette';
   msgCmdPaletteTextHint: string = 'F9 to set hotkey, @ to go to symbol, : to go to line, # for help';
-  msgCmdPalettePrefixHelp: string = '#p – plugins'+EOL+'#l – lexers'+EOL+'#f – opened files'+EOL+'#r – recent files'+EOL+'@name – go to symbol in current file'+EOL+':N – go to line N';
-  msgCmdPaletteGotoLine: string = 'Go to line: %s — press Enter';
-  msgCmdPaletteNoSymbols: string = 'No symbols found for the current file (no code-tree helper for this lexer).';
-  msgCmdPaletteNoMatch: string = 'No matching symbols.';
+  msgCmdPalettePrefixHelp: string = '#p – 插件'+EOL+'#l – 词法分析器'+EOL+'#f – 已打开的文件'+EOL+'#r – 最近的文件'+EOL+'@name – 在当前文件中转到符号'+EOL+':N – 转到第 N 行';
+  msgCmdPaletteGotoLine: string = '转到第 %s 行 — 按 Enter';
+  msgCmdPaletteNoSymbols: string = '当前文件未找到符号（此词法分析器没有代码树辅助程序）。';
+  msgCmdPaletteNoMatch: string = '没有匹配的符号。';
 
-  msgErrorPluginIgnored = 'NOTE: Plugin %s is in ignore-list, please remove it';
-  msgErrorTooManyFileTabs = 'NOTE: Too many editor-tabs are opened, cannot add tab';
-  msgCannotFindLexers = 'NOTE: Cannot find lexers: %s';
-  msgCannotFindData = 'ERROR: Cannot find data: %s';
-  msgCannotFindSessionFile = 'NOTE: File from session not found: %s';
-  msgBadLexerName = 'ERROR: Wrong lexer name in "newdoc_lexer": "%s"';
+  msgErrorPluginIgnored = '注意：插件 %s 在忽略列表中，请将其移除';
+  msgErrorTooManyFileTabs = '注意：打开的编辑器标签过多，无法添加新标签';
+  msgCannotFindLexers = '注意：找不到词法分析器：%s';
+  msgCannotFindData = '错误：找不到数据：%s';
+  msgCannotFindSessionFile = '注意：会话中的文件未找到：%s';
+  msgBadLexerName = '错误："newdoc_lexer" 中的词法分析器名称不正确："%s"';
 
   msgTitle = 'CudaText'; //no i18n
   msgModifiedString: array[boolean] of string = ('', '*'); //no i18n
@@ -120,7 +120,7 @@ const
   msgUntitledTab: string = msgUntitledEnglish;
   msgAllFiles: string = 'All files';
   msgNoLexer: string = '(none)';
-  msgIgnoredCommandIfNotFocused: string = 'Ignoring the command, editor isn''t focused';
+  msgIgnoredCommandIfNotFocused: string = '忽略该命令：编辑器当前未获得焦点';
   msgOpenLink: string = 'Open %s';
 
   msgPanelMenu_Init = 'Menu';
@@ -154,7 +154,7 @@ const
   msgFinderHintFromCaret: string = 'from-caret';
   msgFinderHintSearchWrapped: string = 'edge-cross';
   msgFinderHintPresCase: string = 'pres-case';
-  msgFinderRegexMathes: string = 'RegEx matches';
+  msgFinderRegexMathes: string = '正则匹配数';
 
   msgButtonOk: string = 'OK';
   msgButtonCancel: string = 'Cancel';
@@ -183,44 +183,44 @@ const
   msgEndUnix = 'LF';
   msgEndMac = 'CR';
 
-  msgPythonFindCaption: string = 'Find Python library';
-  msgPythonFindCaptionLong = 'Python engine was not found; find it...';
-  msgPythonFindFromDir: string = 'Search for Python library in this folder and all its subfolders:';
-  msgCannotFindPython: string = 'Cannot find Python library';
+  msgPythonFindCaption: string = '查找 Python 库';
+  msgPythonFindCaptionLong = '未找到 Python 引擎；请手动查找...';
+  msgPythonFindFromDir: string = '在此文件夹及其所有子文件夹中搜索 Python 库：';
+  msgCannotFindPython: string = '找不到 Python 库';
 
-  msgCannotInitPythonDisabled: string = 'NOTE: Python engine is disabled';
-  msgCannotInitPython1: string = 'NOTE: No Python 3 engine found. Python plugins don''t work now. To fix this:';
+  msgCannotInitPythonDisabled: string = '注意：Python 引擎已被禁用';
+  msgCannotInitPython1: string = '注意：未找到 Python 3 引擎。Python 插件当前不可用。要解决此问题：';
   {$ifdef darwin}
-  msgCannotInitPython2: string = 'install Python 3.x from www.python.org, it should be found by CudaText then.';
+  msgCannotInitPython2: string = '请从 www.python.org 安装 Python 3.x，之后 CudaText 应能自动找到它。';
   msgCannotInitPython2b: string = '';
   {$else}
     {$ifdef windows}
-    msgCannotInitPython2: string = 'place near cudatext.exe: python3x.dll, python3x.zip, python3xdlls\*.pyd, MS VS Runtime.';
+    msgCannotInitPython2: string = '请将以下文件放到 cudatext.exe 旁边：python3x.dll、python3x.zip、python3xdlls\*.pyd、MS VS Runtime。';
     msgCannotInitPython2b: string = '';
     {$else}
-    msgCannotInitPython2: string = '* write "pylib'+cOptionSystemSuffix+
-                                   '" to user.json. Read about "pylib" in "Options / Settings-default".';
-    msgCannotInitPython2b: string = '* or use the menu item "Plugins / '+msgPythonFindCaptionLong+'"';
+    msgCannotInitPython2: string = '* 在 user.json 中写入 "pylib'+cOptionSystemSuffix+
+                                   '"；关于 "pylib" 的说明见 "选项 / 默认设置"。';
+    msgCannotInitPython2b: string = '* 或使用菜单项 "插件 / '+msgPythonFindCaptionLong+'"';
     {$endif}
   {$endif}
 
   msgCannotOpenFile: string = 'Cannot open file:';
   msgCannotFindFile: string = 'Cannot find file:';
-  msgCannotFindFolder: string = 'Cannot find folder:';
-  msgCannotOpenNoReadPermissions: string = 'No read-permissions.';
-  msgCannotHandleSplittedTab: string = 'Cannot handle the splitted UI-tab';
-  msgCannotHandleUntitledTab: string = 'Cannot handle the untitled document';
+  msgCannotFindFolder: string = '找不到文件夹：';
+  msgCannotOpenNoReadPermissions: string = '没有读取权限。';
+  msgCannotHandleSplittedTab: string = '无法处理拆分后的 UI 标签页';
+  msgCannotHandleUntitledTab: string = '无法处理未命名文档';
   msgCannotFindLexerInLibrary: string = 'Cannot find lexer in library:';
   msgCannotFindLexerFile: string = 'Cannot find lexer:';
-  msgCannotLoadLexerFile: string = 'Cannot load lexer:';
+  msgCannotLoadLexerFile: string = '无法加载词法分析器：';
   msgCannotFindSublexerInLibrary: string = 'Cannot find linked sublexer:';
-  msgCannotFindWithoutCaret: string = 'Cannot find/replace without caret';
+  msgCannotFindWithoutCaret: string = '没有光标时无法查找/替换';
   msgCannotCreateDir: string = 'Cannot create folder:';
   msgCannotSaveFile: string = 'Cannot save file:';
   msgCannotSaveFileTempRemoved: string = 'The temporary copy was deleted; the text is still in the editor.';
   msgCannotSaveFileWithEnc: string = 'Could not save file because encoding "%s" cannot handle Unicode text. Program has saved file in UTF-8 encoding.';
   msgCannotSaveUserConf: string = 'Cannot save user config (read only?)';
-  msgCannotLoadFileInUTF8: string = 'Cannot load file in UTF-8, incorrect UTF-8 sequence';
+  msgCannotLoadFileInUTF8: string = '无法以 UTF-8 加载文件，UTF-8 序列不正确';
   msgCannotReadConfig: string = 'Cannot parse config:';
   msgCannotReloadUntitledTab: string = 'Cannot reopen untitled tab';
   msgCannotFindInMultiSel: string = 'Cannot find in multi-selections, yet';
@@ -228,14 +228,14 @@ const
   msgCannotFindInstallInfInZip: string = 'Cannot find install.inf in zip file';
   msgCannotFindBookmarks: string = 'Cannot find bookmarks in text';
   msgCannotHandleZip: string = 'Cannot handle zip file:';
-  msgCannotSetHotkey: string = 'Cannot set hotkey for this item';
+  msgCannotSetHotkey: string = '无法为此项设置快捷键';
   msgCannotInstallAddonApi: string = 'Cannot install add-on "%s", it needs newer application version (API %s)';
-  msgCannotInstallOnOS: string = 'Cannot install add-on "%s", it requires another OS (%s)';
-  msgCannotInstallReqPlugin: string = 'Cannot install "%s", it requires missing plugin(s): %s';
-  msgCannotInstallReqLexer: string = 'Cannot install "%s", it requires missing lexer(s): %s';
+  msgCannotInstallOnOS: string = '无法安装附加组件 "%s"：它需要其他操作系统（%s）';
+  msgCannotInstallReqPlugin: string = '无法安装 "%s"：缺少所需插件（%s）';
+  msgCannotInstallReqLexer: string = '无法安装 "%s"：缺少所需词法分析器（%s）';
   msgCannotAutocompleteMultiCarets: string = 'Cannot auto-complete with multi-carets';
   msgCannotSetWrap: string = 'Cannot set word-wrap mode. Line count %d is bigger than value of option "wrap_enabled_max_lines": %d.';
-  msgCannotSaveAndDontWantToRunPkExec = 'Cannot save file to write-protected folder. Run as root:';
+  msgCannotSaveAndDontWantToRunPkExec = '无法保存到受写保护的文件夹。请以 root 身份运行：';
 
   msgStatusbarTextTab: string = 'Tab';
   msgStatusbarTextSpaces: string = 'Spaces';
@@ -265,10 +265,10 @@ const
   msgStatusbarHintZoom: string = 'Zoom value';
   msgStatusbarHintReadOnly: string = 'Read-only mode';
 
-  msgStatusI18nEnglishAfterRestart: string = 'English translation will be applied after program restart';
-  msgStatusI18nPluginsMenuAfterRestart: string = 'Translations of Plugins menu and plugin''s dialogs will be applied after program restart';
+  msgStatusI18nEnglishAfterRestart: string = '重启程序后将应用英文翻译';
+  msgStatusI18nPluginsMenuAfterRestart: string = '重启程序后将应用插件菜单和插件对话框的翻译';
 
-  msgStatusSaveIsIgnored: string = '"Save" command ignored (file is not modified yet)';
+  msgStatusSaveIsIgnored: string = '已忽略“保存”命令（文件尚未修改）';
   msgStatusPluginHotkeyBusy: string = 'Note: hotkey [%s] is busy, skipped it';
   msgStatusSyntaxThemesOff: string = 'Syntax themes are turned off by option "ui_lexer_themes": false. So the following dialog will have no effect. To customize styles, use "Lexer properties" dialog.';
   msgStatusIncorrectInstallInfInZip: string = 'Incorrect install.inf in zip';
@@ -280,12 +280,12 @@ const
   msgStatusPackageCommand: string = 'command:';
   msgStatusPackageEvents: string = 'events:';
   msgStatusPackageLexer: string = 'lexer:';
-  msgStatusPackageLexerSettings: string = 'lexer settings:';
+  msgStatusPackageLexerSettings: string = '词法分析器设置：';
   msgStatusPackageAutoCompletion: string = 'static auto-completion:';
-  msgStatusPackageData: string = 'data:';
-  msgStatusPackageFormatter: string = 'formatter:';
-  msgStatusPackageLinter: string = 'linter:';
-  msgStatusPackagePackage: string = 'package:';
+  msgStatusPackageData: string = '数据：';
+  msgStatusPackageFormatter: string = '格式化程序：';
+  msgStatusPackageLinter: string = '代码检查工具：';
+  msgStatusPackagePackage: string = '包：';
   msgStatusPackageMissedLexerMap: string = 'lexer misses themes support (.cuda-lexmap file)';
   msgStatusInstalledNeedRestart: string = 'Package will take effect after program restart';
   msgStatusCommandOnlyForLexers: string = 'Command is only for lexer(s):';
@@ -317,7 +317,7 @@ const
   msgStatusChangedLinesCount: string = 'Changed %d lines';
   msgStatusFontSizeChanged: string = 'Font size changed to %d%%';
   msgStatusLexerDisabledBySize: string = 'Option "ui_max_size_lexer":%d disables lexer "%s" in this file (%d Mb)';
-  msgStatusDetectedBinaryChar: string = 'Detected binary char 0x%s in file "%s"';
+  msgStatusDetectedBinaryChar: string = '检测到二进制字符 0x%s，位于文件 “%s”';
   msgStatusUndoStopped: string = 'Undo was stopped at line %s, see option "max_line_len_for_undo": %d (click to hide)';
 
   msgConfirmHotkeyBusy: string = 'Hotkey is already occupied by command:'#10'%s'#10#10'Overwrite it?';
@@ -346,9 +346,9 @@ const
   msgConfirmReplaceGlobal: string = 'This will perform mass replace in all opened documents. This will also reset all selections. Continue?';
 
   msgCommandNeedsPython: string =
-    'This command requires Python engine.'
+    '此命令需要 Python 引擎。'
     {$ifndef windows}
-    +' Set proper value of "pylib'+cOptionSystemSuffix+'" in the user.json.'
+    +' 请在 user.json 中正确设置 "pylib'+cOptionSystemSuffix+'"。'
     {$endif}
     ;
 
@@ -389,11 +389,11 @@ const
       '          | |__| |_| | (_| | (_| || |  __/>  <| |_ '+EOL+
       '           \____\__,_|\__,_|\__,_||_|\___/_/\_\\__|'+EOL+
       '---------------------------------------------------------------'+EOL+
-      'This is the first CudaText start (file history.json not found).'+EOL+
-      'If Python engine is set up, you can install popular add-ons'+EOL+
-      'using menu item "Plugins / Multi Installer".'+EOL+
+      '这是 CudaText 的首次启动（未找到文件 history.json）。'+EOL+
+      '如果已配置 Python 引擎，你可以安装常用附加组件'+EOL+
+      '使用菜单项 "插件 / 多重安装器"。'+EOL+
       '---------------------------------------------------------------'+EOL+
-      'You can double-click this video tutorial link:'+EOL+
+      '你可以双击此视频教程链接：'+EOL+
       'https://www.youtube.com/watch?v=q8edzSd400Y'+EOL+
       '---------------------------------------------------------------'+EOL;
 

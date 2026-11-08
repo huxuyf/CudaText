@@ -369,7 +369,7 @@ begin
       s_caption:= ini.ReadString('info', 'title', '?');
       if not DirectoryExists(AppDir_Py+DirectorySeparator+'cuda_fmt') then
       begin
-        MsgBox(Format('Add-on "%s" requires CudaFormatter (in folder "py/cuda_fmt"), which is not installed', [s_caption]), MB_OK or MB_ICONERROR);
+        MsgBox(Format('附加组件 "%s" 需要 CudaFormatter（位于文件夹 "py/cuda_fmt"），但尚未安装', [s_caption]), MB_OK or MB_ICONERROR);
         exit;
       end;
     end;
@@ -379,7 +379,7 @@ begin
       s_caption:= ini.ReadString('info', 'title', '?');
       if not DirectoryExists(AppDir_Py+DirectorySeparator+'cuda_lint') then
       begin
-        MsgBox(Format('Add-on "%s" requires CudaLint (in folder "py/cuda_lint"), which is not installed', [s_caption]), MB_OK or MB_ICONERROR);
+        MsgBox(Format('附加组件 "%s" 需要 CudaLint（位于文件夹 "py/cuda_lint"），但尚未安装', [s_caption]), MB_OK or MB_ICONERROR);
         exit;
       end;
       AReport+= msgStatusPackageLinter+' '+s_caption+#10;
@@ -393,13 +393,13 @@ begin
       CreateDir(ADirTarget);
     if not DirectoryExists(ADirTarget) then
     begin
-      MsgLogConsole('ERROR: Cannot create folder on plugin installing: '+ADirTarget);
+      MsgLogConsole('错误：安装插件时无法创建文件夹：'+ADirTarget);
       exit;
     end;
 
     if not AppCopyDir(ExtractFileDir(AFilenameInf), ADirTarget) then
     begin
-      MsgLogConsole('ERROR: Cannot copy folder on plugin installing: '+ADirTarget);
+      MsgLogConsole('错误：安装插件时无法复制文件夹：'+ADirTarget);
       exit;
     end;
 

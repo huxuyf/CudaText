@@ -1798,7 +1798,7 @@ begin
 
   if AName='props' then
   begin
-    MsgLogConsole('NOTE: Deleted API is used: dlg_proc "props" for "'+Props.FTypeString+'"');
+    MsgLogConsole('注意：使用了已删除的 API：dlg_proc "props"，类型 "'+Props.FTypeString+'"');
     //DoControl_SetPropsFromString_Adv(C, AValue);
     exit;
   end;

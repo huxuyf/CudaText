@@ -54,9 +54,9 @@ begin
   if not DirectoryExists(dir) then
   begin
     if ForceDirectory(dir) then
-      MsgLogConsole('NOTE: Saving, file''s folder does not exist, recreated: '+dir)
+      MsgLogConsole('注意：保存时文件的文件夹不存在，已重新创建：'+dir)
     else
-      MsgLogConsole('ERROR: Saving, file''s folder does not exist, cannot recreate: '+dir);
+      MsgLogConsole('错误：保存时文件的文件夹不存在，且无法重新创建：'+dir);
 
     if not DirectoryExists(dir) then
     begin
@@ -80,7 +80,7 @@ begin
       fn_changed:= dir+DirectorySeparator+fn_name;
       Ed.SaveToFile(fn_changed);
       Ed.FileName:= fn_changed;
-      MsgLogConsole('NOTE: Bad chars '+BadWindowsChars+' in filename; filename changed to "'+fn_changed+'" from "'+fn_old_bad+'"');
+      MsgLogConsole('注意：文件名中的非法字符 '+BadWindowsChars+'；文件名已改为 "'+fn_changed+'"，原为 "'+fn_old_bad+'"');
     end
     else
       raise;

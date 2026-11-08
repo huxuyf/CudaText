@@ -811,7 +811,7 @@ begin
     except
       on E: Exception do
       begin
-        MsgBox('Incorrect JSON:'#10+E.Message, MB_OK+MB_ICONERROR);
+        MsgBox('JSON 格式不正确：'#10+E.Message, MB_OK+MB_ICONERROR);
         Result:= false;
       end;
     end;

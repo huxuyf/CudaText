@@ -398,7 +398,7 @@ begin
     end;
 
     if NCount>0 then
-      MsgLogConsole(Format('Theme "%s": auto-filled %d missing lexer style(s).',
+      MsgLogConsole(Format('主题 "%s"：已自动填充 %d 个缺失的词法分析器样式。',
         [ExtractFileName(AFileName), NCount]));
   finally
     cfg.Free;

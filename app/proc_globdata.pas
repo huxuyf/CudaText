@@ -1437,7 +1437,7 @@ end;
 procedure MsgBadConfig(const fn, msg: string);
 begin
   //MsgBox(msgCannotReadConfig+#10+fn+#10#10+msg, MB_OK+MB_ICONERROR);
-  MsgLogConsole('ERROR: '+msgCannotReadConfig+' '+ExtractFileName(fn)+'; '+msg);
+  MsgLogConsole('错误：'+msgCannotReadConfig+' '+ExtractFileName(fn)+'；'+msg);
 end;
 
 function InitPyLibraryPath: string;
@@ -1812,7 +1812,7 @@ begin
       else
       begin
         Writeln('CudaText cannot find pre-copy folder: '+OpDirPrecopy);
-        MsgLogConsole('ERROR: Cannot find pre-copy folder: '+OpDirPrecopy);
+        MsgLogConsole('错误：找不到预复制文件夹：'+OpDirPrecopy);
       end;
     end;
   {$endif}
@@ -1834,7 +1834,7 @@ begin
     else
     begin
       WriteLn('CudaText cannot find pre-copy folder: ', OpDirPrecopy);
-      MsgLogConsole('ERROR: Cannot find pre-copy folder: '+OpDirPrecopy);
+      MsgLogConsole('错误：找不到预复制文件夹：'+OpDirPrecopy);
     end;
   end;
   {$endif}
@@ -2504,7 +2504,7 @@ begin
     //for broken keys config which has incorrect int keys, issue #4590
     if TPluginHelper.CommandCategory(Result) in [TAppCommandCategory.Plugin, TAppCommandCategory.PluginSub] then
     begin
-      MsgLogConsole(Format('ERROR: Hotkeys config incorrect key "%d", in plugins range', [Result]));
+      MsgLogConsole(Format('错误：快捷键配置中的键 "%d" 不正确（位于插件范围）', [Result]));
       Result:= 0;
     end;
   end;
@@ -2854,7 +2854,7 @@ begin
 
     if List.Count>= cmdLastPluginSubCommand-cmdFirstPluginSubCommand-1 then
     begin
-      MsgLogConsole(Format('ERROR: Too many plugin sub-commands (update for "%s")', [SModule]));
+      MsgLogConsole(Format('错误：插件子命令过多（正在更新 "%s"）', [SModule]));
       exit;
     end;
 
@@ -3451,7 +3451,7 @@ begin
           //(old code with MatchesMaskList raised the same exception here)
           on E: Exception do
           begin
-            MsgLogConsole('ERROR: bad mask in option "detect": '+Item.Key);
+            MsgLogConsole('错误：选项 "detect" 中的掩码无效：'+Item.Key);
             Item.MaskBad:= true;
           end;
         end;
@@ -3787,12 +3787,12 @@ begin
 
   if StrModule='' then
   begin
-    MsgLogConsole('ERROR: Empty module_name in action PROC_EVENTS_SUB');
+    MsgLogConsole('错误：动作 PROC_EVENTS_SUB 中的 module_name 为空');
     exit;
   end;
   if StrEvents='' then
   begin
-    MsgLogConsole('ERROR: Empty event_list in action PROC_EVENTS_SUB');
+    MsgLogConsole('错误：动作 PROC_EVENTS_SUB 中的 event_list 为空');
     exit;
   end;
 
@@ -3803,7 +3803,7 @@ begin
     begin
       if StrKeys<>'' then
         if not (EvId in AppPyEventsWhichSupportFilters) then
-          MsgLogConsole(Format('ERROR: filter_list + unrelated event "%s" in action PROC_EVENTS_SUB', [cAppPyEvent[EvId]]));
+          MsgLogConsole(Format('错误：动作 PROC_EVENTS_SUB 中的 filter_list 与不相关事件 "%s"', [cAppPyEvent[EvId]]));
 
       EventSub(StrModule, StrLexers, StrKeys, EvId, EvPrior, EvLazy);
     end;
@@ -3825,12 +3825,12 @@ begin
 
   if StrModule='' then
   begin
-    MsgLogConsole('ERROR: Empty module_name in action PROC_EVENTS_UNSUB');
+    MsgLogConsole('错误：动作 PROC_EVENTS_UNSUB 中的 module_name 为空');
     exit;
   end;
   if StrEvents='' then
   begin
-    MsgLogConsole('ERROR: Empty event_list in action PROC_EVENTS_UNSUB');
+    MsgLogConsole('错误：动作 PROC_EVENTS_UNSUB 中的 event_list 为空');
     exit;
   end;
 
@@ -3877,7 +3877,7 @@ end;
 
 procedure AppOnLexerLoadError(const AFileName, AError: string);
 begin
-  MsgLogConsole('ERROR: '+msgCannotLoadLexerFile+' '+ExtractFileName(AFileName)+'; '+AError);
+  MsgLogConsole('错误：'+msgCannotLoadLexerFile+' '+ExtractFileName(AFileName)+'；'+AError);
 end;
 
 
@@ -3930,7 +3930,7 @@ begin
   begin
     Sep.Init(SErrorLines, #10);
     while Sep.GetItemStr(SErrorItem) do
-      MsgLogConsole('NOTE: '+SErrorItem);
+      MsgLogConsole('注意：'+SErrorItem);
   end;
 
   {
@@ -3963,7 +3963,7 @@ end;
 
 procedure LiteLexer_MessageBox(const S: string);
 begin
-  MsgLogConsole('ERROR: '+S);
+  MsgLogConsole('错误：'+S);
 end;
 
 function IsDefaultSession(const S: string): boolean;

@@ -11,7 +11,7 @@ begin
     if Obj is TATFlatToolbar then
       Result:= TATFlatToolbar(Obj)
     else
-      MsgLogConsole('ERROR: toolbar_proc() gets bad handle of type '+Obj.ClassName);
+      MsgLogConsole('错误：toolbar_proc() 收到无效句柄，类型为 '+Obj.ClassName);
   end;
 end;
 

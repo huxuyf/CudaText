@@ -1722,7 +1722,7 @@ begin
   begin
     Inc(AppCommandsDelayed_OpsReload);
     if AppCommandsDelayed_OpsReload>1 then
-      MsgLogConsole('cmd_OpsReloadAndApply in queue: '+IntToStr(AppCommandsDelayed_OpsReload));
+      MsgLogConsole('cmd_OpsReloadAndApply 在队列中：'+IntToStr(AppCommandsDelayed_OpsReload));
   end;
   }
 
@@ -2865,7 +2865,7 @@ begin
   DataObj:= TObject(ANode.Data);
   if not (DataObj is TATRangeInCodeTree) then
   begin
-    MsgLogConsole('ERROR: tree_proc(... TREE_ITEM_GET_RANGE ...) gets wrong node type: '+DataObj.ClassName);
+    MsgLogConsole('错误：tree_proc(... TREE_ITEM_GET_RANGE ...) 收到错误的节点类型：'+DataObj.ClassName);
     exit;
   end;
   Range:= DataObj as TATRangeInCodeTree;
@@ -2895,7 +2895,7 @@ begin
   end
   else
   begin
-    MsgLogConsole('ERROR: tree_proc(... TREE_ITEM_SET_RANGE ...) gets wrong node type: '+DataObj.ClassName);
+    MsgLogConsole('错误：tree_proc(... TREE_ITEM_SET_RANGE ...) 收到错误的节点类型：'+DataObj.ClassName);
   end;
 end;
 
@@ -3000,7 +3000,7 @@ begin
   Menu.Items.Insert(0, mnuApple);
 
   mnuApple_About:= TMenuItem.Create(Self);
-  mnuApple_About.Caption:= 'About CudaText';
+  mnuApple_About.Caption:= '关于 CudaText';
   mnuApple.Add(mnuApple_About);
   mnuHelpAbout.Visible:= false;
 
@@ -3308,7 +3308,7 @@ begin
     on E: Exception do
     begin
       AppLogException(E, 'DoOps_OnCreate: DoOps_LoadOptions');
-      MsgLogConsole('ERROR: Cannot read options file, check contents of '+EControlErrorLogFilename);
+      MsgLogConsole('错误：无法读取选项文件，请检查以下文件的内容：'+EControlErrorLogFilename);
     end;
   end;
 
@@ -3325,7 +3325,7 @@ begin
     on E: Exception do
     begin
       AppLogException(E, 'DoOps_OnCreate: DoOps_LoadToolbarIcons');
-      MsgLogConsole('ERROR: Cannot load toolbar icons, check contents of '+EControlErrorLogFilename);
+      MsgLogConsole('错误：无法加载工具栏图标，请检查以下文件的内容：'+EControlErrorLogFilename);
     end;
   end;
 
@@ -3335,7 +3335,7 @@ begin
     on E: Exception do
     begin
       AppLogException(E, 'DoOps_OnCreate: DoOps_LoadSidebarIcons');
-      MsgLogConsole('ERROR: Cannot load sidebar icons, check contents of '+EControlErrorLogFilename);
+      MsgLogConsole('错误：无法加载侧边栏图标，请检查以下文件的内容：'+EControlErrorLogFilename);
     end;
   end;
 
@@ -3345,7 +3345,7 @@ begin
     on E: Exception do
     begin
       AppLogException(E, 'DoOps_OnCreate: InitPyEngine');
-      MsgLogConsole('ERROR: Cannot init Python, check contents of '+EControlErrorLogFilename);
+      MsgLogConsole('错误：无法初始化 Python，请检查以下文件的内容：'+EControlErrorLogFilename);
     end;
   end;
 
@@ -3358,7 +3358,7 @@ begin
     on E: Exception do
     begin
       AppLogException(E, 'DoOps_OnCreate: DoOps_LoadPlugins');
-      MsgLogConsole('ERROR: Cannot load all plugins, check contents of '+EControlErrorLogFilename);
+      MsgLogConsole('错误：无法加载所有插件，请检查以下文件的内容：'+EControlErrorLogFilename);
     end;
   end;
 
@@ -3368,7 +3368,7 @@ begin
     on E: Exception do
     begin
       AppLogException(E, 'DoOps_OnCreate: DoOps_LoadHistory');
-      MsgLogConsole('ERROR: Cannot read history file, check contents of '+EControlErrorLogFilename);
+      MsgLogConsole('错误：无法读取历史记录文件，请检查以下文件的内容：'+EControlErrorLogFilename);
     end;
   end;
 end;
@@ -4310,7 +4310,7 @@ procedure TfmMain.FormShow(Sender: TObject);
   begin
     NTick:= GetTickCount64;
     MsgLogConsole(Format(
-      'Startup: %s, plugins: %s', [
+      '启动：%s，插件：%s', [
       ConvertMillisecondsToNiceString((NTick-AppTickInitial) div 10 * 10),
       AppPython.GetTimingReport
       ]));
@@ -4336,7 +4336,7 @@ procedure TfmMain.FormShow(Sender: TObject);
   begin
     {$ifdef windows}
     if strlicomp(PChar(Application.ExeName), BadStr, Length(BadStr))=0 then
-      MsgLogConsole('ERROR: CudaText cannot save configs if it''s copied to "Program Files" folder');
+      MsgLogConsole('错误：CudaText 被复制到 "Program Files" 文件夹时无法保存配置');
     {$endif}
   end;
   //
@@ -4494,7 +4494,7 @@ begin
     on E: Exception do
     begin
       AppLogException(E, 'FormShow: _Init_StartupSession');
-      MsgLogConsole('ERROR: Cannot load startup session, check contents of '+EControlErrorLogFilename);
+      MsgLogConsole('错误：无法加载启动会话，请检查以下文件的内容：'+EControlErrorLogFilename);
     end;
   end;
 
@@ -5023,7 +5023,7 @@ begin
   else
   if Ed.AdapterForHilite is TATLiteLexer then
     MsgBox(
-      'Currently active lexer is LITE lexer (it has "^" suffix in its name). CudaText don''t have configuration dialog for lite lexers.',
+      '当前使用的词法分析器是 LITE 词法器（名称带有 “^” 后缀）。CudaText 没有针对 lite 词法器的配置对话框。',
       MB_OK or MB_ICONWARNING);
 end;
 
@@ -5553,7 +5553,7 @@ begin
   //and user chooses 'open as session', SessManager opens a session, and this check breaks the work. issue #6429
   if AppOpeningFile then
   begin
-    MsgLogConsole('NOTE: re-entering to DoFileOpen, strange, tell the developer what you did');
+    MsgLogConsole('注意：重复进入 DoFileOpen，这很奇怪，请告诉开发者你做了什么');
     exit;
   end;
   AppOpeningFile:= true;
@@ -6358,7 +6358,7 @@ begin
       );
     Frame.EdCurrent.Update;
     Frame.SetFocus;
-    MsgStatus(Format('Go to symbol: %s (line %d)', [Copy(AInput, 2, MaxInt), ALineIndex+1]));
+    MsgStatus(Format('转到符号：%s（第 %d 行）', [Copy(AInput, 2, MaxInt), ALineIndex+1]));
     exit;
   end;
 
@@ -6389,7 +6389,7 @@ begin
     if NLine>NCount then
     begin
       NLine:= NCount;
-      MsgStatus(Format('Line %s is out of range; jumped to the last line %d',
+      MsgStatus(Format('第 %s 行超出范围；已跳转到最后一行 %d',
         [Copy(S, 2, MaxInt), NLine]));
     end
     else
@@ -6767,7 +6767,7 @@ begin
   if UiOps.LogConsoleDetailedStartupTime then
   begin
     NTick:= GetTickCount64-NTick;
-    MsgLogConsole(Format('Loaded Python library: %dms', [NTick]));
+    MsgLogConsole(Format('已加载 Python 库：%dms', [NTick]));
   end;
 end;
 
@@ -8147,7 +8147,7 @@ begin
   //disable completion in comments/strings
   if DoAutoComplete_PosOnBadToken(Ed, Caret.PosX, Caret.PosY) then
   begin
-    MsgStatus('Auto-completion doesn''t work inside comments/strings');
+    MsgStatus('在注释/字符串内无法使用自动补全');
     exit;
   end;
 
@@ -9261,7 +9261,7 @@ begin
   SLexerName:= Frame.LexerName[Ed];
 
   {$ifdef debug_on_lexer}
-  MsgLogConsole('OnLexerChange: file "'+ExtractFileName(SFileName)+'" -> "'+SLexerName+'"');
+  MsgLogConsole('OnLexerChange：文件 "'+ExtractFileName(SFileName)+'" → "'+SLexerName+'"');
   {$endif}
 
   //load lexer-specific config
@@ -9276,7 +9276,7 @@ begin
     if (SLexerName<>'') or not Ed.IsEmpty then
     begin
       {$ifdef debug_on_lexer}
-      MsgLogConsole('on_lexer: file "'+ExtractFileName(SFileName)+'" -> "'+SLexerName+'"');
+      MsgLogConsole('on_lexer：文件 "'+ExtractFileName(SFileName)+'" → "'+SLexerName+'"');
       {$endif}
 
       DoPyEvent(Ed, TAppPyEvent.OnLexer, []);
@@ -9428,7 +9428,7 @@ procedure TfmMain.DoMenuClear(const AMenuId: string);
       //avoid crash in kvichans' plugin, detect not valid tag
       if (mi.Tag>0) and (mi.Tag<20000) then
       begin
-        MsgLogConsole('ERROR: bad menu-item tag in menu_proc(..., MENU_CLEAR, ...): '+IntToStr(mi.Tag));
+        MsgLogConsole('错误：menu_proc(..., MENU_CLEAR, ...) 中的菜单项 tag 无效：'+IntToStr(mi.Tag));
       end
       else
       begin
@@ -9903,7 +9903,7 @@ begin
         DataItem:= PyList_GetItem(AData, iItem);
         if PyTuple_Size(DataItem)<>4 then
         begin
-          MsgLogConsole(Format('ERROR: TreeHelper "%s" returned data tuple of length<>4', [AHelperName]));
+          MsgLogConsole(Format('错误：TreeHelper "%s" 返回的数据元组长度不等于 4', [AHelperName]));
           Continue;
         end;
 
@@ -9914,7 +9914,7 @@ begin
 
         if PyTuple_Size(DataPos)<>4 then
         begin
-          MsgLogConsole(Format('ERROR: TreeHelper "%s" returned position tuple of length<>4', [AHelperName]));
+          MsgLogConsole(Format('错误：TreeHelper "%s" 返回的位置元组长度不等于 4', [AHelperName]));
           Continue;
         end;
 

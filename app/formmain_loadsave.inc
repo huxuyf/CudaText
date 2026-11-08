@@ -413,7 +413,7 @@ begin
 
       if AppFile_IsIgnoredForSession(sTabFilename) then
       begin
-        MsgLogConsole(Format('NOTE: File "%s" is not saved to session', [sTabFilename]));
+        MsgLogConsole(Format('注意：文件 "%s" 未保存到会话', [sTabFilename]));
         Continue;
       end;
 
@@ -603,13 +603,13 @@ begin
   if UiOps.LogSessions and (bSessionUpdated or not bSessionFileExisted) then
   begin
     if bSaved then
-      sConsole:= Format('Saved session: "%s", %d file(s)', [ExtractFileName(sSessionFileName), nCountFiles])
+      sConsole:= Format('已保存会话："%s"，%d 个文件', [ExtractFileName(sSessionFileName), nCountFiles])
     else
-      sConsole:= Format('Failed to save session: "%s", %d file(s): %s', [ExtractFileName(sSessionFileName), nCountFiles, sSaveError]);
+      sConsole:= Format('保存会话失败："%s"，%d 个文件：%s', [ExtractFileName(sSessionFileName), nCountFiles, sSaveError]);
     if nCountUntitled>0 then
-      sConsole+= Format(' + %d untitled', [nCountUntitled]);
+      sConsole+= Format(' + %d 个未命名', [nCountUntitled]);
     if AByTimer then
-      sConsole+= Format(', by timer at %s', [TimeToStr(Now)]);
+      sConsole+= Format('，定时于 %s', [TimeToStr(Now)]);
     MsgLogConsole(sConsole);
   end;
 
@@ -617,7 +617,7 @@ begin
   if (not bSaved) and bSessionUpdated and (not FSessionSaveWarned) then
   begin
     FSessionSaveWarned:= true;
-    MsgLogConsole(Format('ERROR: Cannot save session "%s": %s', [sSessionFileName, sSaveError]));
+    MsgLogConsole(Format('错误：无法保存会话 "%s"：%s', [sSessionFileName, sSaveError]));
     MsgStatus(msgCannotSaveFile+' '+ExtractFileName(sSessionFileName));
   end;
 end;
@@ -1075,11 +1075,11 @@ begin
   if UiOps.LogSessions then
   begin
     nTick:= (GetTickCount64-nTick) div 10 * 10;
-    sConsole:= Format('Loaded session: "%s", %dms, %d file(s)', [ExtractFileName(sSessionFileName), nTick, nCountFiles]);
+    sConsole:= Format('已加载会话："%s"，%dms，%d 个文件', [ExtractFileName(sSessionFileName), nTick, nCountFiles]);
     if nCountFilesModified>0 then
-      sConsole+= Format(' + %d modified', [nCountFilesModified]);
+      sConsole+= Format(' + %d 个已修改', [nCountFilesModified]);
     if nCountFilesDeleted>0 then
-      sConsole+= Format(', %d deleted', [nCountFilesDeleted]);
+      sConsole+= Format('，%d 个已删除', [nCountFilesDeleted]);
     MsgLogConsole(sConsole);
   end;
 
@@ -1288,17 +1288,17 @@ begin
         if FileExists(sBackupFilename) then
         begin
           if FileUtil.CopyFile(sBackupFilename, sFilename) then
-            MsgLogConsole(Format('NOTE: Session file "%s" not found, restored from backup', [ExtractFileName(sFilename)]))
+            MsgLogConsole(Format('注意：会话文件 "%s" 未找到，已从备份恢复', [ExtractFileName(sFilename)]))
           else
           begin
-            MsgLogConsole(Format('ERROR: Session file "%s" not found, cannot copy from backup', [ExtractFileName(sFilename)]));
+            MsgLogConsole(Format('错误：会话文件 "%s" 未找到，无法从备份复制', [ExtractFileName(sFilename)]));
             AppSessionName_Set(cAppSessionDefault);
           end;
         end
         else
         if AppSessionName_<>cAppSessionDefault then
         begin
-          MsgLogConsole(Format('ERROR: Session file "%s" not found, and there is no backup', [ExtractFileName(sFilename)]));
+          MsgLogConsole(Format('错误：会话文件 "%s" 未找到，且没有备份', [ExtractFileName(sFilename)]));
           AppSessionName_Set(cAppSessionDefault);
         end;
       end;
@@ -1318,7 +1318,7 @@ begin
   if UiOps.LogConsoleDetailedStartupTime then
   begin
     NTick:= GetTickCount64-NTick;
-    MsgLogConsole(Format('Loaded history: %dms', [NTick]));
+    MsgLogConsole(Format('已加载历史记录：%dms', [NTick]));
   end;
 end;
 
@@ -2048,7 +2048,7 @@ begin
     if UiOps.LogConsoleDetailedStartupTime then
     begin
       NTick2:= GetTickCount64-NTick2;
-      MsgLogConsole(Format('Loaded lexer config "%s": %dms', [ExtractFileName(ExtractFileDir(AFileName))+DirectorySeparator+ExtractFileName(AFileName), NTick2]));
+      MsgLogConsole(Format('已加载词法分析器配置 "%s"：%dms', [ExtractFileName(ExtractFileDir(AFileName))+DirectorySeparator+ExtractFileName(AFileName), NTick2]));
     end;
 
     //don't show if we only load lexer-specific config
@@ -2056,7 +2056,7 @@ begin
       if AllowGlobalOps then
       begin
         NTick:= GetTickCount64-NTick;
-        MsgLogConsole(Format('Loaded configs: %dms', [NTick]));
+        MsgLogConsole(Format('已加载配置：%dms', [NTick]));
       end;
   finally
     cfg.Free;

@@ -5048,7 +5048,7 @@ begin
       else
         begin
           bShowPanel:= true;
-          MsgLogConsole(Format('ERROR: Wrong value of option "ui_notif_confirm": %d', [UiOps.NotificationConfirmReload]));
+          MsgLogConsole(Format('错误：选项 "ui_notif_confirm" 的值不正确：%d', [UiOps.NotificationConfirmReload]));
         end;
     end;
 

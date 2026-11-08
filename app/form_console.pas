@@ -157,10 +157,10 @@ begin
   if StartsStr(cConsolePrompt, S) then
     exit(TAppConsoleLineKind.Prompt);
 
-  if StartsText('NOTE:', S) then
+  if StartsText('NOTE:', S) or StartsText('注意：', S) then
     exit(TAppConsoleLineKind.Note);
 
-  if StartsText('ERROR:', S) then
+  if StartsText('ERROR:', S) or StartsText('错误：', S) then
     exit(TAppConsoleLineKind.Error);
 
   //EndsText is better than compare, to find FindInFiles4 log string added to 'traceback'

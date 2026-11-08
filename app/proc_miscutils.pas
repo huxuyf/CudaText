@@ -318,7 +318,7 @@ begin
   if AFilename='' then exit;
   if not FileExists(AFilename) then
   begin
-    MsgLogConsole('ERROR: Missing icon filename in '+ACallerAPI+': '+AFilename);
+    MsgLogConsole('错误：缺少图标文件名，来源：'+ACallerAPI+'：'+AFilename);
     exit;
   end;
 
@@ -352,13 +352,13 @@ begin
     end
     else
     begin
-      MsgLogConsole('ERROR: Unknown icon file type in '+ACallerAPI+': '+AFilename);
+      MsgLogConsole('错误：未知的图标文件类型，来源：'+ACallerAPI+'：'+AFilename);
       exit;
     end;
 
     Result:= AList.Count-1;
   except
-    MsgLogConsole('ERROR: Error loading icon from file: '+AFilename);
+    MsgLogConsole('错误：从文件加载图标失败：'+AFilename);
   end;
 end;
 

@@ -274,7 +274,7 @@ begin
         CheckError(False);
     except
       on E: Exception do
-        MsgLogConsole('ERROR: Exception in CudaText: '+E.Message);
+        MsgLogConsole('错误：CudaText 中发生异常：'+E.Message);
     end;
   end;
 end;
@@ -342,7 +342,7 @@ begin
             CheckError(False);
         except
           on E: Exception do
-            MsgLogConsole(Format('ERROR: Exception in CudaText for %s: %s', [AFunc, E.Message]));
+            MsgLogConsole(Format('错误：CudaText 中发生异常 %s：%s', [AFunc, E.Message]));
         end;
       finally
         Py_DECREF(Params);
@@ -393,7 +393,7 @@ begin
               CheckError(False);
           except
             on E: Exception do
-              MsgLogConsole(Format('ERROR: Exception in CudaText for importing %s: %s', [AModule, E.Message]));
+              MsgLogConsole(Format('错误：CudaText 导入 %s 时发生异常：%s', [AModule, E.Message]));
           end;
         finally
           Py_XDECREF(ObjObject);
@@ -459,7 +459,7 @@ begin
         FEngine.CheckError(False);
     except
       on E: Exception do
-        MsgLogConsole(Format('ERROR: Exception in CudaText for %s.%s: %s', [AModule, AMethod, E.Message]));
+        MsgLogConsole(Format('错误：CudaText 中发生异常 %s.%s：%s', [AModule, AMethod, E.Message]));
     end;
   finally
     TimeTrackEnd(AModule, tick);
@@ -523,7 +523,7 @@ var
               CheckError(False);
           except
             on E: Exception do
-              MsgLogConsole(Format('ERROR: Exception in CudaText for %s.%s: %s', [AModule, ACmd, E.Message]));
+              MsgLogConsole(Format('错误：CudaText 中发生异常 %s.%s：%s', [AModule, ACmd, E.Message]));
           end;
         finally
           Py_XDECREF(ObjEditorArgs);
@@ -600,7 +600,7 @@ begin
       if bParamsOwned then
         for i:= 0 to Length(ParamsObj)-1 do
           FEngine.Py_XDECREF(ParamsObj[i]);
-      MsgLogConsole(Format('ERROR: Exception in CudaText for %s.%s: %s', [AModule, ACmd, E.Message]));
+      MsgLogConsole(Format('错误：CudaText 中发生异常 %s.%s：%s', [AModule, ACmd, E.Message]));
     end;
   end;
 
@@ -618,7 +618,7 @@ begin
   else
   begin
     if UiOps.LogPluginIniting then
-      MsgLogConsole('Init: '+AModule);
+      MsgLogConsole('初始化：'+AModule);
 
     Result:= FEngine.PyImport_ImportModule(PChar(AModule));
 
@@ -670,7 +670,7 @@ begin
                       CheckError(False);
                   except
                     on E: Exception do
-                      MsgLogConsole(Format('ERROR: Exception in CudaText for %s.%s: %s', [AModule, AFunc, E.Message]));
+                      MsgLogConsole(Format('错误：CudaText 中发生异常 %s.%s：%s', [AModule, AFunc, E.Message]));
                   end;
                 finally
                   Py_DECREF(ParamsDic);
@@ -717,7 +717,7 @@ begin
                 CheckError(False);
             except
               on E: Exception do
-                MsgLogConsole(Format('ERROR: Exception in CudaText for %s.%s: %s', [AModule, AFunc, E.Message]));
+                MsgLogConsole(Format('错误：CudaText 中发生异常 %s.%s：%s', [AModule, AFunc, E.Message]));
             end;
           finally
             Py_DECREF(Params);

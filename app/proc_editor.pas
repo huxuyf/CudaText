@@ -509,7 +509,7 @@ begin
           Ed.OptGapBitmapIndent:= Op.OpGapBitmapAlign;
         end;
       else
-        MsgLogConsole('ERROR: Wrong value of option "gap_bitmap_align": '+IntToStr(Op.OpGapBitmapAlign));
+        MsgLogConsole('错误：选项 "gap_bitmap_align" 的值不正确：'+IntToStr(Op.OpGapBitmapAlign));
     end;
   end; //if not Ed.ModeOneLine
 

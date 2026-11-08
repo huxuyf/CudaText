@@ -11,7 +11,7 @@ begin
     if Obj is TATStatus then
       Result:= TATStatus(Obj)
     else
-      MsgLogConsole('ERROR: statusbar_proc() gets bad handle of type '+Obj.ClassName);
+      MsgLogConsole('错误：statusbar_proc() 收到无效句柄，类型为 '+Obj.ClassName);
   end;
 end;
 
