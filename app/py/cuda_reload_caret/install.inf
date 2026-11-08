@@ -1,0 +1,16 @@
+[info]
+title=重载保持光标
+desc=重载或重开文件后保持光标与滚动位置
+type=cudatext-plugin
+subdir=cuda_reload_caret
+api=1.0.483
+homepage=
+
+[item1]
+section=events
+events=on_open,on_caret_slow,on_scroll,on_open_reopen
+
+[item2]
+section=commands
+caption=重载保持光标\切换恢复滚动位置
+method=toggle_scroll

@@ -1,0 +1,20 @@
+[comments]
+styles_cmt=Comment
+styles_str=String
+str1=<#
+str2=#>
+
+[map]
+Symbol=Symbol
+Number=Number
+String=String
+String here=String2
+Comment=Comment
+Id=Id
+Id keyword=IdKeyword
+Id type=Id2
+Variable=IdVar
+Cmd=Id1
+Operator=Symbol2
+Variable std=Id4
+Preprocessor=Id3

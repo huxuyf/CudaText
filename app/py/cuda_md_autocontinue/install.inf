@@ -1,0 +1,10 @@
+[info]
+title=Markdown Auto Continue
+desc=Markdown 列表与代码围栏自动续行
+type=cudatext-plugin
+subdir=cuda_md_autocontinue
+version=1.0.0
+
+[item1]
+section=events
+events=on_key

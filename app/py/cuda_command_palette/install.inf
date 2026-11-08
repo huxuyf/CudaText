@@ -1,0 +1,32 @@
+[info]
+title=统一命令面板
+desc=> 命令 / @ 文件内符号 / : 行号 / 无前缀 项目文件，带最近使用置顶
+type=cudatext-plugin
+subdir=cuda_command_palette
+api=1.0.482
+homepage=
+
+[item2]
+section=commands
+caption=跳转\统一命令面板（> 命令 / @ 符号 / : 行号）
+method=show
+
+[item3]
+section=commands
+caption=跳转\命令面板\仅命令
+method=show_commands
+
+[item4]
+section=commands
+caption=跳转\命令面板\项目文件
+method=show_files
+
+[item5]
+section=commands
+caption=跳转\命令面板\刷新项目文件
+method=refresh_files
+
+[item6]
+section=commands
+caption=跳转\命令面板\清空最近使用
+method=clear_mru

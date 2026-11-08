@@ -1,0 +1,22 @@
+[info]
+title=快速跳转
+desc=@符号 / :行号 / 关键词 的统一跳转面板
+type=cudatext-plugin
+subdir=cuda_quick_jump
+api=1.0.482
+homepage=
+
+[item2]
+section=commands
+caption=跳转\快速跳转（@符号 / :行号）
+method=goto
+
+[item3]
+section=commands
+caption=跳转\文件内符号...
+method=goto_symbol
+
+[item4]
+section=commands
+caption=跳转\跳转到行...
+method=goto_line

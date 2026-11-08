@@ -1,0 +1,67 @@
+# 文本展开规则
+# 每行一条，格式：触发词=替换文本（以第一个等号分割）
+# 空行和以 # 开头的行会被忽略
+#
+# 输入触发词后按空格即可展开，例如输入 sa 再按空格：
+s=SELECT * FROM 
+s1=SELECT 1 FROM 
+sa=SELECT * FROM 
+sc=SELECT COUNT(*) FROM 
+sd=SELECT * FROM DUAL;
+st=SELECT t.*,ROWID FROM t
+sp=SELECT /*+PARALLEL(a, 8) */ a.* FROM 
+spc=SELECT /*+PARALLEL(a, 10)*/ COUNT(*) FROM 
+lf=LEFT JOIN 
+ua=UNION ALL
+w=WHERE 
+ba=BETWEEN AND 
+like=LIKE '%%' 
+rno=row_number() OVER (PARTITION BY  ORDER BY ) rn
+
+sft=SELECT col_name FROM table(split_str_to_list(''))
+tc=to_char(SYSDATE,'yyyymmdd')
+td=to_date('','yyyymmdd')
+
+xe=xyf.execute(q'{}');
+xct=xyf.create_table('',q'{}');
+xci=xyf.create_index('','');
+
+fpq=ALTER SESSION FORCE PARALLEL QUERY PARALLEL 8;
+
+case=CASE WHEN THEN ELSE END
+
+gb=GROUP BY
+ob=ORDER BY
+hc=HAVING COUNT(*)
+wo=WHEN OTHERS THEN
+
+ct=CREATE TABLE
+at=ALTER TABLE
+tt=TRUNCATE TABLE
+cv=CREATE VIEW
+
+dt=DROP TABLE
+df=DELETE FROM
+
+ci=CREATE INDEX
+cui=CREATE UNIQUE INDEX
+cbi=CREATE BITMAP INDEX
+di=DROP INDEX
+
+sysout=dbms_output.put_line
+
+ii=INSERT INTO
+ei=EXECUTE IMMEDIATE
+cr=CREATE OR REPLACE
+crp=CREATE OR REPLACE PROCEDURE
+crf=CREATE OR REPLACE FUNCTION
+crv=CREATE OR REPLACE VIEW
+
+gst=GRANT SELECT ON  TO PUBLIC
+saf=SELECT a.*,b.user_id FROM cm_bill_id a LEFT JOIN xyf_user b ON b.bill_id = a.bill_id
+so=SELECT * FROM all_objects WHERE object_name LIKE '%%' ORDER BY object_name;
+ta=--tab=
+
+l4=-------------------------------------------------------------------------------------------------------
+l3=----------------------------
+m4=============================================================
