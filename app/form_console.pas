@@ -527,14 +527,9 @@ begin
     EdMemo.PopupTextDefault.Items.Add(mnuTextNav);
   end;
 
-  with TIniFile.Create(AppFile_Language) do
-  try
-    msgConsoleClear:= ReadString('ct', 'clr', 'Clear');
-    msgConsoleNavigate:= ReadString('ct', 'nav', 'Navigate');
-    msgConsoleToggleWrap:= ReadString('ct', 'wr', 'Toggle word wrap');
-  finally
-    Free;
-  end;
+  msgConsoleClear:= '清除';
+  msgConsoleNavigate:= '导航';
+  msgConsoleToggleWrap:= '自动换行';
 
   mnuTextClear.Caption:= msgConsoleClear;
   mnuTextWrap.Caption:= msgConsoleToggleWrap;

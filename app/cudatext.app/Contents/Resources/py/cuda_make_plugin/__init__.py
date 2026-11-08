@@ -1,10 +1,9 @@
 import os
 from cudatext import *
-from cudax_lib import get_translation
 from .dlg import *
 from .events import *
 
-_   = get_translation(__file__)  # I18N
+_ = lambda s: s
 
 fn_sample_begin = os.path.join(os.path.dirname(__file__), 'sample_begin.py')
 fn_sample_begin_config = os.path.join(os.path.dirname(__file__), 'sample_begin_config.py')

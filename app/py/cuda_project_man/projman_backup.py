@@ -50,11 +50,7 @@ copy (count is treated as 1).
 import os
 import shutil
 
-try:
-    from cudax_lib import get_translation
-    _ = get_translation(__file__)  # i18n
-except ImportError:
-    _ = lambda s: s
+_ = lambda s: s
 
 
 DEFAULT_BACKUP_FOLDER = '.cudatext/proj_bckp'

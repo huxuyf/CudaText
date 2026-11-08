@@ -288,7 +288,6 @@ type
     LexerParsingMinTimeForEvent: integer;
 
     ToolBarTheme: UnicodeString;
-    LangName: UnicodeString;
 
     ThemeUi: UnicodeString;
     ThemeSyntax: UnicodeString;
@@ -810,7 +809,6 @@ var
   AppDir_DataThemes: string;
   AppDir_DataAutocomplete: string;
   AppDir_DataAutocompleteSpec: string;
-  AppDir_DataLang: string;
   AppDir_DataSidebarIcons: string;
   AppDir_DataCodetreeIcons: string;
   AppDir_DataToolbarIcons: string;
@@ -825,9 +823,8 @@ var
   AppFile_PluginsIni: string;
   AppFile_LogConsole: string;
 
-function AppFile_OptionsDefault: string; // data/langdefault/default.ru_RU.json
+function AppFile_OptionsDefault: string;
 function AppFile_Session: string;
-function AppFile_Language: string;
 function AppFile_UndoRedo(const fn: string; IsRedo: boolean): string;
 
 function AppFile_Lexer(const ALexName: string): string;
@@ -1850,7 +1847,6 @@ begin
   AppDir_DataThemes:= AppDir_Data+DirectorySeparator+'themes';
   AppDir_DataAutocomplete:= AppDir_Data+DirectorySeparator+'autocomplete';
   AppDir_DataAutocompleteSpec:= AppDir_Data+DirectorySeparator+'autocompletespec';
-  AppDir_DataLang:= AppDir_Data+DirectorySeparator+'lang';
   AppDir_DataSidebarIcons:= AppDir_Data+DirectorySeparator+'sideicons';
   AppDir_DataCodetreeIcons:= AppDir_Data+DirectorySeparator+'codetreeicons';
   AppDir_DataToolbarIcons:= AppDir_Data+DirectorySeparator+'toolbaricons';
@@ -2150,7 +2146,6 @@ begin
     TreeTheme:= 'default_16x16';
     ToolBarTheme:= 'default_24x24';
 
-    LangName:= '';
     ThemeUi:= '';
     ThemeSyntax:= '';
     ThemeUi_Loaded:= false;
@@ -2867,14 +2862,6 @@ begin
   end;
 end;
 
-
-function AppFile_Language: string;
-begin
-  if UiOps.LangName='' then
-    Result:= ''
-  else
-    Result:= AppDir_DataLang+DirectorySeparator+UiOps.LangName+'.ini';
-end;
 
 function AppFile_LexerExtension(ALexName, AExt: string): string;
 begin
@@ -3989,16 +3976,8 @@ begin
 end;
 
 function AppFile_OptionsDefault: string;
-var
-  fn: string;
 begin
   Result:= AppFile_OptionsDefaultEnglish;
-  if UiOps.LangName<>'' then
-  begin
-    fn:= AppDir_Data+DirectorySeparator+'langdefault'+DirectorySeparator+'default.'+UiOps.LangName+'.json';
-    if FileExists(fn) then
-      Result:= fn;
-  end;
 end;
 
 function AppFile_Session: string;

@@ -5,7 +5,7 @@ object fmLexerLib: TfmLexerLib
   Width = 459
   ActiveControl = List
   BorderIcons = [biSystemMenu]
-  Caption = 'Lexer library'
+  Caption = '词法分析器库'
   ClientHeight = 468
   ClientWidth = 459
   Constraints.MinHeight = 250
@@ -57,7 +57,7 @@ object fmLexerLib: TfmLexerLib
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
-      Caption = 'Con&figure...'
+      Caption = '配置'
       TabOrder = 0
       OnClick = btnConfigClick
     end
@@ -72,7 +72,7 @@ object fmLexerLib: TfmLexerLib
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Bottom = 6
-      Caption = '&Delete'
+      Caption = '删除'
       TabOrder = 1
       OnClick = btnDeleteClick
     end

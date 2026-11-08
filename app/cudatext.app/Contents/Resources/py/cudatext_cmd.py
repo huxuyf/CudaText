@@ -327,7 +327,6 @@ cmd_FindPythonLib = 2567
 cmd_ToggleFileNotification = 2568
 cmd_ToggleFindDialog_AndFocus = 2569
 
-cmd_ChooseTranslation = 2570
 cmd_ChooseThemeUI     = 2571
 
 cmd_OpsClearSearchHistory = 2573

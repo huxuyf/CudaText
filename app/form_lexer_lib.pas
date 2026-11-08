@@ -43,7 +43,6 @@ type
   private
     { private declarations }
     FOnDeleteLexer: TAppStringEvent;
-    procedure Localize;
     procedure UpdateList;
   public
     { public declarations }
@@ -133,30 +132,6 @@ end;
 
 { TfmLexerLib }
 
-procedure TfmLexerLib.Localize;
-const
-  section = 'd_lex_lib';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= ini.ReadString(section, '_', Caption);
-    with PanelBtn.CloseButton do Caption:= msgButtonClose;
-    with btnConfig do Caption:= ini.ReadString(section, 'cfg', Caption)+'...';
-    with btnDelete do Caption:= ini.ReadString(section, 'del', Caption);
-    //with F.btnShowHide do Caption:= ini.ReadString(section, 'hid', Caption);
-    msgLexerHiddenSuffix:= ini.ReadString(section, 'hidmk', msgLexerHiddenSuffix);
-    msgLexerLinks:= ini.ReadString(section, 'lns', msgLexerLinks);
-  finally
-    FreeAndNil(ini);
-  end;
-end;
-
-
 procedure TfmLexerLib.FormShow(Sender: TObject);
 begin
   UpdateFormOnTop(Self);
@@ -192,7 +167,8 @@ end;
 
 procedure TfmLexerLib.FormCreate(Sender: TObject);
 begin
-  Localize;
+  PanelBtn.CloseButton.Caption:= '关闭';
+
   DoForm_ScaleAuto(Self, false);
 
   AppFormHistoryLoad(Self, '/pos/lexerlib', false, Screen.DesktopRect);

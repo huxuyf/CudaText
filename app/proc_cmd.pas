@@ -132,7 +132,6 @@ const
   cmd_ToggleFileNotifications     = 2568;
   cmd_ToggleFindDialog_AndFocus   = 2569;
 
-  cmd_ChooseTranslation = 2570;
   cmd_ChooseThemeUI     = 2571;
 
   cmd_OpsClearSearchHistory = 2573;
@@ -669,7 +668,6 @@ begin
   M.Add(cmd_MenuEnds, 'menu: line ends', [], []);
   M.Add(cmd_MenuLexers, 'menu: lexers', [], []);
 
-  M.Add(cmd_ChooseTranslation, 'menu: translations', [], []);
   M.Add(cmd_ChooseThemeUI, 'menu: themes', [], []);
 
   //on macOS 10.11, Ctrl+Space on author's PC is reserved to toggle keyboard layout, so use e.g. Alt+Space
@@ -951,7 +949,6 @@ begin
     cmd_MenuEnds,
     cmd_MenuLexers,
 
-    cmd_ChooseTranslation,
     cmd_ChooseThemeUI,
 
     cmd_AutoComplete,

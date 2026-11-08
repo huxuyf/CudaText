@@ -4,7 +4,7 @@ object fmLexerProp: TfmLexerProp
   Top = 140
   Width = 651
   BorderIcons = [biSystemMenu]
-  Caption = 'Lexer properties'
+  Caption = '词法分析器属性'
   ClientHeight = 601
   ClientWidth = 651
   Constraints.MinHeight = 350
@@ -45,7 +45,7 @@ object fmLexerProp: TfmLexerProp
     TabIndex = 0
     TabOrder = 0
     object TabSheetGeneral: TTabSheet
-      Caption = 'General'
+      Caption = '一般'
       ClientHeight = 525
       ClientWidth = 641
       object LabelLexerName: TLabel
@@ -57,7 +57,7 @@ object fmLexerProp: TfmLexerProp
         Width = 80
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
-        Caption = 'Lexer name:'
+        Caption = '词法分析器名称：'
         FocusControl = edName
         ParentColor = False
       end
@@ -88,7 +88,7 @@ object fmLexerProp: TfmLexerProp
         Top = 62
         Width = 68
         BorderSpacing.Top = 3
-        Caption = 'File types:'
+        Caption = '文件类型：'
         FocusControl = edTypes
         ParentColor = False
       end
@@ -116,7 +116,7 @@ object fmLexerProp: TfmLexerProp
         Top = 118
         Width = 84
         BorderSpacing.Top = 3
-        Caption = 'Sample text:'
+        Caption = '示例文本：'
         FocusControl = edSample
         ParentColor = False
       end
@@ -147,7 +147,7 @@ object fmLexerProp: TfmLexerProp
       end
     end
     object TabSheetComments: TTabSheet
-      Caption = 'Commenting'
+      Caption = '注释'
       ClientHeight = 525
       ClientWidth = 641
       object LabelCmtLine: TLabel
@@ -159,7 +159,7 @@ object fmLexerProp: TfmLexerProp
         Width = 144
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
-        Caption = 'Comment to line-end:'
+        Caption = '行末端注释：'
         FocusControl = edCmtLine
         ParentColor = False
       end
@@ -185,7 +185,7 @@ object fmLexerProp: TfmLexerProp
         Top = 62
         Width = 111
         BorderSpacing.Top = 3
-        Caption = 'Comment range:'
+        Caption = '注释范围：'
         ParentColor = False
       end
       object edCmtStream1: TEdit
@@ -226,7 +226,7 @@ object fmLexerProp: TfmLexerProp
         Top = 118
         Width = 198
         BorderSpacing.Top = 3
-        Caption = 'Comment range, for full lines:'
+        Caption = '注释范围，用于整行：'
         ParentColor = False
       end
       object edCmtFull1: TEdit
@@ -270,7 +270,7 @@ object fmLexerProp: TfmLexerProp
         Top = 196
         Width = 136
         BorderSpacing.Top = 25
-        Caption = 'Styles of comments:'
+        Caption = '注释样式：'
         ParentColor = False
       end
       object edStylesCmt: TEdit
@@ -299,7 +299,7 @@ object fmLexerProp: TfmLexerProp
         Top = 252
         Width = 111
         BorderSpacing.Top = 3
-        Caption = 'Styles of strings:'
+        Caption = '字符串值样式：'
         ParentColor = False
       end
       object edStylesStrings: TEdit
@@ -320,7 +320,7 @@ object fmLexerProp: TfmLexerProp
       end
     end
     object TabSheetStyles: TTabSheet
-      Caption = 'Styles'
+      Caption = '风格'
       ClientHeight = 525
       ClientWidth = 641
       object ListStyles: TListBox
@@ -383,7 +383,7 @@ object fmLexerProp: TfmLexerProp
           Height = 17
           Top = 0
           Width = 91
-          Caption = 'Color of font:'
+          Caption = '字体颜色：'
           FocusControl = edColorFont
           ParentColor = False
         end
@@ -395,7 +395,7 @@ object fmLexerProp: TfmLexerProp
           Width = 81
           Anchors = [akLeft]
           BorderSpacing.Top = 3
-          Caption = 'Color of BG:'
+          Caption = '背景颜色：'
           FocusControl = edColorBG
           ParentColor = False
         end
@@ -407,7 +407,7 @@ object fmLexerProp: TfmLexerProp
           Top = 52
           Width = 77
           BorderSpacing.Top = 3
-          Caption = 'Font styles:'
+          Caption = '字体风格：'
           ParentColor = False
         end
         object chkBold: TCheckBox
@@ -418,7 +418,7 @@ object fmLexerProp: TfmLexerProp
           Top = 72
           Width = 57
           BorderSpacing.Top = 3
-          Caption = 'Bold'
+          Caption = '粗体'
           TabOrder = 2
           OnChange = chkBoldChange
         end
@@ -431,7 +431,7 @@ object fmLexerProp: TfmLexerProp
           Top = 72
           Width = 59
           BorderSpacing.Left = 10
-          Caption = 'Italic'
+          Caption = '斜体'
           TabOrder = 3
           OnChange = chkBoldChange
         end
@@ -444,7 +444,7 @@ object fmLexerProp: TfmLexerProp
           Top = 72
           Width = 82
           BorderSpacing.Left = 10
-          Caption = 'Stikeout'
+          Caption = '删除线'
           TabOrder = 5
           OnChange = chkBoldChange
         end
@@ -457,7 +457,7 @@ object fmLexerProp: TfmLexerProp
           Top = 72
           Width = 91
           BorderSpacing.Left = 10
-          Caption = 'Underline'
+          Caption = '下划线'
           TabOrder = 4
           Visible = False
           OnChange = chkBoldChange
@@ -470,7 +470,7 @@ object fmLexerProp: TfmLexerProp
           Top = 98
           Width = 58
           BorderSpacing.Top = 3
-          Caption = 'Borders:'
+          Caption = '边框：'
           ParentColor = False
         end
         object cbBorderL: TComboBox
@@ -531,7 +531,7 @@ object fmLexerProp: TfmLexerProp
           Top = 118
           Width = 27
           BorderSpacing.Top = 3
-          Caption = 'Left'
+          Caption = '左'
           FocusControl = cbBorderL
           ParentColor = False
         end
@@ -541,7 +541,7 @@ object fmLexerProp: TfmLexerProp
           Height = 17
           Top = 118
           Width = 25
-          Caption = 'Top'
+          Caption = '顶部'
           FocusControl = cbBorderT
           ParentColor = False
         end
@@ -551,7 +551,7 @@ object fmLexerProp: TfmLexerProp
           Height = 17
           Top = 118
           Width = 35
-          Caption = 'Right'
+          Caption = '右'
           FocusControl = cbBorderR
           ParentColor = False
         end
@@ -561,7 +561,7 @@ object fmLexerProp: TfmLexerProp
           Height = 17
           Top = 118
           Width = 52
-          Caption = 'Bottom'
+          Caption = '底部'
           FocusControl = cbBorderB
           ParentColor = False
         end
@@ -573,7 +573,7 @@ object fmLexerProp: TfmLexerProp
           Top = 174
           Width = 109
           BorderSpacing.Top = 3
-          Caption = 'Color of border:'
+          Caption = '边框颜色：'
           FocusControl = edColorBorder
           ParentColor = False
         end
@@ -603,13 +603,13 @@ object fmLexerProp: TfmLexerProp
         Alignment = taCenter
         AutoSize = False
         BorderSpacing.Around = 6
-        Caption = 'Option "ui_lexer_themes" is on, so styles are used from current syntax-theme, not from this dialog.'
+        Caption = '选项“ui_lexer_themes”已打开，因此使用的是当前语法主题的样式，而不是这个对话框的样式。'
         ParentColor = False
         WordWrap = True
       end
     end
     object TabSheetNotes: TTabSheet
-      Caption = 'Notes'
+      Caption = '备注'
       ClientHeight = 525
       ClientWidth = 641
       object edNotes: TMemo

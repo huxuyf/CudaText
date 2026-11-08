@@ -4,8 +4,8 @@ import cudatext as app
 from .work_remote import *
 from .work_tempdir import get_temp_dir
 
-from cudax_lib import get_translation, safe_open_url
-_   = get_translation(__file__)  # i18n
+from cudax_lib import safe_open_url
+_ = lambda s: s
 
 info = app.app_proc(app.PROC_GET_COMPILER_INFO, '')
 TEXT_OS = info['os'].replace('win32', 'windows').replace('win64', 'windows').replace('darwin', 'macos')

@@ -49,7 +49,6 @@ type
     { private declarations }
     procedure DoLoadSize;
     procedure DoSaveSize;
-    procedure Localize;
   public
     { public declarations }
     function ShowModalGetEnum: TAppSaveTabsChoice;
@@ -61,28 +60,6 @@ implementation
 {$R *.lfm}
 
 { TfmSaveTabs }
-
-procedure TfmSaveTabs.Localize;
-const
-  section = 'd_save_tabs';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= ini.ReadString(section, '_', Caption);
-    with btnSave do Caption:= ini.ReadString(section, 'sav', Caption);
-    with btnDontSave do Caption:= ini.ReadString(section, 'no', Caption);
-    with btnDontSaveKeep do Caption:= ini.ReadString(section, 'no_ses', Caption);
-    with btnToggle do Caption:= ini.ReadString(section, 'tg', Caption);
-    with btnCancel do Caption:= msgButtonCancel;
-  finally
-    FreeAndNil(ini);
-  end;
-end;
 
 function TfmSaveTabs.ShowModalGetEnum: TAppSaveTabsChoice;
 begin
@@ -152,7 +129,6 @@ end;
 
 procedure TfmSaveTabs.FormCreate(Sender: TObject);
 begin
-  Localize;
   DoLoadSize;
 end;
 

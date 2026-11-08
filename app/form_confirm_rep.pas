@@ -39,7 +39,6 @@ type
     procedure FormShow(Sender: TObject);
   private
     { private declarations }
-    procedure Localize;
     procedure CloseWithResult(AValue: TModalResult);
   public
     { public declarations }
@@ -56,28 +55,6 @@ implementation
 
 { TfmConfirmReplace }
 
-procedure TfmConfirmReplace.Localize;
-const
-  section = 'd_cfm_rep';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= ini.ReadString(section, '_', Caption);
-    with bYes do Caption:= ini.ReadString(section, 'yes', Caption);
-    with bYesAll do Caption:= ini.ReadString(section, 'yes_a', Caption);
-    with bNo do Caption:= ini.ReadString(section, 'no', Caption);
-    with bNoAll do Caption:= ini.ReadString(section, 'no_a', Caption);
-    MsgReplaceMatch:= ini.ReadString(section, 'msg', MsgReplaceMatch);
-  finally
-    FreeAndNil(ini);
-  end;
-end;
-
 procedure TfmConfirmReplace.CloseWithResult(AValue: TModalResult);
 begin
   ModalResult:= AValue;
@@ -85,10 +62,8 @@ end;
 
 procedure TfmConfirmReplace.FormCreate(Sender: TObject);
 begin
-  MsgReplaceMatch:= 'Replace match at line %d ?';
+  MsgReplaceMatch:= '要替换第 %d 行的匹配项吗？';
   MsgLineNumber:= 0;
-  Localize;
-
   LabelInfo.Font.Name:= UiOps.VarFontName;
   LabelInfo.Font.Size:= UiOps.VarFontSize;
 

@@ -47,7 +47,6 @@ type
     FBusyClickUi: boolean;
     FBusyClickSyntax: boolean;
     FThemeDefaultStr: string;
-    procedure Localize;
     function GetEnableLexerThemes: boolean;
     function GetEnableSync: boolean;
     function SelectedThemeUI: string;
@@ -73,9 +72,11 @@ var
   Files_sy: TStringList;
   s: string;
 begin
-  PanelWarning1.Caption:= 'Option "ui_theme_auto_mode" is on, so choosing in this dialog is disabled';
+  FThemeDefaultStr:= '(默认)';
+  PanelWarning1.Caption:= '选项“ui_theme_auto_mode”已开启，本对话框中的选择已被禁用';
+  ButtonPanel1.OKButton.Caption:= '确定';
+  ButtonPanel1.CancelButton.Caption:= '取消';
 
-  Localize;
   DoForm_ScaleAuto(Self, false);
 
   PanelWarning1.Visible:= UiOps.ThemeAutoMode;
@@ -211,36 +212,6 @@ begin
   FBusyClickSyntax:= false;
 
   ButtonPanel1.OKButton.Enabled:= false;
-end;
-
-procedure TfmChooseTheme.Localize;
-const
-  section = 'd_theme';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  FThemeDefaultStr:= '(default)';
-
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= ini.ReadString(section, '_', Caption);
-    with ButtonPanel1.OKButton do Caption:= msgButtonOk;
-    with ButtonPanel1.CancelButton do Caption:= msgButtonCancel;
-
-    with GroupUI do Caption:= ini.ReadString(section, 'ty_ui', Caption);
-    with GroupSyntax do Caption:= ini.ReadString(section, 'ty_sy', Caption);
-
-    with chkEnableLex do Caption:= ini.ReadString(section, 'ele', Caption);
-    with chkSync do Caption:= ini.ReadString(section, 'syn', Caption);
-    with PanelWarning1 do Caption:= ini.ReadString(section, 'wrn', Caption);
-
-    FThemeDefaultStr:= ini.ReadString('ui', 'deft', FThemeDefaultStr);
-  finally
-    FreeAndNil(ini);
-  end;
 end;
 
 function TfmChooseTheme.GetEnableLexerThemes: boolean;

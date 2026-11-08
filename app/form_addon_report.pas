@@ -27,7 +27,6 @@ type
     PanelInfo: TPanel;
     procedure FormShow(Sender: TObject);
   private
-    procedure Localize;
   public
   end;
 
@@ -61,15 +60,11 @@ end;
 
 { TfmAddonReport }
 
-procedure TfmAddonReport.Localize;
-begin
-  Caption:= msgStatusAddonInstalled;
-  ButtonPanel1.OKButton.Caption:= msgButtonOk;
-end;
-
 procedure TfmAddonReport.FormShow(Sender: TObject);
 begin
-  Localize;
+  Caption:= msgStatusAddonInstalled;
+  ButtonPanel1.OKButton.Caption:= '确定';
+
   UpdateFormOnTop(Self);
   ButtonPanel1.OKButton.SetFocus;
 end;

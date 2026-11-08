@@ -1,10 +1,9 @@
 import os
 import cudatext as app
 from cudatext import *
-from cudax_lib import get_translation
 from .lexertypes import *
 
-_   = get_translation(__file__)  # I18N
+_ = lambda s: s
 
 config_file = os.path.join(app_path(APP_DIR_SETTINGS), 'plugins.ini')
 config_section = 'lexer_detecter_ignore'

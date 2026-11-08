@@ -274,7 +274,6 @@ type
     { public declarations }
     FPopupMore: TPopupMenu;
     property ForViewer: boolean read FForViewer write FForViewer;
-    procedure Localize;
     procedure DoOnChange;
     procedure UpdateFormHeight;
     procedure UpdateCaretPosVar;
@@ -433,11 +432,7 @@ begin
 end;
 
 procedure TfmFind.InitPopupMore;
-const
-  section = 'd_f';
 var
-  fn: string;
-  ini: TIniFile;
   SCaptionFindFirst,
   SCaptionFindPrev,
   SCaptionFindNext,
@@ -454,38 +449,17 @@ var
   Sep3: TMenuItem;
   kind: TATFinderTokensAllowed;
 begin
-  SCaptionFindFirst:= 'Find first';
-  SCaptionFindPrev:= 'Find previous';
-  SCaptionFindNext:= 'Find next';
-  SCaptionCount:= 'Count all';
-  SCaptionExtract:= 'Extract RegEx matches';
-  SCaptionSelect:= 'Select all';
-  SCaptionMark:= 'Mark all';
-  SCaptionRep:= 'Replace next, find next';
-  SCaptionRepStop:= 'Replace next, don''t find next';
-  SCaptionRepAll:= 'Replace all';
-  SCaptionRepGlobal:= 'Replace global';
-
-  fn:= AppFile_Language;
-  if FileExists(fn) then
-  begin
-    ini:= TIniFile.Create(fn);
-    try
-      SCaptionFindFirst:= ini.ReadString(section, 'h_f1', SCaptionFindFirst);
-      SCaptionFindPrev:= ini.ReadString(section, 'h_fp', SCaptionFindPrev);
-      SCaptionFindNext:= ini.ReadString(section, 'h_fn', SCaptionFindNext);
-      SCaptionCount:= ini.ReadString(section, 'cnt', SCaptionCount);
-      SCaptionExtract:= ini.ReadString(section, 'get', SCaptionExtract);
-      SCaptionSelect:= ini.ReadString(section, 'sel', SCaptionSelect);
-      SCaptionMark:= ini.ReadString(section, 'mk', SCaptionMark);
-      SCaptionRep:= ini.ReadString(section, 'h_r', SCaptionRep);
-      SCaptionRepStop:= ini.ReadString(section, 'h_r2', SCaptionRepStop);
-      SCaptionRepAll:= ini.ReadString(section, 'h_r_a', SCaptionRepAll);
-      SCaptionRepGlobal:= ini.ReadString(section, 'h_r_g', SCaptionRepGlobal);
-    finally
-      FreeAndNil(ini);
-    end;
-  end;
+  SCaptionFindFirst:= '查找第一个匹配项';
+  SCaptionFindPrev:= '查找上一个';
+  SCaptionFindNext:= '查找下一个';
+  SCaptionCount:= '全部计数';
+  SCaptionExtract:= '提取正则表达式匹配数据';
+  SCaptionSelect:= '全部选择';
+  SCaptionMark:= '全部标记';
+  SCaptionRep:= '替换下一个匹配，查找下一个';
+  SCaptionRepStop:= '替换下一个匹配，不查找下一个';
+  SCaptionRepAll:= '替换当前文档中的所有匹配项';
+  SCaptionRepGlobal:= '替换所有标签中的所有匹配项';
 
   if not Assigned(FPopupMore) then
   begin
@@ -1034,8 +1008,19 @@ procedure TfmFind.FormCreate(Sender: TObject);
 var
   kind: TATFinderTokensAllowed;
 begin
-  FCaptionFind:= 'Find';
-  FCaptionReplace:= 'Replace';
+  FCaptionFind:= '查找';
+  FCaptionReplace:= '替换';
+
+  with bTokens do
+  begin
+    Items[0]:= '任意';
+    Items[1]:= '仅注释';
+    Items[2]:= '仅字符串值';
+    Items[3]:= '仅注释/字符串值';
+    Items[4]:= '不包括注释';
+    Items[5]:= '不包括字符串值';
+    Items[6]:= '不包括注释/字符串值';
+  end;
 
   edFind.OptTabSize:= 4;
   edRep.OptTabSize:= 4;
@@ -1450,8 +1435,48 @@ end;
 
 
 procedure TfmFind.FormShow(Sender: TObject);
+var
+  NShortCut: TShortCut;
 begin
-  Localize;
+  NShortCut:= AppKeymapMain.GetShortcutFromCommand(cmd_FindNext);
+  if NShortCut<>scNone then
+    UiOps.HotkeyFindNext:= ShortcutToTextRaw(NShortCut)
+  else
+    UiOps.HotkeyFindNext:= '';
+
+  NShortCut:= AppKeymapMain.GetShortcutFromCommand(cmd_FindNextAndReplace);
+  if NShortCut<>scNone then
+    UiOps.HotkeyReplaceAndFindNext:= ShortcutToTextRaw(NShortCut)
+  else
+    UiOps.HotkeyReplaceAndFindNext:= '';
+
+  bFindFirst.Hint:= _MakeHint(msgFindHint_FindFirst, UiOps.HotkeyFindFirst);
+  bFindNext.Hint:= _MakeHint(msgFindHint_FindNext, UiOps.HotkeyFindNext);
+  bFindPrev.Hint:= _MakeHint(msgFindHint_FindPrev, UiOps.HotkeyFindPrev);
+  bRep.Hint:= _MakeHint(msgFindHint_Rep, UiOps.HotkeyReplaceAndFindNext);
+  bRepAll.Hint:= _MakeHint(msgFindHint_RepAll, UiOps.HotkeyReplaceAll);
+  bRepGlobal.Hint:= _MakeHint(msgFindHint_RepGlobal, UiOps.HotkeyReplaceGlobal);
+  bMore.Hint:= _MakeHint('', UiOps.HotkeyFindMenu);
+  chkRegex.Hint:= _MakeHint(msgFindHint_Regex, UiOps.HotkeyToggleRegex);
+  chkRegexSubst.Hint:= _MakeHint(msgFindHint_RegexSubst, '');
+  chkCase.Hint:= _MakeHint(msgFindHint_Case, UiOps.HotkeyToggleCaseSens);
+  chkWords.Hint:= _MakeHint(msgFindHint_Words, UiOps.HotkeyToggleWords);
+  chkWrap.Hint:= _MakeHint(msgFindHint_Wrapped, UiOps.HotkeyToggleWrapped);
+  chkConfirm.Hint:= _MakeHint(msgFindHint_ConfirmRep, UiOps.HotkeyToggleConfirmRep);
+  chkInSel.Hint:= _MakeHint(msgFindHint_InSelect, UiOps.HotkeyToggleInSelect);
+  chkMulLine.Hint:= _MakeHint(msgFindHint_MultiLine, UiOps.HotkeyToggleMultiline);
+  bTokens.Hint:= _MakeHint(msgFindHint_Tokens, UiOps.HotkeyToggleTokens);
+  chkHiAll.Hint:= _MakeHint(msgFindHint_HiAll, UiOps.HotkeyToggleHiAll);
+  chkImmediate.Hint:= _MakeHint(msgFindHint_Immediate, UiOps.HotkeyToggleImmediate);
+  chkPreserveCase.Hint:= _MakeHint(msgFindHint_PresCase, UiOps.HotkeyTogglePresCase);
+
+  bFindFirst.AutoSize:= true;
+  bFindNext.AutoSize:= true;
+  bFindPrev.AutoSize:= true;
+  bMore.AutoSize:= true;
+  bRep.AutoSize:= true;
+  bRepAll.AutoSize:= true;
+  bRepGlobal.AutoSize:= true;
 
   edFind.OptCaretBlinkEnabled:= EditorOps.OpCaretBlinkEn;
   edRep.OptCaretBlinkEnabled:= EditorOps.OpCaretBlinkEn;
@@ -1871,104 +1896,6 @@ procedure TfmFind.DoOnChange;
 begin
   if Assigned(FOnChangeOptions) then
     FOnChangeOptions(nil);
-end;
-
-procedure TfmFind.Localize;
-const
-  section = 'd_f';
-var
-  fn: string;
-  ini: TIniFile;
-  NShortCut: TShortCut;
-begin
-  fn:= AppFile_Language;
-  if FileExists(fn) then
-  begin
-    ini:= TIniFile.Create(fn);
-    try
-      FCaptionFind:= ini.ReadString(section, '_f', FCaptionFind);
-      FCaptionReplace:= ini.ReadString(section, '_r', FCaptionReplace);
-      with bRep do Caption:= ini.ReadString(section, 'r_c', Caption);
-      with bRepAll do Caption:= ini.ReadString(section, 'r_a', Caption);
-      with bRepGlobal do Caption:= ini.ReadString(section, 'r_gl', Caption);
-
-      msgFindHint_InputFind:= ini.ReadString(section, 'h_xf', msgFindHint_InputFind);
-      msgFindHint_InputRep:= ini.ReadString(section, 'h_xr', msgFindHint_InputRep);
-      msgFindHint_FindFirst:= ini.ReadString(section, 'h_f1', msgFindHint_FindFirst);
-      msgFindHint_FindNext:= ini.ReadString(section, 'h_fn', msgFindHint_FindNext);
-      msgFindHint_FindPrev:= ini.ReadString(section, 'h_fp', msgFindHint_FindPrev);
-      msgFindHint_Rep:= ini.ReadString(section, 'h_r', msgFindHint_Rep);
-      msgFindHint_RepAll:= ini.ReadString(section, 'h_r_a', msgFindHint_RepAll);
-      msgFindHint_RepGlobal:= ini.ReadString(section, 'h_r_g', msgFindHint_RepGlobal);
-      msgFindHint_Regex:= ini.ReadString(section, 'h_re', msgFindHint_Regex);
-      msgFindHint_RegexSubst:= ini.ReadString(section, 'h_subs', msgFindHint_RegexSubst);
-      msgFindHint_Case:= ini.ReadString(section, 'h_ca', msgFindHint_Case);
-      msgFindHint_Words:= ini.ReadString(section, 'h_wo', msgFindHint_Words);
-      msgFindHint_Wrapped:= ini.ReadString(section, 'h_wr', msgFindHint_Wrapped);
-      msgFindHint_ConfirmRep:= ini.ReadString(section, 'h_cf', msgFindHint_ConfirmRep);
-      msgFindHint_InSelect:= ini.ReadString(section, 'h_sel', msgFindHint_InSelect);
-      msgFindHint_MultiLine:= ini.ReadString(section, 'h_mul', msgFindHint_MultiLine);
-      msgFindHint_Tokens:= ini.ReadString(section, 'h_tok', msgFindHint_Tokens);
-      msgFindHint_HiAll:= ini.ReadString(section, 'h_hi', msgFindHint_HiAll);
-      msgFindHint_Immediate:= ini.ReadString(section, 'h_im', msgFindHint_Immediate);
-      msgFindHint_PresCase:= ini.ReadString(section, 'h_pres', msgFindHint_PresCase);
-
-      with bTokens do
-      begin
-        Items[0]:= ini.ReadString(section, 'tk_a', Items[0]);
-        Items[1]:= ini.ReadString(section, 'tk_y_c', Items[1]);
-        Items[2]:= ini.ReadString(section, 'tk_y_s', Items[2]);
-        Items[3]:= ini.ReadString(section, 'tk_y_cs', Items[3]);
-        Items[4]:= ini.ReadString(section, 'tk_n_c', Items[4]);
-        Items[5]:= ini.ReadString(section, 'tk_n_s', Items[5]);
-        Items[6]:= ini.ReadString(section, 'tk_n_cs', Items[6]);
-      end;
-    finally
-      FreeAndNil(ini);
-    end;
-  end;
-
-  NShortCut:= AppKeymapMain.GetShortcutFromCommand(cmd_FindNext);
-  if NShortCut<>scNone then
-    UiOps.HotkeyFindNext:= ShortcutToTextRaw(NShortCut)
-  else
-    UiOps.HotkeyFindNext:= '';
-
-  NShortCut:= AppKeymapMain.GetShortcutFromCommand(cmd_FindNextAndReplace);
-  if NShortCut<>scNone then
-    UiOps.HotkeyReplaceAndFindNext:= ShortcutToTextRaw(NShortCut)
-  else
-    UiOps.HotkeyReplaceAndFindNext:= '';
-
-  bFindFirst.Hint:= _MakeHint(msgFindHint_FindFirst, UiOps.HotkeyFindFirst);
-  bFindNext.Hint:= _MakeHint(msgFindHint_FindNext, UiOps.HotkeyFindNext);
-  bFindPrev.Hint:= _MakeHint(msgFindHint_FindPrev, UiOps.HotkeyFindPrev);
-
-  bRep.Hint:= _MakeHint(msgFindHint_Rep, UiOps.HotkeyReplaceAndFindNext);
-  bRepAll.Hint:= _MakeHint(msgFindHint_RepAll, UiOps.HotkeyReplaceAll);
-  bRepGlobal.Hint:= _MakeHint(msgFindHint_RepGlobal, UiOps.HotkeyReplaceGlobal);
-  bMore.Hint:= _MakeHint('', UiOps.HotkeyFindMenu);
-
-  chkRegex.Hint:= _MakeHint(msgFindHint_Regex, UiOps.HotkeyToggleRegex);
-  chkRegexSubst.Hint:= _MakeHint(msgFindHint_RegexSubst, '');
-  chkCase.Hint:= _MakeHint(msgFindHint_Case, UiOps.HotkeyToggleCaseSens);
-  chkWords.Hint:= _MakeHint(msgFindHint_Words, UiOps.HotkeyToggleWords);
-  chkWrap.Hint:= _MakeHint(msgFindHint_Wrapped, UiOps.HotkeyToggleWrapped);
-  chkConfirm.Hint:= _MakeHint(msgFindHint_ConfirmRep, UiOps.HotkeyToggleConfirmRep);
-  chkInSel.Hint:= _MakeHint(msgFindHint_InSelect, UiOps.HotkeyToggleInSelect);
-  chkMulLine.Hint:= _MakeHint(msgFindHint_MultiLine, UiOps.HotkeyToggleMultiline);
-  bTokens.Hint:= _MakeHint(msgFindHint_Tokens, UiOps.HotkeyToggleTokens);
-  chkHiAll.Hint:= _MakeHint(msgFindHint_HiAll, UiOps.HotkeyToggleHiAll);
-  chkImmediate.Hint:= _MakeHint(msgFindHint_Immediate, UiOps.HotkeyToggleImmediate);
-  chkPreserveCase.Hint:= _MakeHint(msgFindHint_PresCase, UiOps.HotkeyTogglePresCase);
-
-  bFindFirst.AutoSize:= true;
-  bFindNext.AutoSize:= true;
-  bFindPrev.AutoSize:= true;
-  bMore.AutoSize:= true;
-  bRep.AutoSize:= true;
-  bRepAll.AutoSize:= true;
-  bRepGlobal.AutoSize:= true;
 end;
 
 procedure TfmFind.DoFocusEditor;

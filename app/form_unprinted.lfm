@@ -4,7 +4,7 @@ object fmUnprinted: TfmUnprinted
   Top = 153
   Width = 608
   BorderStyle = bsDialog
-  Caption = 'Unprinted characters'
+  Caption = '不可见字符'
   ClientHeight = 488
   ClientWidth = 608
   Position = poScreenCenter
@@ -16,7 +16,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 48
     Width = 109
-    Caption = 'Show whitespace'
+    Caption = '显示空白字符'
     TabOrder = 1
     OnChange = chkShowWhitespaceChange
   end
@@ -25,7 +25,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 72
     Width = 198
-    Caption = 'Show whitespace only in selection'
+    Caption = '仅在选区中显示空白字符'
     TabOrder = 2
     OnChange = chkOnlyInSelChange
   end
@@ -34,7 +34,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 96
     Width = 196
-    Caption = 'Show whitespace also in selection'
+    Caption = '在选区中也显示空白字符'
     TabOrder = 3
     OnChange = chkAlsoInSelChange
   end
@@ -43,7 +43,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 120
     Width = 222
-    Caption = 'Show only leading+trailing whitespace'
+    Caption = '仅显示行首和行尾的空白字符'
     TabOrder = 4
     OnChange = chkOnlyLeadAndTrailChange
   end
@@ -52,7 +52,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 144
     Width = 175
-    Caption = 'Show only trailing whitespace'
+    Caption = '仅显示行尾的空白字符'
     TabOrder = 5
     OnChange = chkOnlyTrailChange
   end
@@ -61,7 +61,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 168
     Width = 131
-    Caption = 'Force show tab-chars'
+    Caption = '强制显示制表符（Tab）'
     TabOrder = 6
     OnChange = chkForceShowTabsChange
   end
@@ -70,7 +70,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 208
     Width = 150
-    Caption = 'Show end-of-lines marks'
+    Caption = '显示行尾标记'
     TabOrder = 7
     OnChange = chkShowEndMarksChange
   end
@@ -79,7 +79,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 232
     Width = 261
-    Caption = 'Detailed end-of-line marks: "LF", "CRLF", "CR"'
+    Caption = '详细的行尾标记："LF"、"CRLF"、"CR"'
     TabOrder = 8
     OnChange = chkEndDetailsChange
   end
@@ -108,7 +108,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 8
     Width = 238
-    Caption = 'Show unprinted chars (global enable flag)'
+    Caption = '显示不可见字符（全局启用标志）'
     TabOrder = 0
     OnChange = chkVisibleChange
   end
@@ -117,7 +117,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 256
     Width = 37
-    Caption = 'Dot'
+    Caption = '圆点'
     Checked = True
     TabOrder = 9
     TabStop = True
@@ -132,7 +132,7 @@ object fmUnprinted: TfmUnprinted
     Top = 256
     Width = 50
     BorderSpacing.Left = 10
-    Caption = 'Arrow'
+    Caption = '箭头'
     TabOrder = 10
     OnChange = chkEndArrowChange
   end
@@ -145,7 +145,7 @@ object fmUnprinted: TfmUnprinted
     Top = 256
     Width = 57
     BorderSpacing.Left = 10
-    Caption = 'Pilcrow'
+    Caption = '段落标记（回车符）'
     TabOrder = 11
     OnChange = chkEndPilcrowChange
   end
@@ -154,7 +154,7 @@ object fmUnprinted: TfmUnprinted
     Height = 19
     Top = 296
     Width = 220
-    Caption = 'Show wrapped-lines marks (soft wrap)'
+    Caption = '显示自动换行标记（软换行）'
     TabOrder = 12
     OnChange = chkWrapsChange
   end
@@ -171,7 +171,7 @@ object fmUnprinted: TfmUnprinted
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Right = 6
-    Caption = 'Apply to current tab'
+    Caption = '应用于当前选项卡'
     TabOrder = 15
     OnClick = btnApplyToCurClick
   end
@@ -200,7 +200,7 @@ object fmUnprinted: TfmUnprinted
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
-    Caption = 'Apply to all tabs'
+    Caption = '应用于所有选项卡'
     TabOrder = 16
     OnClick = btnApplyToAllClick
   end
@@ -217,7 +217,7 @@ object fmUnprinted: TfmUnprinted
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
-    Caption = 'Apply globally'
+    Caption = '全局应用'
     TabOrder = 17
     OnClick = btnApplyGloballyClick
   end
@@ -237,7 +237,7 @@ object fmUnprinted: TfmUnprinted
     AutoSize = True
     BorderSpacing.Top = 6
     Cancel = True
-    Caption = 'Close'
+    Caption = '关闭'
     Constraints.MinWidth = 98
     TabOrder = 18
     OnClick = btnCloseClick

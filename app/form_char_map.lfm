@@ -5,7 +5,7 @@ object fmCharmaps: TfmCharmaps
   Width = 516
   ActiveControl = Grid
   BorderIcons = [biSystemMenu]
-  Caption = 'Char map'
+  Caption = '字符映射表'
   ClientHeight = 523
   ClientWidth = 516
   Constraints.MinHeight = 440
@@ -105,7 +105,7 @@ object fmCharmaps: TfmCharmaps
       Width = 89
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
-      Caption = 'Hex titles'
+      Caption = 'HEX 标题'
       OnChange = chkHexTitleChange
       TabOrder = 2
     end
@@ -129,7 +129,7 @@ object fmCharmaps: TfmCharmaps
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = 'Close'
+      Caption = '关闭'
       Constraints.MinWidth = 80
       OnClick = btnCloseClick
       TabOrder = 2
@@ -155,7 +155,7 @@ object fmCharmaps: TfmCharmaps
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = '&1: ANSI'
+      Caption = '1: ansi'
       OnClick = btnAnsiClick
       TabOrder = 0
     end
@@ -170,7 +170,7 @@ object fmCharmaps: TfmCharmaps
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = '&2: Unicode'
+      Caption = '2: unicode'
       OnClick = btnUnicodeClick
       TabOrder = 1
     end

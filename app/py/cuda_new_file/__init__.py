@@ -1,8 +1,7 @@
 import os
 from cudatext import *
-from cudax_lib import get_translation
 
-_   = get_translation(__file__)  # I18N
+_ = lambda s: s
 
 DIR_NEWDOC = os.path.join(app_path(APP_DIR_DATA), 'newdoc')
 

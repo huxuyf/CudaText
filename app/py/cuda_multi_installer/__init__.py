@@ -1,12 +1,11 @@
 import os
 from cudatext import *
 import cudax_lib as apx
-from   cudax_lib import get_translation
 import cuda_addonman
 import urllib.request
 import tempfile
 
-_   = get_translation(__file__)  # I18N
+_ = lambda s: s
 
 URL_DB = 'https://raw.githubusercontent.com/Alexey-T/CudaText-registry/master/multi_inst/db.py'
 COLUMN_LEN = 20

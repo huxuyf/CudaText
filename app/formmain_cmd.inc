@@ -685,8 +685,6 @@ begin
           Frame.TabPinned:= not Frame.TabPinned;
       end;
 
-    cmd_ChooseTranslation:
-      DoDialogMenuTranslations;
     cmd_ChooseThemeUI:
       DoDialogMenuThemes;
 

@@ -2,11 +2,10 @@ import bisect
 
 from cudatext import *
 import cudax_lib as apx
-from cudax_lib import get_translation
 
 from .logic import transform
 
-_ = get_translation(__file__)
+_ = lambda s: s
 
 CONFIG_JSON = 'cuda_seltools.json'
 OUTPUT_REPLACE = 'replace'

@@ -48,7 +48,6 @@ type
     LexerName: string;
     procedure DoLoad;
     procedure DoSave;
-    procedure Localize;
     procedure UpdateList;
   public
     { public declarations }
@@ -225,7 +224,9 @@ end;
 
 procedure TfmLexerStyleMap.FormCreate(Sender: TObject);
 begin
-  Localize;
+  ButtonPanel1.OKButton.Caption:= '确定';
+  ButtonPanel1.CancelButton.Caption:= '取消';
+
   DoForm_ScaleAuto(Self, false);
 
   ListTh.ItemHeight:= Canvas.TextHeight('Tj');
@@ -316,31 +317,6 @@ begin
     ListLex.Items[i]:= ItemsLex[i] + cArrow + IfThen(ItemsVal[i]<>'', ItemsVal[i], '?');
   ListLex.Items.EndUpdate;
 end;
-
-procedure TfmLexerStyleMap.Localize;
-const
-  section = 'd_lex_map';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= ini.ReadString(section, '_', Caption);
-    with ButtonPanel1.OKButton do Caption:= msgButtonOk;
-    with ButtonPanel1.CancelButton do Caption:= msgButtonCancel;
-    with LabelLex do Caption:= ini.ReadString(section, 'st_lex', Caption);
-    with LabelTh do Caption:= ini.ReadString(section, 'st_th', Caption);
-    with btnSet do Caption:= ini.ReadString(section, 'set_sel', Caption);
-    with btnSetNone do Caption:= ini.ReadString(section, 'set_non', Caption);
-    with btnClear do Caption:= ini.ReadString(section, 'set_un', Caption);
-  finally
-    FreeAndNil(ini);
-  end;
-end;
-
 
 procedure TfmLexerStyleMap.ListThDrawItem(Control: TWinControl; AIndex: Integer;
   ARect: TRect; State: TOwnerDrawState);

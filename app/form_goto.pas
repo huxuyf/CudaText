@@ -43,7 +43,6 @@ type
     FGotoInfoExt: string;
     procedure SetIsDoubleBuffered(AValue: boolean);
     procedure EditCheckInput(Sender: TObject; AChar: WideChar; var AllowInput: boolean);
-    procedure Localize;
   public
     { public declarations }
     property IsDoubleBuffered: boolean write SetIsDoubleBuffered;
@@ -74,30 +73,13 @@ begin
   end;
 end;
 
-procedure TfmGoto.Localize;
-var
-  STitle: string;
-begin
-  FGotoTooltip:= '(10, 10:10, 10%%, d100, xFFF, %s)';
-  FGotoInfoExt:= 'with "+": select';
-
-  with TIniFile.Create(AppFile_Language) do
-  try
-    STitle:= ReadString('d_f', 'go_', 'Go to');
-    FGotoInfoExt:= ReadString('si', 'GotoInfoExt', FGotoInfoExt);
-  finally
-    Free
-  end;
-
-  STitle:= STitle+' '+
-    Format(FGotoTooltip, [FGotoInfoExt]);
-
-  Caption:= STitle;
-  plCaption.Caption:= STitle;
-end;
-
 procedure TfmGoto.FormShow(Sender: TObject);
 begin
+  FGotoTooltip:= '(10, 10:10, 10%%, d100, xFFF, %s)';
+  FGotoInfoExt:= '按住“+”键：选择';
+  Caption:= '转到 '+Format(FGotoTooltip, [FGotoInfoExt]);
+  plCaption.Caption:= Caption;
+
   edInput.Height:= ATEditorScale(UiOps.InputHeight);
   edInput.Font.Name:= EditorOps.OpFontName;
   edInput.Font.Size:= EditorOps.OpFontSize;
@@ -115,8 +97,6 @@ begin
   plCaption.Font.Color:= GetAppColor(TAppThemeColor.ListFont);
 
   UpdateFormOnTop(Self);
-
-  Localize;
 
   if UiOps.ShowMenuDialogsWithBorder then
   begin

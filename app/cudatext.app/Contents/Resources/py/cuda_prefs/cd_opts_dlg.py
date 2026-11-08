@@ -29,7 +29,7 @@ pass;                           pf80=lambda d:pformat(d,width=80)
 pass;                           pf60=lambda d:pformat(d,width=60)
 pass;                           ##!! waits correction
 
-_   = apx.get_translation(__file__) # I18N
+_ = lambda s: s
 
 VERSION     = re.split('Version:', __doc__)[1].split("'")[1]
 VERSION_V,  \
@@ -937,12 +937,6 @@ class Command:
     def _dlg_opt(self):
         defs_json = app.app_path(app.APP_DIR_SETTINGS_DEF)+os.sep+'default.json'
 
-        # support translated default.json
-        lng = app.app_proc(app.PROC_GET_LANG, '')
-        if lng:
-            fn = os.path.join(app.app_path(app.APP_DIR_DATA), 'langdefault', 'default.'+lng+'.json')
-            if os.path.isfile(fn):
-                defs_json = fn
 
         opted = OptEdD(path_keys_info=defs_json, subset='df.')
         opted.show(_('Options Editor Lite'))

@@ -211,7 +211,6 @@ begin
     cfg.SetValue('/finder/prescase', FFinder.OptPreserveCase);
 
     ////state
-    cfg.SetValue('lang', UiOps.LangName);
     if not IsNoneSessionActive then
       cfg.SetValue('session'+cOptionSystemSuffix, AppSessionName_ForHistoryFile);
     cfg.SetValue('last_cmd', FLastSelectedCommand);
@@ -1092,9 +1091,6 @@ begin
   if bAllowOnState then
     DoPyEvent_AppState(APPSTATE_SESSION_LOAD);
 
-  //avoid getting N tabs for untitled of which only N-1 are translated
-  LocalizeTabTitles;
-
   //fix disabled parsing for passive tab-groups (issue #4995)
   DoShowForVisibleFrames;
 
@@ -1262,10 +1258,6 @@ begin
 
     AppPanels[TAppPanelId.Side].Floating:= cfg.GetValue('float_side', false);
     AppPanels[TAppPanelId.Btm].Floating:= cfg.GetValue('float_bottom', false);
-
-    UiOps.LangName:= cfg.GetValue('lang', '');
-    if UiOps.LangName<>'' then
-      Localize;
 
     if FOption_AllowSessionLoad=TAppAllowSomething.Enable then
     begin

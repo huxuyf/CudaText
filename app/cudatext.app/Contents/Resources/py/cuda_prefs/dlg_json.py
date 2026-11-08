@@ -2,9 +2,9 @@ import json
 import collections
 
 from cudatext import *
-from cudax_lib import get_translation, get_opt
+from cudax_lib import get_opt
 
-_   = get_translation(__file__)  # I18N
+_ = lambda s: s
 
 
 PAD = 2

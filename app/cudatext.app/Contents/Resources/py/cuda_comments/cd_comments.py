@@ -10,7 +10,7 @@ import  cudatext            as app
 from    cudatext        import ed
 import  cudax_lib           as apx
 
-_       = apx.get_translation(__file__)
+_ = lambda s: s
 
 pass;                           LOG     = (-1==-1)  # Do or don't write log
 

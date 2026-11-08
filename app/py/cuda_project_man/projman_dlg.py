@@ -1,10 +1,9 @@
 import os
 from cudatext import *
-from cudax_lib import get_translation
 from .projman_glob import *
 from .projman_backup import DEFAULT_BACKUP_COUNT, DEFAULT_BACKUP_FOLDER
 
-_   = get_translation(__file__)  # i18n
+_ = lambda s: s
 
 
 def bool_to_str(b):

@@ -17,8 +17,7 @@ from cudatext import *
 from cudatext_keys import *
 import cudatext_cmd
 
-from cudax_lib import get_translation
-_   = get_translation(__file__)  # i18n
+_ = lambda s: s
 
 IS_WIN = os.name == 'nt'
 IS_MAC = sys.platform == 'darwin'
@@ -481,7 +480,7 @@ class Command:
     # often held STILL over a folder - exactly the case which must unfold
     DRAG_HOVER_TIMER_MS = 100
 
-    title ="Project" # No _() here, the translation is offered in "translation template.ini".
+    title ="Project"
     menuitems = (
         # item_caption, item_parent, item_types, item_action, item_hotkey
         (_("Create new empty project..."), "proj", [None, NODE_PROJECT, NODE_DIR, NODE_FILE, NODE_BAD], "cuda_project_man.action_new_project", ""),

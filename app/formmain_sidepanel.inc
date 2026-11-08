@@ -150,7 +150,7 @@ end;
 
 function TfmMain.DoSidebar_GetFormTitle(const ACaption: string): string;
 begin
-  Result:= msgTranslatedPanelCaption(ACaption);
+  Result:= msgPanelCaption(ACaption);
 end;
 
 procedure TfmMain.DoSidebar_OnCloseFloatForm(Sender: TObject; var CloseAction: TCloseAction);

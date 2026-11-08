@@ -82,7 +82,6 @@ type
     function GetResultCmd: integer;
     function IsFiltered(Item: TATKeymapItem; out AWordMatch: boolean): boolean;
     procedure DoMsgStatus(const S: string);
-    procedure Localize;
     procedure SetListCaption(const AValue: string);
     procedure TimerShowTick(Sender: TObject);
   public
@@ -135,8 +134,6 @@ procedure TfmCommands.FormShow(Sender: TObject);
 var
   i: integer;
 begin
-  Localize;
-
   edit.Height:= ATEditorScale(UiOps.InputHeight);
   edit.Font.Name:= EditorOps.OpFontName;
   edit.Font.Size:= EditorOps.OpFontSize;
@@ -834,25 +831,6 @@ begin
   FTimerShow.Enabled:= false;
   //fix caret in the middle of input, #4670
   edit.Update;
-end;
-
-procedure TfmCommands.Localize;
-const
-  section = 'd_about';
-var
-  fn: string;
-  ini: TIniFile;
-begin
-  fn:= AppFile_Language;
-  if FileExists(fn) then
-  begin
-    ini:= TIniFile.Create(fn);
-    try
-      msgCmdPaletteTextHint:= ini.ReadString(section, 'cmd_tip', msgCmdPaletteTextHint);
-    finally
-      FreeAndNil(ini);
-    end;
-  end;
 end;
 
 end.

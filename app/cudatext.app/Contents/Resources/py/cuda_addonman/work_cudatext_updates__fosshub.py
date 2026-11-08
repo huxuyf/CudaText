@@ -6,8 +6,8 @@ import tempfile
 import cudatext as app
 from .work_remote import *
 
-from cudax_lib import get_translation, safe_open_url
-_   = get_translation(__file__)  # i18n
+from cudax_lib import safe_open_url
+_ = lambda s: s
 
 OS = platform.system()
 X64 = platform.architecture()[0]=='64bit'

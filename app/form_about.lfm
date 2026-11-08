@@ -6,7 +6,7 @@ object fmAbout: TfmAbout
   ActiveControl = ButtonPanel1
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'About'
+  Caption = '关于'
   ClientHeight = 270
   ClientWidth = 465
   KeyPreview = True

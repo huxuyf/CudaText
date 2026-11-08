@@ -4,9 +4,8 @@ from time import time, strftime, gmtime
 import locale
 import cudatext as app
 from cudatext import ed
-from cudax_lib import get_translation
 
-_   = get_translation(__file__)  # i18n
+_ = lambda s: s
 
 DEF_CONFIG = '''#Documentation about formats: http://strftime.org/
 %d/%m/%Y %H:%M:%S

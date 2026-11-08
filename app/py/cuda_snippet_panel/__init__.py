@@ -1,11 +1,10 @@
 import os
 from cudatext import *
 import cudatext_cmd as cmds
-from cudax_lib import get_translation
 from .utils import *
 from .snips import *
 
-_   = get_translation(__file__)  # I18N
+_ = lambda s: s
 
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'plugins.ini')
 fn_icon = 'snip.png' # without path, in CudaText folder
@@ -39,7 +38,7 @@ class Command:
         self.update_combo()
         self.callback_btn_change(0, 0)
 
-        title = 'Snippet Panel'    # No _(), the translation is offered in "translation template.ini".
+        title = 'Snippet Panel'
         app_proc(PROC_SIDEPANEL_ADD_DIALOG, (title, self.h_dlg, fn_icon) )
         app_proc(PROC_SIDEPANEL_ACTIVATE, title)
 

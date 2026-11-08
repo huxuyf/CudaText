@@ -5,7 +5,7 @@ object fmKeyInput: TfmKeyInput
   Width = 320
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Hotkey'
+  Caption = '快捷键'
   ClientHeight = 188
   ClientWidth = 320
   KeyPreview = True
@@ -39,7 +39,7 @@ object fmKeyInput: TfmKeyInput
     Width = 320
     Align = alClient
     BevelOuter = bvNone
-    Caption = 'Press a hotkey...'
+    Caption = '按下任意键...'
     TabOrder = 1
     OnMouseDown = PanelPressMouseDown
   end

@@ -34,7 +34,6 @@ type
     procedure FormShow(Sender: TObject);
   private
     OldPath: string;
-    procedure Localize;
   public
     OldFileName: string;
     OnCheckAllowed: TAppRenameCheckAllowed;
@@ -74,10 +73,11 @@ end;
 
 procedure TfmRenameFile.FormShow(Sender: TObject);
 begin
+  ButtonPanel1.OKButton.Caption:= '确定';
+  ButtonPanel1.CancelButton.Caption:= '取消';
+
   DoForm_ScaleAuto(Self, true);
   UpdateFormOnTop(Self);
-
-  Localize;
 
   EditName.Text:= ChangeFileExt(ExtractFileName(OldFileName), '');
   EditExt.Text:= Copy(ExtractFileExt(OldFileName), 2, MaxInt);
@@ -87,25 +87,6 @@ begin
   if Assigned(EditName.OnChange) then
     EditName.OnChange(nil);
 end;
-
-procedure TfmRenameFile.Localize;
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= StringReplace(msgFileRename, '...', '', []);
-    LabelPrompt.Caption:= ini.ReadString('d_about', 'ren_to', Caption);
-    with ButtonPanel1.OKButton do Caption:= msgButtonOk;
-    with ButtonPanel1.CancelButton do Caption:= msgButtonCancel;
-  finally
-    FreeAndNil(ini);
-  end;
-end;
-
 
 function TfmRenameFile.NewFileName: string;
 begin

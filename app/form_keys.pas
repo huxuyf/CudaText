@@ -60,7 +60,6 @@ type
     procedure UpdateState;
     procedure AddHotkey(var K: TATKeyArray);
     function GetHotkey: integer;
-    procedure Localize;
   public
     { public declarations }
     Keymap: TATKeymap;
@@ -76,40 +75,14 @@ implementation
 
 { TfmKeys }
 
-procedure TfmKeys.Localize;
-const
-  section = 'd_keys';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= ini.ReadString(section, '_', Caption);
-    with panelBtn.OKButton do Caption:= msgButtonOk;
-    with panelBtn.CancelButton do Caption:= msgButtonCancel;
-    bCancelInput.Caption:= msgButtonCancel;
-
-    with bSet1 do Caption:= ini.ReadString(section, 'set', Caption);
-    with bClear1 do Caption:= ini.ReadString(section, 'clr', Caption);
-    with bAdd1 do Caption:= ini.ReadString(section, 'ex', Caption);
-
-    bSet2.Caption:= bSet1.Caption;
-    bClear2.Caption:= bClear1.Caption;
-    bAdd2.Caption:= bAdd1.Caption;
-
-    with panelPress do Caption:= ini.ReadString(section, 'wait', Caption);
-    with chkForLexer do Caption:= ini.ReadString(section, 'lex', Caption);
-  finally
-    FreeAndNil(ini);
-  end;
-end;
-
 procedure TfmKeys.FormShow(Sender: TObject);
 begin
-  Localize;
+  panelBtn.OKButton.Caption:= '确定';
+  panelBtn.CancelButton.Caption:= '取消';
+  bSet2.Caption:= bSet1.Caption;
+  bClear2.Caption:= bClear1.Caption;
+  bAdd2.Caption:= bAdd1.Caption;
+
   DoForm_ScaleAuto(Self, true);
   UpdateFormOnTop(Self);
 

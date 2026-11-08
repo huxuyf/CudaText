@@ -8,8 +8,7 @@ from .work_remote import get_url
 from .work_install_helper import after_install
 from .work_tempdir import get_temp_dir
 
-from cudax_lib import get_translation
-_   = get_translation(__file__)  # i18n
+_ = lambda s: s
 
 def get_datetime_short():
     t = datetime.now()

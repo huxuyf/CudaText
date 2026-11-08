@@ -2,8 +2,7 @@ import os
 from cudatext import *
 import cudatext_cmd
 
-from cudax_lib import get_translation
-_   = get_translation(__file__)  # I18N
+_ = lambda s: s
 
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_tabs_list.ini')
 fn_icon = 'tabs.png'
@@ -21,7 +20,7 @@ AUTO_SCROLL_CALLBACK = "module=cuda_tabs_list;cmd=auto_scroll_callback;" # strin
 THEME = app_proc(PROC_THEME_UI_DICT_GET, '')
 
 class Command:
-    title = 'Tabs'    # No _(), the translation is offered in "translation template.ini".
+    title = 'Tabs'
     h_dlg = None
     h_list = None
     h_menu = None

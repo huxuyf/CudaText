@@ -1,7 +1,6 @@
 from cudatext import *
-from cudax_lib import get_translation
 
-_   = get_translation(__file__)  # I18N
+_ = lambda s: s
 
 def _ok_email(s):
     return '@' in s and not ' ' in s and not '\t' in s

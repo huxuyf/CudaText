@@ -32,7 +32,6 @@ type
       Shift: TShiftState; X, Y: Integer);
   private
     { private declarations }
-    procedure Localize;
   public
     { public declarations }
     FHotkey: string;
@@ -63,26 +62,6 @@ end;
 
 { TfmKeyInput }
 
-procedure TfmKeyInput.Localize;
-const
-  section = 'd_keys';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= ini.ReadString(section, '_', Caption);
-    with ButtonPanel1.OKButton do Caption:= msgButtonOk;
-    with ButtonPanel1.CancelButton do Caption:= msgButtonCancel;
-    with PanelPress do Caption:= ini.ReadString(section, 'wait', Caption);
-  finally
-    FreeAndNil(ini);
-  end;
-end;
-
 procedure TfmKeyInput.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if not AppKeyIsAllowedAsCustomHotkey(Key, Shift) then
@@ -105,7 +84,9 @@ end;
 
 procedure TfmKeyInput.FormShow(Sender: TObject);
 begin
-  Localize;
+  ButtonPanel1.OKButton.Caption:= '确定';
+  ButtonPanel1.CancelButton.Caption:= '取消';
+
   DoForm_ScaleAuto(Self);
   UpdateFormOnTop(Self);
 end;

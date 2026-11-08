@@ -5,7 +5,7 @@ object fmRenameFile: TfmRenameFile
   Width = 454
   ActiveControl = EditName
   BorderStyle = bsDialog
-  Caption = 'Rename file'
+  Caption = '重命名'
   ClientHeight = 125
   ClientWidth = 454
   Position = poMainFormCenter
@@ -36,7 +36,7 @@ object fmRenameFile: TfmRenameFile
     Height = 17
     Top = 8
     Width = 76
-    Caption = 'Rename to:'
+    Caption = '重命名为:'
   end
   object EditName: TEdit
     AnchorSideLeft.Control = LabelPrompt

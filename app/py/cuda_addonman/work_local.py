@@ -7,8 +7,7 @@ import configparser
 from cudatext import *
 from .work_tempdir import get_temp_dir
 
-from cudax_lib import get_translation
-_   = get_translation(__file__)  # i18n
+_ = lambda s: s
 
 DIR_PY = app_path(APP_DIR_PY)
 DIR_DATA = app_path(APP_DIR_DATA)

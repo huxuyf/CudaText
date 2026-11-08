@@ -1,8 +1,7 @@
 from cudatext import *
 from . import opt
 
-from cudax_lib import get_translation
-_   = get_translation(__file__)  # i18n
+_ = lambda s: s
 
 def do_config_dialog():
     c1 = chr(1)

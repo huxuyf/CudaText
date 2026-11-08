@@ -11,7 +11,7 @@ import traceback
 # dbg
 import time
 
-_   = apx.get_translation(__file__)  # I18N
+_ = lambda s: s
 
 
 TITLE_DEFAULT = _('CudaText Preferences')

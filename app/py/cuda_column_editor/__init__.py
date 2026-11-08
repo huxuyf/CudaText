@@ -1,9 +1,8 @@
 import os
 
 from cudatext import *
-from cudax_lib import get_translation
 
-_ = get_translation(__file__)
+_ = lambda s: s
 
 CONFIG_FN = os.path.join(app_path(APP_DIR_SETTINGS), 'plugins.ini')
 CONFIG_SEC = 'column_editor'

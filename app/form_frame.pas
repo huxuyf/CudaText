@@ -613,12 +613,7 @@ const
 
 function GetMsgSuggestOptionsEditor: string;
 begin
-  with TIniFile.Create(AppFile_Language) do
-  try
-    Result:= ReadString('si', 'CallOptEditor', '"Options Editor" provides the dialog - click here to open');
-  finally
-    Free;
-  end;
+  Result:= '“选项编辑器”提供该对话框 - 点击此处打开';
 end;
 
 

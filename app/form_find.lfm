@@ -347,7 +347,7 @@ object fmFind: TfmFind
         Top = 0
         Width = 90
         Align = alLeft
-        Caption = 'Replace'
+        Caption = '替换'
         TabOrder = 0
         Focusable = False
         OnClick = bRepClick
@@ -358,7 +358,7 @@ object fmFind: TfmFind
         Top = 0
         Width = 90
         Align = alLeft
-        Caption = 'Rep all'
+        Caption = '全部替换'
         TabOrder = 1
         Focusable = False
         OnClick = bRepAllClick
@@ -369,7 +369,7 @@ object fmFind: TfmFind
         Top = 0
         Width = 90
         Align = alLeft
-        Caption = 'Rep global'
+        Caption = '全局替换'
         TabOrder = 2
         Focusable = False
         OnClick = bRepGlobalClick

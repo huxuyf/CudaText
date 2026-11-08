@@ -348,13 +348,13 @@ end;
 
 
 procedure TfmMain.DoOps_AddPluginMenuItem(const ACaption: string;
-  ASubMenu: TMenuItem; ALangFile: TIniFile; ACommandListIndex: integer);
+  ASubMenu: TMenuItem; ACommandListIndex: integer);
 var
   CmdItem: TAppCommandInfo;
   MenuProps: TAppMenuProps;
   Sep: TATStringSeparator;
   mi: TMenuItem;
-  strItem, strLocal: string;
+  strItem: string;
   idx, NInsert: integer;
   bRoot: boolean;
 begin
@@ -365,15 +365,6 @@ begin
   Sep.Init(ACaption, '\');
   repeat
     if not Sep.GetItemStr(strItem) then Break;
-
-    //translate items using files data/langmenu/cuda_nnnnn/ru_RU.ini
-    if strItem<>'-' then
-      if Assigned(ALangFile) then
-      begin
-        strLocal:= ALangFile.ReadString('menu', strItem, '');
-        if strLocal<>'' then
-          strItem:= strLocal;
-      end;
 
     if strItem='-' then
       idx:= -1
@@ -441,9 +432,7 @@ procedure TfmMain.UpdateMenuPlugins;
   //
 var
   SCaption, SInMenu: string;
-  LangFN, LastModule: string;
   CmdItem: TAppCommandInfo;
-  LangFile: TIniFile;
   //tick: QWord;
   iCommand: integer;
 begin
@@ -451,8 +440,6 @@ begin
   if mnuPlugins=nil then exit;
 
   //tick:= GetTickCount64;
-  LastModule:= '';
-  LangFile:= nil;
 
   mnuPlugins.Clear;
   if Assigned(mnuOpPlugins) then
@@ -467,37 +454,14 @@ begin
     SInMenu:= CmdItem.ItemInMenu;
     if SInMenu='0' then Continue;
 
-    //translate menu items using files data/langmenu/cuda_nnnnn/ru_RU.ini
-    if LastModule<>CmdItem.ItemModule then
-    begin
-      LastModule:= CmdItem.ItemModule;
-
-      LangFN:= '';
-      if UiOps.LangName<>'' then
-        LangFN:= AppDir_Data+DirectorySeparator+
-                 'langmenu'+DirectorySeparator+
-                 CmdItem.ItemModule+DirectorySeparator+
-                 UiOps.LangName+'.ini';
-
-      if Assigned(LangFile) then
-        FreeAndNil(LangFile);
-
-      if (LangFN<>'') and FileExists(LangFN) then
-      begin
-        //ShowMessage('create ini: '+LangFN);
-        LangFile:= TMemIniFile.Create(LangFN
-          {$if FPC_FULLVERSION>=30200}, TEncoding.UTF8 {$endif});
-      end;
-    end;
-
     //add to Plugins
     if (SInMenu='') or (Pos('p', SInMenu)>0) then
-      DoOps_AddPluginMenuItem(GroupValue(SCaption)+SCaption, mnuPlugins, LangFile, iCommand);
+      DoOps_AddPluginMenuItem(GroupValue(SCaption)+SCaption, mnuPlugins, iCommand);
 
     //add to Settings-plugins
     if Assigned(mnuOpPlugins) then
     if Pos('o', SInMenu)>0 then
-      DoOps_AddPluginMenuItem(SCaption, mnuOpPlugins, LangFile, iCommand);
+      DoOps_AddPluginMenuItem(SCaption, mnuOpPlugins, iCommand);
   end;
 
   UpdateMenuTheming_MainMenu_Win32(Self);

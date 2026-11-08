@@ -59,7 +59,6 @@ type
     FColorBg: TColor;
     procedure UpdateList;
     procedure UpdateChanged;
-    procedure Localize;
   public
     { public declarations }
     ThemeUI: boolean;
@@ -72,31 +71,6 @@ implementation
 {$R *.lfm}
 
 { TfmColorSetup }
-
-procedure TfmColorSetup.Localize;
-const
-  section = 'd_theme';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= ini.ReadString(section, '_', Caption);
-    with ButtonPanel1.OKButton do Caption:= msgButtonOk;
-    with ButtonPanel1.CancelButton do Caption:= msgButtonCancel;
-    with ButtonPanel1.HelpButton do Caption:= msgButtonApply;
-
-    with bChange do Caption:= ini.ReadString(section, 'ch', Caption);
-    with bNone do Caption:= ini.ReadString(section, 'non', Caption);
-    with bStyle do Caption:= ini.ReadString(section, 'sty', Caption);
-  finally
-    FreeAndNil(ini);
-  end;
-end;
-
 
 procedure TfmColorSetup.UpdateList;
 var
@@ -222,6 +196,10 @@ end;
 
 procedure TfmColorSetup.FormCreate(Sender: TObject);
 begin
+  ButtonPanel1.OKButton.Caption:= '确定';
+  ButtonPanel1.CancelButton.Caption:= '取消';
+  ButtonPanel1.HelpButton.Caption:= '应用';
+
   ////disabled yet, to quick solve issue #3626
   //FormHistoryLoad(Self, '/pos/colortheme', false);
 end;
@@ -230,8 +208,6 @@ procedure TfmColorSetup.FormShow(Sender: TObject);
 begin
   PanelUi.Visible:= ThemeUI;
   PanelSyntax.Visible:= not ThemeUI;
-
-  Localize;
 
   Width:= ATEditorScale(Width);
   Height:= ATEditorScale(Height);

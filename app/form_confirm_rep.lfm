@@ -6,7 +6,7 @@ object fmConfirmReplace: TfmConfirmReplace
   ActiveControl = bYes
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Confirm'
+  Caption = '确认'
   ClientHeight = 63
   ClientWidth = 645
   DefaultMonitor = dmMainForm
@@ -28,7 +28,7 @@ object fmConfirmReplace: TfmConfirmReplace
     Top = 32
     Width = 120
     Anchors = [akTop, akLeft, akBottom]
-    Caption = 'Yes to all (a)'
+    Caption = '全是(A)'
     TabStop = True
     TabOrder = 1
     OnClick = bYesAllClick
@@ -38,7 +38,7 @@ object fmConfirmReplace: TfmConfirmReplace
     Height = 24
     Top = 32
     Width = 96
-    Caption = 'Yes (y)'
+    Caption = '是(Y)'
     TabStop = True
     TabOrder = 0
     OnClick = bYesClick
@@ -55,7 +55,7 @@ object fmConfirmReplace: TfmConfirmReplace
     Width = 120
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 20
-    Caption = 'No (n)'
+    Caption = '否(N)'
     TabStop = True
     TabOrder = 2
     OnClick = bNoClick
@@ -71,7 +71,7 @@ object fmConfirmReplace: TfmConfirmReplace
     Top = 32
     Width = 120
     Anchors = [akTop, akLeft, akBottom]
-    Caption = 'No to all (Esc)'
+    Caption = '全否(Esc)'
     TabStop = True
     TabOrder = 3
     OnClick = bNoAllClick

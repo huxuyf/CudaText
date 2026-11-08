@@ -1,7 +1,6 @@
 from cudatext import *
-from cudax_lib import get_translation
 
-_   = get_translation(__file__)  # I18N
+_ = lambda s: s
 
 def _sort(s, sep_k, sep_v):
 

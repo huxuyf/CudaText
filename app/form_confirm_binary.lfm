@@ -24,7 +24,7 @@ object fmConfirmBinary: TfmConfirmBinary
     BorderSpacing.Left = 6
     BorderSpacing.Top = 10
     BorderSpacing.Right = 6
-    Caption = 'File is not text'
+    Caption = 'File is maybe not text:'
   end
   object btnEdit: TButton
     AnchorSideLeft.Control = Owner
@@ -37,7 +37,7 @@ object fmConfirmBinary: TfmConfirmBinary
     Width = 240
     AutoSize = True
     BorderSpacing.Top = 10
-    Caption = 'Edit anyway'
+    Caption = '忽略并编辑'
     Constraints.MinWidth = 240
     TabOrder = 0
     OnClick = btnEditClick
@@ -55,7 +55,7 @@ object fmConfirmBinary: TfmConfirmBinary
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
-    Caption = 'Viewer - binary mode'
+    Caption = '查看器：二进制模式'
     TabOrder = 2
     OnClick = btnViewBinaryClick
   end
@@ -73,7 +73,7 @@ object fmConfirmBinary: TfmConfirmBinary
     AutoSize = True
     BorderSpacing.Top = 6
     Cancel = True
-    Caption = 'Cancel'
+    Caption = '取消'
     TabOrder = 5
     OnClick = btnCancelClick
   end
@@ -101,7 +101,7 @@ object fmConfirmBinary: TfmConfirmBinary
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
-    Caption = 'Viewer - hex mode'
+    Caption = '查看器：十六进制模式'
     TabOrder = 3
     OnClick = btnViewHexClick
   end
@@ -118,7 +118,7 @@ object fmConfirmBinary: TfmConfirmBinary
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
-    Caption = 'Viewer - text mode'
+    Caption = '查看器：文本模式'
     TabOrder = 1
     OnClick = btnViewTextClick
   end
@@ -135,7 +135,7 @@ object fmConfirmBinary: TfmConfirmBinary
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
-    Caption = 'Viewer - unicode mode'
+    Caption = '查看器：Unicode 模式'
     TabOrder = 4
     OnClick = btnViewUnicodeClick
   end
@@ -148,6 +148,6 @@ object fmConfirmBinary: TfmConfirmBinary
     Top = 44
     Width = 63
     BorderSpacing.Top = 2
-    Caption = 'LabelDetails'
+    Caption = 'Detected binary char:'
   end
 end

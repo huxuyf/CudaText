@@ -12,7 +12,7 @@ import  cudatext        as app
 #import  cudatext_cmd    as cmds
 import  cudax_lib       as apx
 from    .cd_plug_lib    import *
-_   = get_translation(__file__) # I18N
+_ = lambda s: s
 
 pass;                           # Logging
 pass;                           LOG = (-2==-2)  # Do or dont logging.

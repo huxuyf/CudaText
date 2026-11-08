@@ -81,8 +81,8 @@ const
   msgErrorLowDiskSpaceMb = '磁盘可用空间小于 %d Mb。请释放一些空间，然后点击“重试”。';
   msgErrorNullBytesInFile = '配置文件已损坏，因为其前导字节为 NULL：'#10'%s'#10'按“确定”删除它。';
 
-  msgCmdPaletteCaption: string = 'Command palette';
-  msgCmdPaletteTextHint: string = 'F9 to set hotkey, @ to go to symbol, : to go to line, # for help';
+  msgCmdPaletteCaption: string = '命令面板';
+  msgCmdPaletteTextHint: string = '按 F9 设置热键，按 @ 查找热键，按 # 求助';
   msgCmdPalettePrefixHelp: string = '#p – 插件'+EOL+'#l – 词法分析器'+EOL+'#f – 已打开的文件'+EOL+'#r – 最近的文件'+EOL+'@name – 在当前文件中转到符号'+EOL+':N – 转到第 N 行';
   msgCmdPaletteGotoLine: string = '转到第 %s 行 — 按 Enter';
   msgCmdPaletteNoSymbols: string = '当前文件未找到符号（此词法分析器没有代码树辅助程序）。';
@@ -98,30 +98,30 @@ const
   msgTitle = 'CudaText'; //no i18n
   msgModifiedString: array[boolean] of string = ('', '*'); //no i18n
   msgLiteLexerSuffix = ' ^'; //no i18n
-  msgStatusbarCellMouseColumnSel: string = 'MouseCol';
-  msgStatusbarCellKeybdColumnSel: string = 'KeybdCol';
-  msgStatusbarCellInsOvr: array[boolean] of string = ('Ins', 'Ovr');
-  msgStatusbarCellReadOnly: string = 'RO';
+  msgStatusbarCellMouseColumnSel: string = '鼠标列';
+  msgStatusbarCellKeybdColumnSel: string = '键盘列';
+  msgStatusbarCellInsOvr: array[boolean] of string = ('插入', '覆盖');
+  msgStatusbarCellReadOnly: string = '只读';
 
-  msgDialogTitleOpen: string = 'Open file';
-  msgDialogTitleSaveAs: string = 'Save file as';
+  msgDialogTitleOpen: string = '打开文件';
+  msgDialogTitleSaveAs: string = '文件另存为';
 
   msgFileMaybeNotText: string = 'File is maybe not text:';
   msgFileTooBig: string = 'File is too big to edit:';
   msgDetectedBinaryChar: string = 'Detected binary char:';
 
-  msgTooltipCloseTab: string = 'Close tab';
-  msgTooltipAddTab: string = 'Add tab';
-  msgTooltipArrowLeft: string = 'Scroll tabs left';
-  msgTooltipArrowRight: string = 'Scroll tabs right';
-  msgTooltipArrowMenu: string = 'Show tabs menu';
+  msgTooltipCloseTab: string = '关闭标签页';
+  msgTooltipAddTab: string = '添加标签页';
+  msgTooltipArrowLeft: string = '向左滚动标签栏';
+  msgTooltipArrowRight: string = '向右滚动标签栏';
+  msgTooltipArrowMenu: string = '显示标签菜单';
 
   msgUntitledEnglish = 'Untitled';
-  msgUntitledTab: string = msgUntitledEnglish;
-  msgAllFiles: string = 'All files';
-  msgNoLexer: string = '(none)';
+  msgUntitledTab: string = '无标题';
+  msgAllFiles: string = '所有文件';
+  msgNoLexer: string = '（无词法分析器）';
   msgIgnoredCommandIfNotFocused: string = '忽略该命令：编辑器当前未获得焦点';
-  msgOpenLink: string = 'Open %s';
+  msgOpenLink: string = '打开 %s';
 
   msgPanelMenu_Init = 'Menu';
   msgPanelTree_Init = 'Code-Tree';
@@ -134,50 +134,50 @@ const
   msgPanelValidate_Init = 'Validate';
   msgPanelSearch_Init = 'Search';
 
-  msgPanelMenu: string = msgPanelMenu_Init;
-  msgPanelTree: string = msgPanelTree_Init;
-  msgPanelProject: string = msgPanelProject_Init;
-  msgPanelTabs: string = msgPanelTabs_Init;
-  msgPanelSnippet: string = msgPanelSnippet_Init;
+  msgPanelMenu: string = '菜单';
+  msgPanelTree: string = '代码树';
+  msgPanelProject: string = '项目';
+  msgPanelTabs: string = '标签列表';
+  msgPanelSnippet: string = '片段面板';
 
-  msgPanelConsole: string = msgPanelConsole_Init;
-  msgPanelOutput: string = msgPanelOutput_Init;
-  msgPanelValidate: string = msgPanelValidate_Init;
-  msgPanelSearch: string = msgPanelSearch_Init;
+  msgPanelConsole: string = '控制台';
+  msgPanelOutput: string = '输出';
+  msgPanelValidate: string = '验证';
+  msgPanelSearch: string = '搜索';
 
-  msgFinderHintRegex: string = 'regex';
-  msgFinderHintCase: string = 'case';
-  msgFinderHintWords: string = 'words';
-  msgFinderHintBack: string = 'back';
-  msgFinderHintWrapped: string = 'wrapped';
-  msgFinderHintInSel: string = 'in-sel';
-  msgFinderHintFromCaret: string = 'from-caret';
-  msgFinderHintSearchWrapped: string = 'edge-cross';
-  msgFinderHintPresCase: string = 'pres-case';
+  msgFinderHintRegex: string = '正则表达式';
+  msgFinderHintCase: string = '区分大小写';
+  msgFinderHintWords: string = '单词';
+  msgFinderHintBack: string = '后退';
+  msgFinderHintWrapped: string = '换行';
+  msgFinderHintInSel: string = '在选区中';
+  msgFinderHintFromCaret: string = '从插入点';
+  msgFinderHintSearchWrapped: string = '横向边';
+  msgFinderHintPresCase: string = '保留大小写';
   msgFinderRegexMathes: string = '正则匹配数';
 
-  msgButtonOk: string = 'OK';
-  msgButtonCancel: string = 'Cancel';
-  msgButtonApply: string = 'Apply';
-  msgButtonClose: string = 'Close';
-  msgButtonYes: string = '&Yes';
-  msgButtonNo: string = '&No';
-  msgButtonYesAll: string = 'Yes to &all';
-  msgButtonNoAll: string = 'No to all';
-  msgButtonAbort: string = 'Abort';
-  msgButtonRetry: string = 'Retry';
-  msgButtonIgnore: string = 'Ignore';
+  msgButtonOk: string = '确定';
+  msgButtonCancel: string = '取消';
+  msgButtonApply: string = '应用';
+  msgButtonClose: string = '关闭';
+  msgButtonYes: string = '是(&Y)';
+  msgButtonNo: string = '否(&N)';
+  msgButtonYesAll: string = '全是(&A)';
+  msgButtonNoAll: string = '全否';
+  msgButtonAbort: string = '中止';
+  msgButtonRetry: string = '重试';
+  msgButtonIgnore: string = '忽略';
 
-  msgFileNew: string = 'New file';
-  msgFileOpen: string = 'Open file...';
-  msgFileSave: string = 'Save file';
-  msgFileRename: string = 'Rename...';
-  msgFileClearList: string = 'Clear list';
-  msgCopySub: string = 'Copy to clipboard';
-  msgCopyFilenameName: string = 'Copy filename only';
-  msgCopyFilenameDir: string = 'Copy filepath only';
-  msgCopyFilenameFull: string = 'Copy full filepath';
-  msgCopyCurrentLine: string = 'Copy current line';
+  msgFileNew: string = '新建文件';
+  msgFileOpen: string = '打开文件...';
+  msgFileSave: string = '保存';
+  msgFileRename: string = '重命名...';
+  msgFileClearList: string = '清除列表';
+  msgCopySub: string = '复制到剪贴板';
+  msgCopyFilenameName: string = '仅复制文件名';
+  msgCopyFilenameDir: string = '仅复制文件路径';
+  msgCopyFilenameFull: string = '复制完整文件路径';
+  msgCopyCurrentLine: string = '复制当前行';
 
   msgEndWin = 'CRLF';
   msgEndUnix = 'LF';
@@ -204,49 +204,49 @@ const
     {$endif}
   {$endif}
 
-  msgCannotOpenFile: string = 'Cannot open file:';
-  msgCannotFindFile: string = 'Cannot find file:';
+  msgCannotOpenFile: string = '无法打开文件：';
+  msgCannotFindFile: string = '找不到文件：';
   msgCannotFindFolder: string = '找不到文件夹：';
   msgCannotOpenNoReadPermissions: string = '没有读取权限。';
   msgCannotHandleSplittedTab: string = '无法处理拆分后的 UI 标签页';
   msgCannotHandleUntitledTab: string = '无法处理未命名文档';
-  msgCannotFindLexerInLibrary: string = 'Cannot find lexer in library:';
-  msgCannotFindLexerFile: string = 'Cannot find lexer:';
+  msgCannotFindLexerInLibrary: string = '在库中找不到词法分析器：';
+  msgCannotFindLexerFile: string = '找不到词法分析器文件：';
   msgCannotLoadLexerFile: string = '无法加载词法分析器：';
-  msgCannotFindSublexerInLibrary: string = 'Cannot find linked sublexer:';
+  msgCannotFindSublexerInLibrary: string = '在库中找不到链接的子词法分析器：';
   msgCannotFindWithoutCaret: string = '没有光标时无法查找/替换';
-  msgCannotCreateDir: string = 'Cannot create folder:';
-  msgCannotSaveFile: string = 'Cannot save file:';
-  msgCannotSaveFileTempRemoved: string = 'The temporary copy was deleted; the text is still in the editor.';
-  msgCannotSaveFileWithEnc: string = 'Could not save file because encoding "%s" cannot handle Unicode text. Program has saved file in UTF-8 encoding.';
-  msgCannotSaveUserConf: string = 'Cannot save user config (read only?)';
+  msgCannotCreateDir: string = '无法创建目录：';
+  msgCannotSaveFile: string = '无法保存文件：';
+  msgCannotSaveFileTempRemoved: string = '临时副本已被删除；文本仍保留在编辑器中。';
+  msgCannotSaveFileWithEnc: string = '无法保存文件，因为编码 "%s" 无法处理 Unicode 文本。程序已将文件保存为 UTF-8 编码。';
+  msgCannotSaveUserConf: string = '无法保存用户配置（只读？）';
   msgCannotLoadFileInUTF8: string = '无法以 UTF-8 加载文件，UTF-8 序列不正确';
-  msgCannotReadConfig: string = 'Cannot parse config:';
-  msgCannotReloadUntitledTab: string = 'Cannot reopen untitled tab';
+  msgCannotReadConfig: string = '无法读取/解析配置：';
+  msgCannotReloadUntitledTab: string = '无法重新打开无标题标签';
   msgCannotFindInMultiSel: string = 'Cannot find in multi-selections, yet';
-  msgCannotFindMatch: string = 'Cannot find';
-  msgCannotFindInstallInfInZip: string = 'Cannot find install.inf in zip file';
-  msgCannotFindBookmarks: string = 'Cannot find bookmarks in text';
-  msgCannotHandleZip: string = 'Cannot handle zip file:';
+  msgCannotFindMatch: string = '找不到';
+  msgCannotFindInstallInfInZip: string = '在 zip 文件的根目录中找不到 install.inf';
+  msgCannotFindBookmarks: string = '在文本中找不到标记';
+  msgCannotHandleZip: string = '无法处理 zip 文件：';
   msgCannotSetHotkey: string = '无法为此项设置快捷键';
-  msgCannotInstallAddonApi: string = 'Cannot install add-on "%s", it needs newer application version (API %s)';
+  msgCannotInstallAddonApi: string = '无法安装加载项 "%s"，它需要较新的应用程序版本（API %s）';
   msgCannotInstallOnOS: string = '无法安装附加组件 "%s"：它需要其他操作系统（%s）';
   msgCannotInstallReqPlugin: string = '无法安装 "%s"：缺少所需插件（%s）';
   msgCannotInstallReqLexer: string = '无法安装 "%s"：缺少所需词法分析器（%s）';
-  msgCannotAutocompleteMultiCarets: string = 'Cannot auto-complete with multi-carets';
-  msgCannotSetWrap: string = 'Cannot set word-wrap mode. Line count %d is bigger than value of option "wrap_enabled_max_lines": %d.';
+  msgCannotAutocompleteMultiCarets: string = '自动完成不适用于多个插入点';
+  msgCannotSetWrap: string = '无法设置自动换行模式。行数 %d 大于选项“wrap_enabled_max_lines”的值：%d。';
   msgCannotSaveAndDontWantToRunPkExec = '无法保存到受写保护的文件夹。请以 root 身份运行：';
 
-  msgStatusbarTextTab: string = 'Tab';
-  msgStatusbarTextSpaces: string = 'Spaces';
+  msgStatusbarTextTab: string = '制表符';
+  msgStatusbarTextSpaces: string = '空格';
 
-  msgStatusbarTextLine: string = 'Ln';
-  msgStatusbarTextCol: string = 'Col';
-  msgStatusbarTextSel: string = 'sel';
-  msgStatusbarTextLinesSel: string = 'lines sel';
-  msgStatusbarTextCarets: string = 'carets';
+  msgStatusbarTextLine: string = '行';
+  msgStatusbarTextCol: string = '列';
+  msgStatusbarTextSel: string = '选择';
+  msgStatusbarTextLinesSel: string = '选择行';
+  msgStatusbarTextCarets: string = '插入点';
 
-  msgStatusbarFoundInVisibleArea: string = '(in the visible area)';
+  msgStatusbarFoundInVisibleArea: string = '（可见区域）';
 
   {
   //this is not used anymore, statusbar panel 'wrap' shows graphics now
@@ -254,96 +254,93 @@ const
     ('→', '↵', '↵│');
     }
 
-  msgStatusbarHintCaret: string = 'Caret position, selection';
-  msgStatusbarHintEnc: string = 'File encoding';
-  msgStatusbarHintLexer: string = 'Lexer (language)';
-  msgStatusbarHintEnds: string = 'End-of-line chars';
-  msgStatusbarHintSelMode: string = 'Mouse/keyboard column selection without Alt-key';
-  msgStatusbarHintTabSize: string = 'Tabulation width, by space-chars';
-  msgStatusbarHintInsOvr: string = 'Insert/Overwrite mode';
-  msgStatusbarHintWrap: string = 'Word wrap (off, by window, by fixed margin)';
-  msgStatusbarHintZoom: string = 'Zoom value';
-  msgStatusbarHintReadOnly: string = 'Read-only mode';
-
-  msgStatusI18nEnglishAfterRestart: string = '重启程序后将应用英文翻译';
-  msgStatusI18nPluginsMenuAfterRestart: string = '重启程序后将应用插件菜单和插件对话框的翻译';
+  msgStatusbarHintCaret: string = '光标位置，选择';
+  msgStatusbarHintEnc: string = '文件编码';
+  msgStatusbarHintLexer: string = '词法分析器（语言）';
+  msgStatusbarHintEnds: string = '行尾字符';
+  msgStatusbarHintSelMode: string = '无需 Alt 键即可使用鼠标/键盘选择列';
+  msgStatusbarHintTabSize: string = '制表符宽度，以空格字符为单位';
+  msgStatusbarHintInsOvr: string = '插入/覆盖模式';
+  msgStatusbarHintWrap: string = '自动换行（关闭，按窗口，按边距）';
+  msgStatusbarHintZoom: string = '缩放值';
+  msgStatusbarHintReadOnly: string = '只读模式';
 
   msgStatusSaveIsIgnored: string = '已忽略“保存”命令（文件尚未修改）';
-  msgStatusPluginHotkeyBusy: string = 'Note: hotkey [%s] is busy, skipped it';
-  msgStatusSyntaxThemesOff: string = 'Syntax themes are turned off by option "ui_lexer_themes": false. So the following dialog will have no effect. To customize styles, use "Lexer properties" dialog.';
-  msgStatusIncorrectInstallInfInZip: string = 'Incorrect install.inf in zip';
-  msgStatusUnsupportedAddonType: string = 'Unsupported add-on type:';
-  msgStatusPackageContains: string = 'This package contains:';
-  msgStatusPackageName: string = 'name:';
-  msgStatusPackageType: string = 'type:';
-  msgStatusPackageDesc: string = 'description:';
-  msgStatusPackageCommand: string = 'command:';
-  msgStatusPackageEvents: string = 'events:';
-  msgStatusPackageLexer: string = 'lexer:';
+  msgStatusPluginHotkeyBusy: string = '警告：快捷键 [%s] 已被占用，未设置成功';
+  msgStatusSyntaxThemesOff: string = '语法主题已通过选项 "ui_lexer_themes": false 关闭。因此以下对话框将无效。若要自定义样式，请使用“词法分析器属性”对话框。';
+  msgStatusIncorrectInstallInfInZip: string = 'zip 包中的 install.inf 文件不正确';
+  msgStatusUnsupportedAddonType: string = '不支持的插件类型：';
+  msgStatusPackageContains: string = '此安装包包含：';
+  msgStatusPackageName: string = '名称：';
+  msgStatusPackageType: string = '类型：';
+  msgStatusPackageDesc: string = '描述：';
+  msgStatusPackageCommand: string = '命令：';
+  msgStatusPackageEvents: string = '事件：';
+  msgStatusPackageLexer: string = '词法分析器：';
   msgStatusPackageLexerSettings: string = '词法分析器设置：';
-  msgStatusPackageAutoCompletion: string = 'static auto-completion:';
+  msgStatusPackageAutoCompletion: string = '静态自动补全：';
   msgStatusPackageData: string = '数据：';
   msgStatusPackageFormatter: string = '格式化程序：';
   msgStatusPackageLinter: string = '代码检查工具：';
   msgStatusPackagePackage: string = '包：';
-  msgStatusPackageMissedLexerMap: string = 'lexer misses themes support (.cuda-lexmap file)';
-  msgStatusInstalledNeedRestart: string = 'Package will take effect after program restart';
-  msgStatusCommandOnlyForLexers: string = 'Command is only for lexer(s):';
-  msgStatusOpenedBrowser: string = 'Opened browser';
-  msgStatusCopiedLink: string = 'Copied link';
-  msgStatusAddonInstalled: string = 'Package installed';
-  msgStatusAddonsInstalled: string = 'Installed several packages (up to %d)';
-  msgStatusOpened: string = 'Opened:';
-  msgStatusClosed: string = 'Closed:';
-  msgStatusReopened: string = 'Reopened:';
-  msgStatusSavedFile: string = 'Saved:';
-  msgStatusBadRegex: string = 'Incorrect regex passed:';
-  msgStatusFoundNextMatch: string = 'Found next match';
-  msgStatusTryingAutocomplete: string = 'Trying auto-complete for:';
-  msgStatusReplaceCount: string = 'Replaced: %d';
-  msgStatusFoundFragments: string = 'Found %d fragment(s)';
-  msgStatusReadingOps: string = 'Reading options';
-  msgStatusPictureNxN: string = 'Image %dx%d';
-  msgStatusCancelled: string = 'Cancelled';
-  msgStatusBadLineNum: string = 'Incorrect number entered';
-  msgStatusEndsChanged: string = 'Line ends changed';
-  msgStatusEncChanged: string = 'Encoding changed';
-  msgStatusGotoFileLineCol: string = 'File "%s", Line %d Col %d';
-  msgStatusClickingLogLine: string = 'Clicking log line';
-  msgStatusNoGotoDefinitionPlugins: string = 'No goto-definition plugins installed for this lexer';
-  msgStatusFilenameAlreadyOpened: string = 'File name is already opened in another tab:';
-  msgStatusNeedToCloseTabSavedOrDup: string = 'You need to close tab: saved-as or duplicate.';
-  msgStatusHotkeyBusy: string = 'Hotkey is busy: %s';
-  msgStatusChangedLinesCount: string = 'Changed %d lines';
-  msgStatusFontSizeChanged: string = 'Font size changed to %d%%';
-  msgStatusLexerDisabledBySize: string = 'Option "ui_max_size_lexer":%d disables lexer "%s" in this file (%d Mb)';
+  msgStatusPackageMissedLexerMap: string = '词法分析器缺少主题支持（.cuda-lexmap 文件）';
+  msgStatusInstalledNeedRestart: string = '插件将在程序重启后生效';
+  msgStatusCommandOnlyForLexers: string = '此命令仅适用于词法分析器：';
+  msgStatusOpenedBrowser: string = '已打开浏览器';
+  msgStatusCopiedLink: string = '已复制链接';
+  msgStatusAddonInstalled: string = '插件已安装';
+  msgStatusAddonsInstalled: string = '已安装多个插件（最多 %d 个）';
+  msgStatusOpened: string = '已打开：';
+  msgStatusClosed: string = '已关闭：';
+  msgStatusReopened: string = '已重新打开：';
+  msgStatusSavedFile: string = '已保存：';
+  msgStatusBadRegex: string = '传入的正则表达式不正确：';
+  msgStatusFoundNextMatch: string = '找到下一个匹配项';
+  msgStatusTryingAutocomplete: string = '正在尝试自动补全：';
+  msgStatusReplaceCount: string = '已替换：%d 处';
+  msgStatusFoundFragments: string = '找到 %d 个片段';
+  msgStatusReadingOps: string = '正在读取选项';
+  msgStatusPictureNxN: string = '图像 %dx%d';
+  msgStatusCancelled: string = '已取消';
+  msgStatusBadLineNum: string = '输入的行号不正确';
+  msgStatusEndsChanged: string = '行尾符已更改';
+  msgStatusEncChanged: string = '编码已更改';
+  msgStatusGotoFileLineCol: string = '文件“%s”，第 %d 行，第 %d 列';
+  msgStatusClickingLogLine: string = '正在点击日志行';
+  msgStatusNoGotoDefinitionPlugins: string = '此词法分析器未安装“跳转到定义”插件';
+  msgStatusFilenameAlreadyOpened: string = '文件名已在另一个选项卡中打开：';
+  msgStatusNeedToCloseTabSavedOrDup: string = '您需要关闭选项卡：另存为或重复的选项卡。';
+  msgStatusHotkeyBusy: string = '快捷键已被占用：%s';
+  msgStatusChangedLinesCount: string = '已更改 %d 行';
+  msgStatusFontSizeChanged: string = '字体大小已更改为 %d%%';
+  msgStatusLexerDisabledBySize: string = '选项 "ui_max_size_lexer":%d 已在此文件中禁用词法分析器“%s”（文件大小：%d Mb）';
   msgStatusDetectedBinaryChar: string = '检测到二进制字符 0x%s，位于文件 “%s”';
-  msgStatusUndoStopped: string = 'Undo was stopped at line %s, see option "max_line_len_for_undo": %d (click to hide)';
+  msgStatusUndoStopped: string = '撤销功能已在第 %s 行停止，请参见选项 "max_line_len_for_undo": %d（点击隐藏）';
 
-  msgConfirmHotkeyBusy: string = 'Hotkey is already occupied by command:'#10'%s'#10#10'Overwrite it?';
-  msgConfirmHotkeyList: string = 'hotkeys (%d): %s';
-  msgConfirmOkNoHotkeys: string = 'OK without hotkeys';
-  msgConfirmSyntaxThemeSameName: string = 'Syntax theme exists, with the same name as UI theme. Do you want to apply it too?';
-  msgConfirmInstallIt: string = 'Do you want to install it?';
-  msgConfirmFileChangedOutside: string = 'File was changed outside:';
-  msgConfirmFileDeletedOutside: string = 'File was deleted outside:';
-  msgConfirmReloadIt: string = 'Reopen it?';
-  msgConfirmReloadYes: string = 'Reopen';
-  msgConfirmReloadYesAlways: string = 'Auto reopen this file';
-  msgConfirmReloadNoMore: string = 'Never ask for this file';
-  msgConfirmReloadItHotkeysSess: string = '(Yes: reopen. No: open text from previous session.)';
-  msgConfirmOpenCreatedDoc: string = 'Open created document?';
-  msgConfirmSaveColorsToFile: string = 'Save theme to file?';
-  msgConfirmSaveModifiedTab: string = 'Save changes to document "%s" before closing?'#10#10'If you don''t save, changes will be permanently lost.';
-  msgConfirmClosePinnedTab: string = 'Document is pinned:'#10'%s'#10#10'Are you sure you want to close it?';
-  msgConfirmReopenModifiedTab: string = 'Document was modified:'#10'%s'#10#10'Reopen it?';
-  msgConfirmReloadFileWithEnc: string = 'Encoding is changed in memory.'#10'Do you also want to reopen file?';
-  msgConfirmCreateNewFile: string = 'File not found:'#10'"%s"'#10#10'Create it?';
-  msgConfirmCreateUserConfig: string = 'User config not found. Create it?';
-  msgConfirmCloseAndDeleteFile: string = 'Close tab and delete its file?';
-  msgConfirmDeleteLexer: string = 'Delete lexer "%s"?';
-  msgConfirmRemoveStylesFromBackup: string = 'Remove checked styles from backup file?';
-  msgConfirmReplaceGlobal: string = 'This will perform mass replace in all opened documents. This will also reset all selections. Continue?';
+  msgConfirmHotkeyBusy: string = '快捷键已被以下命令占用：'#10'%s'#10''#10'是否覆盖？';
+  msgConfirmHotkeyList: string = '快捷键 (%d)：%s';
+  msgConfirmOkNoHotkeys: string = '确定（不使用快捷键）';
+  msgConfirmSyntaxThemeSameName: string = '语法主题已存在，且与界面主题同名。是否也应用该语法主题？';
+  msgConfirmInstallIt: string = '是否要安装它？';
+  msgConfirmFileChangedOutside: string = '文件在外部被修改：';
+  msgConfirmFileDeletedOutside: string = '文件在外部被删除：';
+  msgConfirmReloadIt: string = '是否重新打开？';
+  msgConfirmReloadYes: string = '重新打开';
+  msgConfirmReloadYesAlways: string = '自动重新打开此文件';
+  msgConfirmReloadNoMore: string = '不再询问此文件';
+  msgConfirmReloadItHotkeysSess: string = '(是：重新打开。否：加载上一会话的文本。)';
+  msgConfirmOpenCreatedDoc: string = '是否打开已创建的文档？';
+  msgConfirmSaveColorsToFile: string = '是否将主题保存到文件？';
+  msgConfirmSaveModifiedTab: string = '在关闭前是否将更改保存到文档“%s”？'#10''#10'如果不保存，更改将永久丢失。';
+  msgConfirmClosePinnedTab: string = '文档已被固定：'#10'%s'#10''#10'确定要关闭它吗？';
+  msgConfirmReopenModifiedTab: string = '文档已被修改：'#10'%s'#10''#10'是否重新打开？';
+  msgConfirmReloadFileWithEnc: string = '内存中的编码已更改。'#10'是否还要重新打开文件？';
+  msgConfirmCreateNewFile: string = '未找到文件：'#10'%s'#10''#10'是否创建它？';
+  msgConfirmCreateUserConfig: string = '未找到用户配置。是否创建？';
+  msgConfirmCloseAndDeleteFile: string = '是否关闭选项卡并删除其文件？';
+  msgConfirmDeleteLexer: string = '是否删除词法分析器“%s”？';
+  msgConfirmRemoveStylesFromBackup: string = '是否从备份文件中移除已勾选的样式？';
+  msgConfirmReplaceGlobal: string = '这将在所有打开的文档中执行批量替换。此操作还会重置所有选择。是否继续？';
 
   msgCommandNeedsPython: string =
     '此命令需要 Python 引擎。'
@@ -398,21 +395,21 @@ const
       '---------------------------------------------------------------'+EOL;
 
 const
-  msgViewer: string = 'Viewer';
+  msgViewer: string = '查看器';
   msgViewerModes: array[TATBinHexMode] of string = (
-    'Text',
-    'Binary',
-    'Hex',
-    'Unicode',
-    'Unicode/Hex'
+    '纯文本',
+    '二进制',
+    '十六进制',
+    'unicode 文本',
+    'unicode 文本/十六进制混合模式'
     );
 
-  msgTextCaseMenu: string = 'Convert case';
-  msgTextCaseUpper: string = 'Upper case';
-  msgTextCaseLower: string = 'Lower case';
-  msgTextCaseTitle: string = 'Title case';
-  msgTextCaseInvert: string = 'Invert case';
-  msgTextCaseSentence: string = 'Sentence case';
+  msgTextCaseMenu: string = '转换大小写';
+  msgTextCaseUpper: string = '大写';
+  msgTextCaseLower: string = '小写';
+  msgTextCaseTitle: string = '字首大写';
+  msgTextCaseInvert: string = '反转大小写';
+  msgTextCaseSentence: string = '句首大写';
 
   msgFindHint_InputFind: string = 'Find what';
   msgFindHint_InputRep: string = 'Replace with';
@@ -435,9 +432,8 @@ const
   msgFindHint_Immediate: string = 'Immediate search (find as you type)';
   msgFindHint_PresCase: string = 'Preserve case on replacement';
 
-function msgTranslatedPanelCaption(const ACaption: string): string;
+function msgPanelCaption(const ACaption: string): string;
 function msgFinderRegexMatchesNumbered: string;
-function msgTranslatedUntitledTab(const ACaption: string): string;
 function IsUntitledEnglishTabCaption(const ACaption: string): boolean;
 
 implementation
@@ -445,7 +441,7 @@ implementation
 uses
   ATStringProc;
 
-function msgTranslatedPanelCaption(const ACaption: string): string;
+function msgPanelCaption(const ACaption: string): string;
 begin
   case ACaption of
     msgPanelTree_Init:
@@ -473,19 +469,6 @@ const
 begin
   Inc(NCounter);
   Result:= msgFinderRegexMathes+' '+IntToStr(NCounter);
-end;
-
-function msgTranslatedUntitledTab(const ACaption: string): string;
-var
-  NIndex: string;
-begin
-  if IsUntitledEnglishTabCaption(ACaption) then
-  begin
-    NIndex:= Copy(ACaption, Length(msgUntitledEnglish)+1, MaxInt);
-    Result:= msgUntitledTab+NIndex;
-  end
-  else
-    Result:= ACaption;
 end;
 
 function IsUntitledEnglishTabCaption(const ACaption: string): boolean;

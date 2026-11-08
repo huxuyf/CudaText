@@ -40,7 +40,6 @@ type
   private
     { private declarations }
     Credits: TScrollingText;
-    procedure Localize;
   public
     { public declarations }
     FLabelLink: TATLabelLink;
@@ -53,25 +52,6 @@ uses InterfaceBase;
 {$R *.lfm}
 
 { TfmAbout }
-
-procedure TfmAbout.Localize;
-const
-  section = 'd_about';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= ini.ReadString(section, '_', Caption);
-    with ButtonPanel1.OKButton do Caption:= msgButtonOk;
-    with ButtonPanel1.HelpButton do Caption:= ini.ReadString(section, 'cre', Caption);
-  finally
-    FreeAndNil(ini);
-  end;
-end;
 
 procedure TfmAbout.bOkClick(Sender: TObject);
 begin
@@ -164,7 +144,8 @@ procedure TfmAbout.FormCreate(Sender: TObject);
 var
   S: string;
 begin
-  Localize;
+  ButtonPanel1.OKButton.Caption:= '确定';
+  ButtonPanel1.HelpButton.Caption:= '鸣谢';
 
   FLabelLink:= TATLabelLink.Create(Self);
   FLabelLink.Parent:= Self;

@@ -410,7 +410,6 @@ type
     mnuOpThemeSyntax: TMenuItem;
     mnuOpThemes: TMenuItem;
     mnuOpUnprinted: TMenuItem;
-    mnuOpLangs: TMenuItem;
     mnuOpLexMap: TMenuItem;
     mnuOpSep1: TMenuItem;
     mnuOpLexLib: TMenuItem;
@@ -835,7 +834,7 @@ type
     procedure DoApplyCli(const ACliModule: string; const ACliParams: TAppStringArray);
     procedure DoApplyNewdocLexer(F: TEditorFrame);
     procedure DoApplyLexerStylesMapsToFrames(AndApplyTheme: boolean);
-    procedure DoApplyTranslationToGroups(G: TATGroups);
+    procedure DoApplyTabHints(G: TATGroups);
     procedure DoClearSingleFirstTab;
     function DoCloseAllTabs(AClosePinned: boolean): boolean;
     procedure DoCloseAllTabs_Old;
@@ -860,7 +859,7 @@ type
     //procedure DoOnLexerParseProgress(Sender: TObject; ALineIndex, ALineCount: integer);
     procedure DoOnLexerParseProgress_Sync();
     procedure DoOps_AddPluginMenuItem(const ACaption: string; ASubMenu: TMenuItem;
-      ALangFile: TIniFile; ACommandListIndex: integer);
+      ACommandListIndex: integer);
     procedure DoOps_LexersBackupSave;
     procedure DoOps_LexersBackupRestore;
     procedure DoOps_LoadOptions_Editor(cfg: TAppJsonConfig; var Op: TEditorOps);
@@ -881,9 +880,7 @@ type
     procedure FormFloating_OnUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure FormFloating_OnDropFiles(Sender: TObject; const FileNames: array of String);
     procedure CharmapOnInsert(const AStr: string);
-    procedure Localize;
-    procedure LocalizeTabTitles;
-    procedure LocalizePopupTab;
+
     function DoCheckFilenameOpened(const AName: string): boolean;
     procedure DoInvalidateEditors;
     function DoMenuAdd_Params(const AMenuId, AMenuCmd, AMenuCaption, AMenuHotkey, AMenuTagString: string; AIndex: integer): string;
@@ -964,7 +961,6 @@ type
     procedure DoOnConsoleKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     function DoDialogConfigTheme(AThemeUI: boolean): boolean;
     function DoDialogMenuApi(const AProps: TDlgMenuProps): integer;
-    procedure DoDialogMenuTranslations;
     procedure DoDialogMenuThemes;
     procedure DoDialogMenuEncodings;
     procedure DoDialogMenuEnds;
@@ -2231,21 +2227,21 @@ begin
     PopupTab.OnPopup:= @PopupTabPopup;
 
     mnuTabCloseThis:= TMenuItem.Create(Self);
-    mnuTabCloseThis.Caption:= 'Close tab';
+    mnuTabCloseThis.Caption:= '关闭标签';
     mnuTabCloseThis.OnClick:= @mnuTabCloseThisClick;
     PopupTab.Items.Add(mnuTabCloseThis);
 
     mnuTabCloseSub:= TMenuItem.Create(Self);
-    mnuTabCloseSub.Caption:= 'Close';
+    mnuTabCloseSub.Caption:= '关闭';
     PopupTab.Items.Add(mnuTabCloseSub);
 
     mnuTabCloseOtherSame:= TMenuItem.Create(Self);
-    mnuTabCloseOtherSame.Caption:= 'Others (same group)';
+    mnuTabCloseOtherSame.Caption:= '其它（相同组）';
     mnuTabCloseOtherSame.OnClick:= @mnuTabCloseOtherSameClick;
     mnuTabCloseSub.Add(mnuTabCloseOtherSame);
 
     mnuTabCloseOtherAll:= TMenuItem.Create(Self);
-    mnuTabCloseOtherAll.Caption:= 'Others (all groups)';
+    mnuTabCloseOtherAll.Caption:= '其它（所有组）';
     mnuTabCloseOtherAll.OnClick:= @mnuTabCloseOtherAllClick;
     mnuTabCloseSub.Add(mnuTabCloseOtherAll);
 
@@ -2254,12 +2250,12 @@ begin
     mnuTabCloseSub.Add(mi);
 
     mnuTabCloseAllSame:= TMenuItem.Create(Self);
-    mnuTabCloseAllSame.Caption:= 'All (same group)';
+    mnuTabCloseAllSame.Caption:= '所有（相同组）';
     mnuTabCloseAllSame.OnClick:= @mnuTabCloseAllSameClick;
     mnuTabCloseSub.Add(mnuTabCloseAllSame);
 
     mnuTabCloseAllAll:= TMenuItem.Create(Self);
-    mnuTabCloseAllAll.Caption:= 'All (all groups)';
+    mnuTabCloseAllAll.Caption:= '所有（所有组）';
     mnuTabCloseAllAll.OnClick:= @mnuTabCloseAllAllClick;
     mnuTabCloseSub.Add(mnuTabCloseAllAll);
 
@@ -2268,12 +2264,12 @@ begin
     mnuTabCloseSub.Add(mi);
 
     mnuTabCloseLeft:= TMenuItem.Create(Self);
-    mnuTabCloseLeft.Caption:= 'Left tabs (same group)';
+    mnuTabCloseLeft.Caption:= '左侧标签（相同组）';
     mnuTabCloseLeft.OnClick:= @mnuTabCloseLeftClick;
     mnuTabCloseSub.Add(mnuTabCloseLeft);
 
     mnuTabCloseRight:= TMenuItem.Create(Self);
-    mnuTabCloseRight.Caption:= 'Right tabs (same group)';
+    mnuTabCloseRight.Caption:= '右侧标签（相同组）';
     mnuTabCloseRight.OnClick:= @mnuTabCloseRightClick;
     mnuTabCloseSub.Add(mnuTabCloseRight);
 
@@ -2282,17 +2278,17 @@ begin
     PopupTab.Items.Add(mi);
 
     mnuTabRename:= TMenuItem.Create(Self);
-    mnuTabRename.Caption:= 'Rename...';
+    mnuTabRename.Caption:= '重命名...';
     mnuTabRename.OnClick:= @mnuTabRenameClick;
     PopupTab.Items.Add(mnuTabRename);
 
     mnuTabSave:= TMenuItem.Create(Self);
-    mnuTabSave.Caption:= 'Save';
+    mnuTabSave.Caption:= '保存';
     mnuTabSave.OnClick:= @mnuTabSaveClick;
     PopupTab.Items.Add(mnuTabSave);
 
     mnuTabSaveAs:= TMenuItem.Create(Self);
-    mnuTabSaveAs.Caption:= 'Save as...';
+    mnuTabSaveAs.Caption:= '另存为...';
     mnuTabSaveAs.OnClick:= @mnuTabSaveAsClick;
     PopupTab.Items.Add(mnuTabSaveAs);
 
@@ -2301,26 +2297,26 @@ begin
     PopupTab.Items.Add(mi);
 
     mnuTabCopySub:= TMenuItem.Create(Self);
-    mnuTabCopySub.Caption:= 'Copy to clipboard';
+    mnuTabCopySub.Caption:= '复制到剪贴板';
     PopupTab.Items.Add(mnuTabCopySub);
 
     mnuTabCopyFullPath:= TMenuItem.Create(Self);
-    mnuTabCopyFullPath.Caption:= 'Copy full filepath';
+    mnuTabCopyFullPath.Caption:= '复制完整文件路径';
     mnuTabCopyFullPath.OnClick:= @mnuTabCopyFullPathClick;
     mnuTabCopySub.Add(mnuTabCopyFullPath);
 
     mnuTabCopyDir:= TMenuItem.Create(Self);
-    mnuTabCopyDir.Caption:= 'Copy filepath only';
+    mnuTabCopyDir.Caption:= '仅复制路径';
     mnuTabCopyDir.OnClick:= @mnuTabCopyDirClick;
     mnuTabCopySub.Add(mnuTabCopyDir);
 
     mnuTabCopyName:= TMenuItem.Create(Self);
-    mnuTabCopyName.Caption:= 'Copy filename only';
+    mnuTabCopyName.Caption:= '仅复制文件名';
     mnuTabCopyName.OnClick:= @mnuTabCopyNameClick;
     mnuTabCopySub.Add(mnuTabCopyName);
 
     mnuTabMoveSub:= TMenuItem.Create(Self);
-    mnuTabMoveSub.Caption:= 'Move tab to group';
+    mnuTabMoveSub.Caption:= '移动标签到群组';
     PopupTab.Items.Add(mnuTabMoveSub);
 
     mnuTabMove1:= TMenuItem.Create(Self);
@@ -2358,17 +2354,17 @@ begin
     mnuTabMoveSub.Add(mi);
 
     mnuTabMoveF1:= TMenuItem.Create(Self);
-    mnuTabMoveF1.Caption:= 'Floating 1';
+    mnuTabMoveF1.Caption:= '浮动 1';
     mnuTabMoveF1.OnClick:= @mnuTabMoveF1Click;
     mnuTabMoveSub.Add(mnuTabMoveF1);
 
     mnuTabMoveF2:= TMenuItem.Create(Self);
-    mnuTabMoveF2.Caption:= 'Floating 2';
+    mnuTabMoveF2.Caption:= '浮动 2';
     mnuTabMoveF2.OnClick:= @mnuTabMoveF2Click;
     mnuTabMoveSub.Add(mnuTabMoveF2);
 
     mnuTabMoveF3:= TMenuItem.Create(Self);
-    mnuTabMoveF3.Caption:= 'Floating 3';
+    mnuTabMoveF3.Caption:= '浮动 3';
     mnuTabMoveF3.OnClick:= @mnuTabMoveF3Click;
     mnuTabMoveSub.Add(mnuTabMoveF3);
 
@@ -2377,27 +2373,26 @@ begin
     mnuTabMoveSub.Add(mi);
 
     mnuTabMoveNext:= TMenuItem.Create(Self);
-    mnuTabMoveNext.Caption:= 'Next';
+    mnuTabMoveNext.Caption:= '下一个';
     mnuTabMoveNext.OnClick:= @mnuTabMoveNextClick;
     mnuTabMoveSub.Add(mnuTabMoveNext);
 
     mnuTabMovePrev:= TMenuItem.Create(Self);
-    mnuTabMovePrev.Caption:= 'Previous';
+    mnuTabMovePrev.Caption:= '上一个';
     mnuTabMovePrev.OnClick:= @mnuTabMovePrevClick;
     mnuTabMoveSub.Add(mnuTabMovePrev);
 
     mnuTabPinned:= TMenuItem.Create(Self);
-    mnuTabPinned.Caption:= 'Pinned';
+    mnuTabPinned.Caption:= '固定';
     mnuTabPinned.OnClick:= @mnuTabPinnedClick;
     PopupTab.Items.Add(mnuTabPinned);
 
     mnuTabColor:= TMenuItem.Create(Self);
-    mnuTabColor.Caption:= 'Set tab color...';
+    mnuTabColor.Caption:= '设置标签颜色...';
     mnuTabColor.OnClick:= @mnuTabColorClick;
     PopupTab.Items.Add(mnuTabColor);
   end;
 
-  LocalizePopupTab;
 end;
 
 procedure TfmMain.StatusPanelDraw(Sender: TObject; AIndex: integer; ACanvas: TCanvas;
@@ -3145,6 +3140,22 @@ begin
 end;
 
 
+procedure DoSetToolbarButtonHint(AToolbar: TATFlatToolbar; const ABtnCaption, AHint: string);
+var
+  Btn: TATButton;
+  i: integer;
+begin
+  for i:= 0 to AToolbar.ButtonCount-1 do
+  begin
+    Btn:= AToolbar.Buttons[i];
+    if Btn.Caption=ABtnCaption then
+    begin
+      Btn.Hint:= StringReplace(AHint, '&', '', [rfReplaceAll]);
+      exit;
+    end;
+  end;
+end;
+
 procedure TfmMain.FormCreate(Sender: TObject);
 begin
   UpdateMenuTheming_WhiteLine_Win32;
@@ -3204,7 +3215,6 @@ begin
   DoMenuitemEllipsis(mnuOpThemeSyntax);
   //DoMenuitemEllipsis(mnuOpKeys);
   DoMenuitemEllipsis(mnuOpThemes);
-  DoMenuitemEllipsis(mnuOpLangs);
 
   PopupToolbarCase:= TPopupMenu.Create(Self);
   PopupToolbarCase.OnPopup:= @PopupToolbarCaseOnPopup;
@@ -3270,6 +3280,67 @@ begin
   UpdateMenuItemHint(mnuFileEnds, '_ends');
   UpdateMenuItemHint(mnuOpPlugins, '_oplugins');
   mnuFileOpenSub.Parent.OnClick:= @MenuRecentsPopup;
+
+  //hardcoded Chinese UI strings
+  ATEditorOptions.TextMenuitemUndo:= '撤销';
+  ATEditorOptions.TextMenuitemRedo:= '重做';
+  ATEditorOptions.TextMenuitemCut:= '剪切';
+  ATEditorOptions.TextMenuitemCopy:= '复制';
+  ATEditorOptions.TextMenuitemPaste:= '粘贴';
+  ATEditorOptions.TextMenuitemDelete:= '删除';
+  ATEditorOptions.TextMenuitemSelectAll:= '全选';
+  ATEditorOptions.TextMenuitemFoldAll:= '全部折叠';
+  ATEditorOptions.TextMenuitemUnfoldAll:= '全部展开';
+  ATEditorOptions.TextMenuitemFoldLevel:= '折叠级别';
+  ATEditorOptions.TextHintScrollPrefix:= '行';
+
+  mnuTextUndo.Caption:= ATEditorOptions.TextMenuitemUndo;
+  mnuTextRedo.Caption:= ATEditorOptions.TextMenuitemRedo;
+  mnuTextCut.Caption:= ATEditorOptions.TextMenuitemCut;
+  mnuTextCopy.Caption:= ATEditorOptions.TextMenuitemCopy;
+  mnuTextPaste.Caption:= ATEditorOptions.TextMenuitemPaste;
+  mnuTextDelete.Caption:= ATEditorOptions.TextMenuitemDelete;
+  mnuTextSel.Caption:= ATEditorOptions.TextMenuitemSelectAll;
+  mnuSelAll.Caption:= ATEditorOptions.TextMenuitemSelectAll;
+  mnuHelpWiki.Caption:= '维基';
+  if Assigned(mnuTextGotoDef) then
+    mnuTextGotoDef.Caption:= '转到定义';
+
+  CompletionOpsHtml.PrefixTag:= '标签';
+  CompletionOpsHtml.PrefixAttrib:= '属性';
+  CompletionOpsHtml.PrefixValue:= '值';
+  CompletionOpsHtml.PrefixFile:= '文件';
+  CompletionOpsHtml.PrefixDir:= '文件夹';
+  CompletionOpsCss.PrefixProp:= CompletionOpsHtml.PrefixAttrib;
+  CompletionOpsCss.PrefixAtRule:= CompletionOpsHtml.PrefixValue;
+  CompletionOpsCss.PrefixPseudo:= CompletionOpsHtml.PrefixValue;
+  CompletionOpsCss.PrefixFile:= CompletionOpsHtml.PrefixFile;
+  CompletionOpsCss.PrefixDir:= CompletionOpsHtml.PrefixDir;
+  CompletionOpsFile.PrefixDir:= CompletionOpsHtml.PrefixDir;
+  CompletionOpsFile.PrefixFile:= CompletionOpsHtml.PrefixFile;
+
+  DoSetToolbarButtonHint(ToolbarSideTop, msgPanelMenu_Init, '菜单');
+  DoSetToolbarButtonHint(ToolbarSideTop, msgPanelTree_Init, '代码树');
+  DoSetToolbarButtonHint(ToolbarSideTop, msgPanelProject_Init, '项目');
+  DoSetToolbarButtonHint(ToolbarSideTop, msgPanelTabs_Init, '标签列表');
+  DoSetToolbarButtonHint(ToolbarSideTop, msgPanelSnippet_Init, '片段面板');
+  DoSetToolbarButtonHint(ToolbarSideLow, msgPanelConsole_Init, '控制台');
+  DoSetToolbarButtonHint(ToolbarSideLow, msgPanelOutput_Init, '输出');
+  DoSetToolbarButtonHint(ToolbarSideLow, msgPanelValidate_Init, '验证');
+  DoSetToolbarButtonHint(ToolbarSideMid, msgPanelSearch_Init, '搜索');
+  DoSetToolbarButtonHint(ToolbarMain, 'f_new', '新建文件');
+  DoSetToolbarButtonHint(ToolbarMain, 'f_open', '打开文件...');
+  DoSetToolbarButtonHint(ToolbarMain, 'f_save', '保存');
+  DoSetToolbarButtonHint(ToolbarMain, 'e_copy', '复制');
+  DoSetToolbarButtonHint(ToolbarMain, 'e_cut', '剪切');
+  DoSetToolbarButtonHint(ToolbarMain, 'e_paste', '粘贴');
+  DoSetToolbarButtonHint(ToolbarMain, 'e_undo', '撤销');
+  DoSetToolbarButtonHint(ToolbarMain, 'e_redo', '重做');
+  DoSetToolbarButtonHint(ToolbarMain, 'unpri', '不可见字符');
+  DoSetToolbarButtonHint(ToolbarMain, 'map', '小地图');
+  DoSetToolbarButtonHint(ToolbarMain, 'indent', '缩进');
+  DoSetToolbarButtonHint(ToolbarMain, 'unindent', '取消缩进');
+  DoSetToolbarButtonHint(ToolbarMain, 'opt', '选项编辑器');
 
   DoOps_OnCreate;
 
@@ -5151,10 +5222,10 @@ begin
   G.SetTabOption(tabOptionPosition, UiOps.TabPosition);
 
   G.SetTabOptionString(tabOptionButtonLayout, UiOps.TabButtonLayout);
-  DoApplyTranslationToGroups(G);
+  DoApplyTabHints(G);
 end;
 
-procedure TfmMain.DoApplyTranslationToGroups(G: TATGroups);
+procedure TfmMain.DoApplyTabHints(G: TATGroups);
 begin
   G.SetTabOptionString(tabOptionHintForX, msgTooltipCloseTab);
   G.SetTabOptionString(tabOptionHintForPlus, msgTooltipAddTab);
@@ -6231,7 +6302,6 @@ begin
     UpdateMenuHotkeys;
     UpdateMenuPlugins_Shortcuts(true);
     if Assigned(fmFind) then
-      fmFind.Localize;
   end;
 end;
 
@@ -6291,12 +6361,7 @@ function TfmMain.DoDialogMenuLexerChoose(const AFilename: string; ANames: TStrin
 var
   STitle: string;
 begin
-  with TIniFile.Create(AppFile_Language) do
-  try
-    STitle:= ReadString('ui', 'lex_dlg', 'Lexer for "%s"');
-  finally
-    Free;
-  end;
+  STitle:= '"%s" 的词法分析器';
 
   Result:= DoDialogMenuList(
     Format(STitle, [ExtractFileName(AFilename)]),
@@ -6490,13 +6555,7 @@ begin
   CurLineIndex:= CurFrame.EdCurrent.Carets[0].PosY;
   SelIndex:= 0;
 
-  with TIniFile.Create(AppFile_Language) do
-  try
-    MenuCaption:= ReadString('m_sr', 'b_', 'Bookmarks');
-    MenuCaption:= StringReplace(MenuCaption, '&', '', [rfReplaceAll]);
-  finally
-    Free;
-  end;
+  MenuCaption:= '书签';
 
   ListItems:= TStringList.Create;
   try
@@ -8428,67 +8487,6 @@ begin
   end;
 end;
 
-procedure TfmMain.DoDialogMenuTranslations;
-const
-  cEnLang = 'en_US (built-in)';
-var
-  STitle: string;
-  ListFiles, ListNames: TStringList;
-  NResult, NItemIndex, i: integer;
-  S: string;
-begin
-  with TIniFile.Create(AppFile_Language) do
-  try
-    STitle:= ReadString('m_o', 'tr_', 'Translations');
-    STitle:= StringReplace(STitle, '...', '', []);
-    STitle:= StringReplace(STitle, '&', '', [rfReplaceAll]);
-  finally
-    Free;
-  end;
-
-  ListFiles:= TStringList.Create;
-  ListNames:= TStringList.Create;
-  try
-    FindAllFiles(ListFiles, AppDir_DataLang, '*.ini', false);
-    if ListFiles.Count=0 then exit;
-    ListFiles.Sort;
-
-    ListNames.Add(cEnLang);
-    for i:= 0 to ListFiles.Count-1 do
-    begin
-      S:= ExtractFileNameOnly(ListFiles[i]);
-      if S='translation template' then Continue;
-      ListNames.Add(S);
-    end;
-
-    NItemIndex:= ListNames.IndexOf(UiOps.LangName);
-    if NItemIndex<0 then
-      NItemIndex:= 0;
-
-    NResult:= DoDialogMenuList(STitle, ListNames, NItemIndex);
-    if NResult<0 then exit;
-
-    if ListNames[NResult]=cEnLang then
-    begin
-      UiOps.LangName:= '';
-      MsgBox(msgStatusI18nEnglishAfterRestart, MB_OK or MB_ICONINFORMATION);
-    end
-    else
-    begin
-      UiOps.LangName:= ListNames[NResult];
-      Localize;
-
-      if DirectoryExists(AppDir_Data+DirectorySeparator+'langmenu') then
-        MsgBox(msgStatusI18nPluginsMenuAfterRestart, MB_OK or MB_ICONINFORMATION);
-    end;
-
-    DoPyEvent_AppState(APPSTATE_LANG);
-  finally
-    FreeAndNil(ListNames);
-    FreeAndNil(ListFiles);
-  end;
-end;
-
 procedure TfmMain.DoDialogMenuEnds;
 var
   List: TStringList;
@@ -8539,13 +8537,8 @@ begin
   if Ed=nil then exit;
   SEncName:= Ed.EncodingName;
 
-  with TIniFile.Create(AppFile_Language) do
-  try
-    msgEncReloadAs:= ReadString('m_f', 'e_r', 'Reopen as');
-    msgEncConvertTo:= ReadString('m_f', 'e_t', 'Convert to');
-  finally
-    Free;
-  end;
+  msgEncReloadAs:= '重新打开为';
+  msgEncConvertTo:= '转换到';
 
   List:= TStringList.Create;
   try
@@ -8711,13 +8704,8 @@ var
   mi: TMenuItem;
   i: integer;
 begin
-  with TIniFile.Create(AppFile_Language) do
-  try
-    msgConsoleClear:= ReadString('ct', 'clr', 'Clear');
-    msgConsoleToggleWrap:= ReadString('ct', 'wr', 'Toggle word wrap');
-  finally
-    Free;
-  end;
+  msgConsoleClear:= '清除';
+  msgConsoleToggleWrap:= '自动换行';
 
   Popup:= Sender as TPopupMenu;
   UpdateMenuTheming_PopupMenu_Win32(Popup);
@@ -8812,15 +8800,10 @@ begin
     PopupToolbarComment.Items.Add(mnuToolbarCommentStream);
   end;
 
-  with TIniFile.Create(AppFile_Language) do
-  try
-    msgCommentLineAdd:= ReadString('tb', 'cm_ln_add', 'Line comment: add');
-    msgCommentLineDel:= ReadString('tb', 'cm_ln_del', 'Line comment: remove');
-    msgCommentLineToggle:= ReadString('tb', 'cm_ln_tog', 'Line comment: toggle');
-    msgCommentStreamToggle:= ReadString('tb', 'cm_st_tog', 'Stream comment: toggle');
-  finally
-    Free;
-  end;
+  msgCommentLineAdd:= '行注释：添加';
+  msgCommentLineDel:= '行注释：删除';
+  msgCommentLineToggle:= '行注释：切换';
+  msgCommentStreamToggle:= '流注释：切换';
 
   mnuToolbarCommentLineAdd.Caption:= msgCommentLineAdd;
   mnuToolbarCommentLineDel.Caption:= msgCommentLineDel;
@@ -9121,7 +9104,7 @@ begin
       mnuTextOpenUrl.Caption:= SCaption;
     end
     else
-      mnuTextOpenUrl.Caption:= 'Open URL';
+      mnuTextOpenUrl.Caption:= '打开 URL';
     if Assigned(mnuTextSepUrl) then
       mnuTextSepUrl.Visible:= mnuTextOpenUrl.Visible;
   end;
@@ -9147,7 +9130,6 @@ begin
   begin
     fmCharmaps:= TfmCharmaps.Create(Self);
     fmCharmaps.OnInsert:= @CharmapOnInsert;
-    fmCharmaps.Localize;
   end;
 
   fmCharmaps.InitialStr:= UTF8Encode(UnicodeString(EditorGetCurrentChar(CurrentEditor)));
@@ -10211,13 +10193,7 @@ begin
   if Frame=nil then exit;
   if Frame.FrameKind<>TAppFrameKind.Editor then exit;
 
-  with TIniFile.Create(AppFile_Language) do
-  try
-    SCaption:= ReadString('m_o', 'l_', 'Lexers');
-    SCaption:= StringReplace(SCaption, '&', '', [rfReplaceAll]);
-  finally
-    Free;
-  end;
+  SCaption:= '语法类型';
 
   List:= TStringList.Create;
   try
@@ -10380,13 +10356,8 @@ begin
     exit;
   end;
 
-  with TIniFile.Create(AppFile_Language) do
-  try
-    StrOpenSite:= ReadString('ui', 'lnk_a', 'Open link');
-    StrOpenEmail:= ReadString('ui', 'lnk_e', 'Send e-mail');
-  finally
-    Free;
-  end;
+  StrOpenSite:= '打开链接';
+  StrOpenEmail:= '发送电子邮件';
 
   FWebPanelLink:= ALink;
   InitConfirmPanel;
@@ -10564,7 +10535,7 @@ begin
     Result:= StrToIntDef(Copy(S, Length(msgUntitledEnglish)+1), cDefault);
   end
   else
-  if (UiOps.LangName<>'') and SBeginsWith(S, msgUntitledTab) then
+  if SBeginsWith(S, msgUntitledTab) then
   begin
     Result:= StrToIntDef(Copy(S, Length(msgUntitledTab)+1), cDefault);
   end;
@@ -11146,7 +11117,6 @@ end;
 //----------------------------
 {$I formmain_loadsave.inc}
 {$I formmain_updates_proc.inc}
-{$I formmain_translation.inc}
 {$I formmain_frame_proc.inc}
 {$I formmain_tab_proc.inc}
 {$I formmain_find.inc}

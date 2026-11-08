@@ -5,12 +5,11 @@ Version:
     '1.1.3 2021-03-08'
 Content
     log                 Logger with timing
-    get_translation     i18n
     dlg_wrapper         Wrapper for dlg_custom: pack/unpack values, h-align controls
 ToDo: (see end of file)
 '''
 
-import  sys, os, gettext, logging, inspect, time, collections, json, re, subprocess
+import  sys, os, logging, inspect, time, collections, json, re, subprocess
 from    time        import perf_counter
 import  cudatext        as app
 import  cudax_lib       as apx
@@ -192,48 +191,7 @@ class Tr :
         # Tr.format_tm
     # Tr
 
-def get_translation(plug_file):
-    ''' Part of i18n.
-        Full i18n-cycle:
-        1. All GUI-string in code are used in form
-            _('')
-        2. These string are extracted from code to
-            lang/messages.pot
-           with run
-            python.exe <python-root>/Tools/i18n/pygettext.py -p lang <plugin>.py
-        3. Poedit (or same program) create
-            <module>/lang/ru_RU/LC_MESSAGES/<module>.po
-           from (cmd "Update from POT")
-            lang/messages.pot
-           It allows to translate all "strings"
-           It creates (cmd "Save")
-            <module>/lang/ru_RU/LC_MESSAGES/<module>.mo
-        4. <module>.mo can be placed also in dir
-            CudaText/data/langpy/ru_RU/LC_MESSAGES/<module>.mo
-           The dir is used first.
-        5. get_translation uses the file to realize
-            _('')
-    '''
-    lng     = app.app_proc(app.PROC_GET_LANG, '')
-    plug_dir= os.path.dirname(plug_file)
-    plug_mod= os.path.basename(plug_dir)
-    lng_dirs= [
-                app.app_path(app.APP_DIR_DATA)  +os.sep+'langpy',
-                plug_dir                        +os.sep+'lang',
-              ]
-    _       =  lambda x: x
-    pass;                      #return _
-    for lng_dir in lng_dirs:
-        lng_mo  = lng_dir+'/{}/LC_MESSAGES/{}.mo'.format(lng, plug_mod)
-        if os.path.isfile(lng_mo):
-            t   = gettext.translation(plug_mod, lng_dir, languages=[lng])
-            _   = t.gettext
-            t.install()
-            break
-    return _
-   #def get_translation
-
-_   = get_translation(__file__) # I18N
+_ = lambda s: s
 
 def get_desktop_environment():
     #From http://stackoverflow.com/questions/2035657/what-is-my-current-desktop-environment

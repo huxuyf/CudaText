@@ -9,8 +9,7 @@ import cudatext as app
 from . import opt
 from .work_tempdir import get_temp_dir
 
-from cudax_lib import get_translation
-_   = get_translation(__file__)  # i18n
+_ = lambda s: s
 
 _get_url_busy = False
 

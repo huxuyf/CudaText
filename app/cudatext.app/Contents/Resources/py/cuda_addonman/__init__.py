@@ -14,8 +14,8 @@ from .work_install_helper import after_install
 from .work_cudatext_updates__sourceforge import check_cudatext
 from . import opt
 
-from cudax_lib import get_translation, safe_open_url
-_   = get_translation(__file__)  # i18n
+from cudax_lib import safe_open_url
+_ = lambda s: s
 
 _homedir = os.path.expanduser('~')
 dir_for_all = os.path.join(_homedir, 'CudaText_addons')
@@ -89,9 +89,6 @@ STD_SIDEBARICONS = (
 )
 STD_CODETREEICONS = (
   'default_16x16',
-)
-STD_TRANSLATIONS = (
-  'translation template',
 )
 STD_SNIPPETS = (
   'Std.HtmlTags',
@@ -473,7 +470,6 @@ class Command:
             'toolbaricons': STD_TOOLBARICONS,
             'sidebaricons': STD_SIDEBARICONS,
             'codetreeicons': STD_CODETREEICONS,
-            'lang': STD_TRANSLATIONS,
             'snippets': STD_SNIPPETS,
             }
         items = get_installed_addons(ignored)

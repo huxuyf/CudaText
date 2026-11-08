@@ -1,7 +1,6 @@
 import os
 from random import randint
 from cudatext import *
-from cudax_lib import get_translation
 from .app_specific import *
 from .sort_ini import *
 from .sort_emails import *
@@ -10,7 +9,7 @@ from .sort_numeric import *
 from .sort_dlg import *
 import cudatext_cmd as cmds
 
-_   = get_translation(__file__)  # I18N
+_ = lambda s: s
 
 CONFIG_FN = os.path.join(app_path(APP_DIR_SETTINGS), 'plugins.ini')
 CONFIG_SECTION = 'sort'

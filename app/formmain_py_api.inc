@@ -2638,12 +2638,7 @@ begin
           Dlg.Title:= StrCaption
         else
         begin
-          with TIniFile.Create(AppFile_Language) do
-          try
-            Dlg.Title:= ReadString('ui', 'dl_fld', 'Select folder');
-          finally
-            Free;
-          end;
+          Dlg.Title:= '选择文件夹';
         end;
         Dlg.InitialDir:= StrFolder;
         if Dlg.Execute then
@@ -2988,12 +2983,7 @@ begin
       if not Assigned(fmMain.FColorDialog) then
         fmMain.FColorDialog:= TColorDialog.Create(fmMain);
 
-      with TIniFile.Create(AppFile_Language) do
-      try
-        fmMain.FColorDialog.Title:= ReadString('d_about', '_clr', 'Colors');
-      finally
-        Free;
-      end;
+      fmMain.FColorDialog.Title:= '颜色';
 
       fmMain.FColorDialog.Color:= NCode;
 
@@ -6095,13 +6085,6 @@ begin
           end;
 
         //-------------------
-        APP_PROC_GET_LANG:
-          begin
-            Str:= UiOps.LangName;
-            Str:= Copy(Str, 1, 5); //trim suffix like '_4' in 'it_IT_4'
-            Result:= PyUnicodeFromString(Str);
-          end;
-
         APP_PROC_GET_HOTKEY:
           begin
             Result:= PyUnicodeFromString(TKeymapHelper.GetHotkey(AppKeymapMain, Str));
@@ -11525,12 +11508,7 @@ begin
   Result:= -1;
   if not AppPython.Inited then exit;
 
-  with TIniFile.Create(AppFile_Language) do
-  try
-    SCaption:= ReadString('d_about', '_clr', 'Colors');
-  finally
-    Free
-  end;
+  SCaption:= '颜色';
 
   with AppPython.Engine do
   begin

@@ -41,7 +41,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    procedure Localize;
   public
   end;
 
@@ -147,38 +146,11 @@ end;
 
 procedure TfmConfirmBinary.FormCreate(Sender: TObject);
 begin
-  Localize;
 end;
 
 procedure TfmConfirmBinary.FormShow(Sender: TObject);
 begin
   ClientHeight:= btnCancel.Top+btnCancel.Height+10;
-end;
-
-procedure TfmConfirmBinary.Localize;
-const
-  section = 'd_cfm_op';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    //with F do Caption:= ini.ReadString(section, '_', Caption);
-    with btnEdit do Caption:= ini.ReadString(section, 'edit', Caption);
-    with btnViewText do Caption:= ini.ReadString(section, 'text', Caption);
-    with btnViewBinary do Caption:= ini.ReadString(section, 'bin', Caption);
-    with btnViewHex do Caption:= ini.ReadString(section, 'hex', Caption);
-    with btnViewUnicode do Caption:= ini.ReadString(section, 'uni', Caption);
-    with btnCancel do Caption:= msgButtonCancel;
-    msgFileMaybeNotText:= ini.ReadString(section, 'ntxt', msgFileMaybeNotText);
-    msgFileTooBig:= ini.ReadString(section, 'big', msgFileTooBig);
-    msgDetectedBinaryChar:= ini.ReadString(section, 'bch', msgDetectedBinaryChar);
-  finally
-    FreeAndNil(ini);
-  end;
 end;
 
 end.

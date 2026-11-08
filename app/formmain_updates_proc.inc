@@ -1159,7 +1159,6 @@ begin
   UpdateMenuItemHotkey(mnuOpThemeSyntax, cmd_DialogThemeSyntax);
   UpdateMenuItemHotkey(mnuOpUnprinted, cmd_DialogUnprinted);
   UpdateMenuItemHotkey(mnuOpThemes, cmd_ChooseThemeUI);
-  UpdateMenuItemHotkey(mnuOpLangs, cmd_ChooseTranslation);
 
   UpdateMenuItemHotkey(mnuHelpForum, cmd_HelpForum);
   UpdateMenuItemHotkey(mnuHelpWiki, cmd_HelpWiki);
@@ -1772,14 +1771,9 @@ var
   msgTabsizeConvTabs: string;
   msgTabsizeConvSpaces: string;
 begin
-  with TIniFile.Create(AppFile_Language) do
-  try
-    msgTabsizeUseSpaces:= ReadString('ct', 'ussp', 'Use spaces');
-    msgTabsizeConvSpaces:= ReadString('ct', 'cnv_t', 'Convert indentation to tabs');
-    msgTabsizeConvTabs:= ReadString('ct', 'cnv_s', 'Convert indentation to spaces');
-  finally
-    Free;
-  end;
+  msgTabsizeUseSpaces:= '使用空格';
+  msgTabsizeConvSpaces:= '将缩进转换为制表符';
+  msgTabsizeConvTabs:= '将缩进转换为空格';
 
   if PopupTabSize=nil then
   begin
@@ -1907,12 +1901,7 @@ begin
     PopupTree.Items.Add(mnuTreeSorted);
   end;
 
-  with TIniFile.Create(AppFile_Language) do
-  try
-    msgTreeSorted:= ReadString('ct', 'tr_sr', 'Sorted');
-  finally
-    Free;
-  end;
+  msgTreeSorted:= '排序';
 
   mnuTreeFoldAll.Caption:= ATEditorOptions.TextMenuitemFoldAll;
   mnuTreeUnfoldAll.Caption:= ATEditorOptions.TextMenuitemUnfoldAll;
@@ -1935,12 +1924,7 @@ begin
   begin
     PopupPicScale:= TPopupMenu.Create(Self);
 
-    with TIniFile.Create(AppFile_Language) do
-    try
-      msgDefault:= ReadString('sta', 'def', 'Default');
-    finally
-      Free;
-    end;
+    msgDefault:= '默认';
 
     for i:= Low(cSizes) to High(cSizes) do
     begin

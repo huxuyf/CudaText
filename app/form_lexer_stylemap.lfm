@@ -5,7 +5,7 @@ object fmLexerStyleMap: TfmLexerStyleMap
   Width = 704
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Lexer styles mapping'
+  Caption = '词法分析器样式映射'
   ClientHeight = 518
   ClientWidth = 704
   OnCreate = FormCreate
@@ -36,7 +36,7 @@ object fmLexerStyleMap: TfmLexerStyleMap
     Height = 17
     Top = 4
     Width = 91
-    Caption = 'Styles in lexer'
+    Caption = '词法分析器中的样式'
     FocusControl = ListLex
   end
   object LabelTh: TLabel
@@ -48,7 +48,7 @@ object fmLexerStyleMap: TfmLexerStyleMap
     Top = 4
     Width = 101
     BorderSpacing.Left = 6
-    Caption = 'Styles in theme'
+    Caption = '主题中的样式'
     FocusControl = ListTh
   end
   object ListLex: TListBox
@@ -102,7 +102,7 @@ object fmLexerStyleMap: TfmLexerStyleMap
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Right = 6
-    Caption = 'Assign selected'
+    Caption = '分配选定'
     Constraints.MinWidth = 150
     OnClick = btnSetClick
     TabOrder = 2
@@ -120,7 +120,7 @@ object fmLexerStyleMap: TfmLexerStyleMap
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
-    Caption = 'Assign none'
+    Caption = '无分配'
     OnClick = btnSetNoneClick
     TabOrder = 3
   end
@@ -137,7 +137,7 @@ object fmLexerStyleMap: TfmLexerStyleMap
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
-    Caption = 'Unassign'
+    Caption = '取消分配'
     OnClick = btnClearClick
     TabOrder = 4
   end

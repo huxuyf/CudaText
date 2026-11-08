@@ -78,7 +78,6 @@ type
     MsgStatusAnsi: string;
     MsgStatusUnicode: string;
     InitialStr: string;
-    procedure Localize;
     property OnInsert: TCharmapInsertEvent read FOnInsert write FOnInsert;
     property HexTitles: boolean read FHexTitles write SetHexTitles;
   end;
@@ -95,30 +94,6 @@ uses
   ATCanvasPrimitives;
 
 {$R *.lfm}
-
-procedure TfmCharmaps.Localize;
-const
-  section = 'd_charmap';
-var
-  ini: TIniFile;
-  fn: string;
-begin
-  fn:= AppFile_Language;
-  if not FileExists(fn) then exit;
-  ini:= TIniFile.Create(fn);
-  try
-    Caption:= ini.ReadString(section, '_', Caption);
-    with btnClose do Caption:= msgButtonClose;
-    with btnAnsi do Caption:= ini.ReadString(section, 'mod1', Caption);
-    with btnUnicode do Caption:= ini.ReadString(section, 'mod2', Caption);
-    with chkHexTitle do Caption:= ini.ReadString(section, 'hex', Caption);
-    MsgStatusAnsi:= ini.ReadString(section, 'stat1', MsgStatusAnsi);
-    MsgStatusUnicode:= ini.ReadString(section, 'stat2', MsgStatusUnicode);
-  finally
-    FreeAndNil(ini);
-  end;
-end;
-
 
 type
   TDummy = class
@@ -144,7 +119,6 @@ begin
   Dummy.Form:= F;
 
   try
-    F.Localize;
     F.OnInsert:= @Dummy.OnInsert;
     F.ShowModal;
     Result:= Dummy.StrVal;

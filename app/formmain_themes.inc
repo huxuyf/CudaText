@@ -395,12 +395,7 @@ procedure TfmMain.DoDialogTheme(AThemeUI: boolean);
 var
   StrName, StrExt, StrPrompt: string;
 begin
-  with TIniFile.Create(AppFile_Language) do
-  try
-    StrPrompt:= ReadString('ui', 'th_nm', 'Theme name:');
-  finally
-    Free;
-  end;
+  StrPrompt:= '主题名称：';
 
   if AThemeUI then
   begin

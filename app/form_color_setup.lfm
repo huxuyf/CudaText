@@ -4,7 +4,7 @@ object fmColorSetup: TfmColorSetup
   Top = 186
   Width = 558
   BorderIcons = [biSystemMenu]
-  Caption = 'Color theme'
+  Caption = '颜色主题'
   ClientHeight = 529
   ClientWidth = 558
   Constraints.MinHeight = 200
@@ -74,7 +74,7 @@ object fmColorSetup: TfmColorSetup
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = '&Change color...'
+      Caption = '更改颜色...'
       TabOrder = 1
       OnClick = bChangeClick
     end
@@ -90,7 +90,7 @@ object fmColorSetup: TfmColorSetup
       Width = 106
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
-      Caption = 'Set "&none color"'
+      Caption = '设置“无颜色”'
       TabOrder = 2
       OnClick = bNoneClick
     end
@@ -131,7 +131,7 @@ object fmColorSetup: TfmColorSetup
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = '&Config style...'
+      Caption = '样式配置...'
       TabOrder = 1
       OnClick = bStyleClick
     end

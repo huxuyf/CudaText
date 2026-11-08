@@ -119,470 +119,467 @@ object fmMain: TfmMain
     Left = 496
     Top = 16
     object mnuFile: TMenuItem
-      Caption = '&File'
+      Caption = '文件'
       object mnuFileNew: TMenuItem
-        Caption = '&New file'
+        Caption = '新建文件'
       end
       object mnuFileNewMenu: TMenuItem
-        Caption = 'New from tem&plate...'
+        Caption = '从模板新建文件...'
       end
       object mnuFileOpen: TMenuItem
-        Caption = '&Open file...'
+        Caption = '打开文件...'
       end
       object mnuFileOpenDir: TMenuItem
-        Caption = 'Open &folder...'
+        Caption = '打开文件夹...'
       end
       object mnuFileOpenSub: TMenuItem
-        Caption = 'Open recen&t'
+        Caption = '打开最近使用的文件'
       end
       object mnuFileReopen: TMenuItem
-        Caption = '&Reopen'
+        Caption = '重新打开'
       end
       object mnuFileRename: TMenuItem
-        Caption = 'Rena&me...'
+        Caption = '重命名...'
       end
       object mnuFileSep1: TMenuItem
         Caption = '-'
       end
       object mnuFileSave: TMenuItem
-        Caption = '&Save'
+        Caption = '保存'
       end
       object mnuFileSaveAs: TMenuItem
-        Caption = 'Save &as...'
+        Caption = '另存为...'
       end
       object mnuFileSaveAll: TMenuItem
-        Caption = 'Sa&ve all'
+        Caption = '保存全部'
       end
       object mnuFileSep2: TMenuItem
         Caption = '-'
       end
       object mnuFileClose: TMenuItem
-        Caption = '&Close'
+        Caption = '关闭'
       end
       object mnuFileCloseAll: TMenuItem
-        Caption = 'Close a&ll'
+        Caption = '关闭全部'
       end
       object mnuFileCloseOther: TMenuItem
-        Caption = 'Close ot&her tabs'
+        Caption = '关闭其它标签页'
       end
       object mnuFileCloseDel: TMenuItem
-        Caption = 'Close and &delete file'
+        Caption = '关闭并删除文件'
       end
       object mnuFileSep3: TMenuItem
         Caption = '-'
       end
       object mnuFileEnc: TMenuItem
-        Caption = '&Encoding...'
+        Caption = '编码'
       end
       object mnuFileEnds: TMenuItem
-        Caption = 'L&ine ends...'
+        Caption = '行结束'
       end
       object mnuFileSep4: TMenuItem
         Caption = '-'
       end
       object mnuFileExit: TMenuItem
-        Caption = '&Quit'
+        Caption = '退出'
       end
     end
     object mnuEdit: TMenuItem
-      Caption = '&Edit'
+      Caption = '编辑'
       OnClick = mnuEditClick
       object mnuEditUndo: TMenuItem
-        Caption = '&Undo'
+        Caption = '撤销'
       end
       object mnuEditRedo: TMenuItem
-        Caption = '&Redo'
+        Caption = '重做'
       end
       object mnuEditSep1: TMenuItem
         Caption = '-'
       end
       object mnuEditCut: TMenuItem
-        Caption = 'Cu&t'
+        Caption = '剪切'
       end
       object mnuEditCopy: TMenuItem
-        Caption = '&Copy'
+        Caption = '复制'
       end
       object mnuEditPaste: TMenuItem
-        Caption = '&Paste'
+        Caption = '粘贴'
       end
       object mnuEditPasteIndent: TMenuItem
-        Caption = 'Paste and indent'
+        Caption = '粘贴和缩进'
       end
       object mnuEditPasteHist: TMenuItem
-        Caption = 'Paste from history'
+        Caption = '从历史记录中粘贴'
       end
       object mnuEditSep2: TMenuItem
         Caption = '-'
       end
       object mnuEditCopySub: TMenuItem
-        Caption = 'Cop&y to clipboard'
+        Caption = '复制到剪贴板'
         object mnuEditCopyLine: TMenuItem
-          Caption = 'Copy &current line'
+          Caption = '复制当前行'
         end
         object mnuEditCopyAppend: TMenuItem
-          Caption = 'Copy/&append selection'
+          Caption = '复制/追加选择'
         end
         object mnuEditSep4: TMenuItem
           Caption = '-'
         end
         object mnuEditCopyFFull: TMenuItem
-          Caption = 'Copy &full filepath'
+          Caption = '复制完整文件路径'
         end
         object mnuEditCopyFDir: TMenuItem
-          Caption = 'Copy file&path only'
+          Caption = '仅复制文件路径'
         end
         object mnuEditCopyFName: TMenuItem
-          Caption = 'Copy file&name only'
+          Caption = '仅复制文件名'
         end
       end
       object mnuEditLineOp: TMenuItem
-        Caption = '&Line operations'
+        Caption = '行操作'
         object mnuEditLineDel: TMenuItem
-          Caption = 'D&elete line(s)'
+          Caption = '删除行'
         end
         object mnuEditLineDup: TMenuItem
-          Caption = 'Du&plicate line(s)'
+          Caption = '复制行'
         end
         object mnuEditSep5: TMenuItem
           Caption = '-'
         end
         object mnuEditLineMoveUp: TMenuItem
-          Caption = 'Move line(s) &up'
+          Caption = '向上移动'
         end
         object mnuEditLineMoveDown: TMenuItem
-          Caption = 'Move line(s) &down'
+          Caption = '向下移动'
         end
       end
       object mnuEditIndentSub: TMenuItem
-        Caption = '&Blank operations'
+        Caption = '空白操作'
         object mnuEditIndent: TMenuItem
-          Caption = '&Indent'
+          Caption = '缩进'
         end
         object mnuEditUnindent: TMenuItem
-          Caption = '&Unindent'
+          Caption = '取消缩进'
         end
         object mnuEditSep6: TMenuItem
           Caption = '-'
         end
         object mnuEditTrimL: TMenuItem
-          Caption = 'Trim spaces: &left'
+          Caption = '移除空格: 左'
         end
         object mnuEditTrimR: TMenuItem
-          Caption = 'Trim spaces: &right'
+          Caption = '移除空格: 右'
         end
         object mnuEditTrim: TMenuItem
-          Caption = 'Trim spaces: &all'
+          Caption = '移除空格: 全部'
         end
         object mnuEditSep7: TMenuItem
           Caption = '-'
         end
         object mnuEditTabToSp: TMenuItem
-          Caption = 'Convert &tabs to spaces'
+          Caption = '将制表符转换为空格'
         end
         object mnuEditSpToTab: TMenuItem
-          Caption = 'Convert &spaces (leading) to tabs'
+          Caption = '将空格（行首）转换为制表符'
         end
       end
       object mnuCaseSub: TMenuItem
-        Caption = 'Con&vert case'
+        Caption = '转换大小写'
         object mnuCaseUp: TMenuItem
-          Caption = '&Upper case'
+          Caption = '大写'
         end
         object mnuCaseLow: TMenuItem
-          Caption = '&Lower case'
+          Caption = '小写'
         end
         object mnuCaseTitle: TMenuItem
-          Caption = '&Title case'
+          Caption = '字首大写'
         end
         object mnuCaseInvert: TMenuItem
-          Caption = '&Invert case'
+          Caption = '反转大小写'
         end
         object mnuCaseSent: TMenuItem
-          Caption = '&Sentence case'
+          Caption = '句首大写'
         end
       end
       object mnuEditCharmap: TMenuItem
-        Caption = 'Char m&ap...'
+        Caption = '字符映射表...'
       end
     end
     object mnuSel: TMenuItem
-      Caption = 'Select&ion'
+      Caption = '选择'
       object mnuSelAll: TMenuItem
         Caption = '&Select all'
       end
       object mnuSelExtLine: TMenuItem
-        Caption = '&Expand selection to line'
+        Caption = '扩展到整行'
       end
       object mnuSelExtWord: TMenuItem
-        Caption = 'Add next occurrence of selected &word'
+        Caption = '添加下一个出现的所选单词'
       end
       object mnuSelSep1: TMenuItem
         Caption = '-'
       end
       object mnuSelSplit: TMenuItem
-        Caption = 'S&plit selection into lines'
+        Caption = '拆分成多行'
       end
       object mnuSelInvert: TMenuItem
-        Caption = '&Invert selection'
+        Caption = '反选'
       end
       object mnuSelSep2: TMenuItem
         Caption = '-'
       end
       object mnuCaretsCancel: TMenuItem
-        Caption = '&Cancel carets'
+        Caption = '取消多光标'
       end
       object mnuCaretsExtSub: TMenuItem
-        Caption = '&More carets'
+        Caption = '多光标'
         object mnuCaretsUp1Line: TMenuItem
-          Caption = 'More carets, up, 1 &line'
+          Caption = '更多插入点，向上，1 行'
         end
         object mnuCaretsUp1Page: TMenuItem
-          Caption = 'More carets, up, 1 &page'
+          Caption = '更多插入点，向上，1 页'
         end
         object mnuCaretsUpBegin: TMenuItem
-          Caption = 'More carets, up, &until begin'
+          Caption = '更多插入点，向上，直到开始'
         end
         object mnuCaretsSep1: TMenuItem
           Caption = '-'
         end
         object mnuCaretsDown1Line: TMenuItem
-          Caption = 'More carets, &down, 1 line'
+          Caption = '更多插入点，向下，1 行'
         end
         object mnuCaretsDown1Page: TMenuItem
-          Caption = 'More carets, d&own, 1 page'
+          Caption = '更多插入点，向下，1 页'
         end
         object mnuCaretsDownEnd: TMenuItem
-          Caption = 'More carets, down, until &end'
+          Caption = '更多插入点，向下，直到结束'
         end
       end
     end
     object mnuFind: TMenuItem
-      Caption = '&Search'
+      Caption = '搜索'
       object mnuFindDlg: TMenuItem
-        Caption = '&Find...'
+        Caption = '查找...'
       end
       object mnuFindRepDialog: TMenuItem
-        Caption = '&Replace...'
+        Caption = '替换...'
       end
       object mnuFindNext: TMenuItem
-        Caption = 'Find &next'
+        Caption = '查找下一个'
       end
       object mnuFindPrev: TMenuItem
-        Caption = 'Find &previous'
+        Caption = '查找上一个'
       end
       object mnuFindSep1: TMenuItem
         Caption = '-'
       end
       object mnuFindWordNext: TMenuItem
-        Caption = 'Find current word ne&xt'
+        Caption = '查找下一个当前单词的位置'
       end
       object mnuFindWordPrev: TMenuItem
-        Caption = 'Find current word pr&evious'
+        Caption = '查找上一个当前单词的位置'
       end
       object mnuFindSep2: TMenuItem
         Caption = '-'
       end
       object mnuGotoLine: TMenuItem
-        Caption = '&Go to line...'
+        Caption = '转到行...'
       end
       object mnuGotoBm: TMenuItem
-        Caption = 'Go &to bookmark...'
+        Caption = '转到标记...'
       end
       object mnuBmSub: TMenuItem
-        Caption = '&Bookmarks'
+        Caption = '书签'
         object mnuBmNext: TMenuItem
-          Caption = 'Go to &next bookmark'
+          Caption = '转到下一个标记'
         end
         object mnuBmPrev: TMenuItem
-          Caption = 'Go to &previous bookmark'
+          Caption = '转到上一个标记'
         end
         object mnuBmSep1: TMenuItem
           Caption = '-'
         end
         object mnuBmToggle: TMenuItem
-          Caption = '&Toggle bookmark'
+          Caption = '切换标记'
         end
         object mnuBmInvert: TMenuItem
-          Caption = '&Inverse bookmarks'
+          Caption = '反向标记'
         end
         object mnuBmClear: TMenuItem
-          Caption = '&Clear all bookmarks'
+          Caption = '清除所有标记'
         end
         object mnuBmCopyLines: TMenuItem
-          Caption = 'Copy bookmarked lines'
+          Caption = '复制标记行到剪贴板'
         end
         object mnuBmDeleteLines: TMenuItem
-          Caption = 'Delete bookmarked lines'
+          Caption = '删除标记行'
         end
         object mnuBmSep2: TMenuItem
           Caption = '-'
         end
         object mnuBmPlaceCarets: TMenuItem
-          Caption = 'Place carets &on bookmarks'
+          Caption = '在标记上放置插入点'
         end
         object mnuBmPlaceOnCarets: TMenuItem
-          Caption = 'Place bookmarks on carets'
+          Caption = '在插入点上放置标记'
         end
       end
     end
     object mnuView: TMenuItem
-      Caption = '&View'
+      Caption = '视图'
       object mnuViewCmdPal: TMenuItem
-        Caption = 'Command palette...'
+        Caption = '命令面板...'
       end
       object mnuViewSep0: TMenuItem
         Caption = '-'
       end
       object mnuViewHint1: TMenuItem
-        Caption = '--- Current tab properties ---'
+        Caption = '--- 当前标签属性 ---'
         Enabled = False
       end
       object mnuViewWrap: TMenuItem
-        Caption = '&Word wrap'
+        Caption = '自动换行'
       end
       object mnuViewNums: TMenuItem
-        Caption = 'Line &numbers'
+        Caption = '行号'
       end
       object mnuViewFold: TMenuItem
-        Caption = 'Code &folding'
+        Caption = '代码折叠'
       end
       object mnuViewRuler: TMenuItem
-        Caption = '&Ruler'
+        Caption = '标尺'
       end
       object mnuViewMinimap: TMenuItem
-        Caption = '&Minimap'
+        Caption = '小地图'
       end
       object mnuViewMicromap: TMenuItem
-        Caption = 'Micr&omap'
+        Caption = '微缩图'
       end
       object mnuLexers: TMenuItem
-        Caption = 'Le&xers...'
+        Caption = '语法类型'
       end
       object mnuViewSep1: TMenuItem
         Caption = '-'
       end
       object mnuViewHint2: TMenuItem
-        Caption = '--- Global properties ---'
+        Caption = '--- 全局属性 ---'
         Enabled = False
       end
       object mnuViewToolbar: TMenuItem
-        Caption = '&Toolbar'
+        Caption = '工具栏'
       end
       object mnuViewStatus: TMenuItem
-        Caption = 'St&atusbar'
+        Caption = '状态栏'
       end
       object mnuViewSidebar: TMenuItem
-        Caption = 'Sidebar'
+        Caption = '侧边栏'
       end
       object mnuViewSide: TMenuItem
-        Caption = 'S&ide panel'
+        Caption = '侧边面板'
       end
       object mnuViewBottom: TMenuItem
-        Caption = '&Bottom panel'
+        Caption = '底部面板'
       end
       object mnuViewFloatSide: TMenuItem
-        Caption = 'Floating side panel'
+        Caption = '浮动侧边面板'
       end
       object mnuViewFloatBottom: TMenuItem
-        Caption = 'Floating bottom panel'
+        Caption = '浮动底部面板'
       end
       object mnuViewSep2: TMenuItem
         Caption = '-'
       end
       object mnuViewFullscr: TMenuItem
-        Caption = 'Full-scr&een'
+        Caption = '全屏模式'
       end
       object mnuViewDistFree: TMenuItem
-        Caption = 'Distraction-free'
+        Caption = '专注模式'
       end
       object mnuViewOnTop: TMenuItem
-        Caption = 'Always on top'
+        Caption = '总在最前'
       end
     end
     object mnuPlugins: TMenuItem
-      Caption = '&Plugins'
+      Caption = '插件'
       OnClick = mnuPluginsClick
     end
     object mnuOp: TMenuItem
-      Caption = '&Options'
+      Caption = '选项'
       object mnuOpUser: TMenuItem
-        Caption = 'Settings - &user'
+        Caption = '设置 - 用户'
       end
       object mnuOpDefault: TMenuItem
-        Caption = 'Settings - &default'
+        Caption = '设置 - 默认'
       end
       object mnuOpDefaultUser: TMenuItem
-        Caption = 'Settings - default/user'
+        Caption = '设置 -用户/默认值'
       end
       object mnuOpLexer: TMenuItem
-        Caption = 'Settings - le&xer specific'
+        Caption = '设置 - 针对语法类型'
       end
       object mnuOpPlugins: TMenuItem
-        Caption = 'Settings - &plugins'
+        Caption = '设置 - 插件'
       end
       object mnuOpSep1: TMenuItem
         Caption = '-'
       end
       object mnuFontSub: TMenuItem
-        Caption = '&Fonts'
+        Caption = '字体'
         object mnuFontText: TMenuItem
-          Caption = 'Choose &document font...'
+          Caption = '选择文档字体...'
         end
         object mnuFontUi: TMenuItem
-          Caption = 'Choose &UI font...'
+          Caption = '选择界面字体...'
         end
         object mnuFontOutput: TMenuItem
-          Caption = 'Choose &output-panel font...'
+          Caption = '选择输出面板字体...'
         end
       end
       object mnuOpLexSub: TMenuItem
-        Caption = '&Lexers'
+        Caption = '语法类型'
         object mnuOpLexProp: TMenuItem
-          Caption = 'Lexer &properties...'
+          Caption = '语法类型属性...'
         end
         object mnuOpLexLib: TMenuItem
-          Caption = 'Lexer &library...'
+          Caption = '语法类型库...'
         end
         object mnuOpLexMap: TMenuItem
-          Caption = 'Lexer styles &mapping...'
+          Caption = '语法样式映射...'
         end
       end
       object mnuThemesSub: TMenuItem
-        Caption = 'Themes'
+        Caption = '主题'
         object mnuOpThemeUi: TMenuItem
-          Caption = 'Configure UI-theme...'
+          Caption = '设置 - 主题 - 界面'
         end
         object mnuOpThemeSyntax: TMenuItem
-          Caption = 'Configure syntax-theme...'
+          Caption = '设置 - 主题 - 语法'
         end
         object mnuOpSep2: TMenuItem
           Caption = '-'
         end
         object mnuOpThemes: TMenuItem
-          Caption = 'Choose theme...'
+          Caption = '选择主题'
         end
       end
       object mnuOpUnprinted: TMenuItem
-        Caption = 'Unprinted chars...'
-      end
-      object mnuOpLangs: TMenuItem
-        Caption = 'Choose translation...'
+        Caption = '不可见字符...'
       end
     end
     object mnuSplit: TMenuItem
-      Caption = 'Sp&lit'
+      Caption = '拆分'
       object mnuSplitNo: TMenuItem
-        Caption = 'Don''t split tab'
+        Caption = '不拆分标签'
         GroupIndex = 1
         RadioItem = True
       end
       object mnuSplitV: TMenuItem
-        Caption = 'Split tab vertically'
+        Caption = '垂直拆分'
         GroupIndex = 1
         RadioItem = True
       end
       object mnuSplitH: TMenuItem
-        Caption = 'Split tab horizontally'
+        Caption = '水平拆分'
         GroupIndex = 1
         RadioItem = True
       end
@@ -590,77 +587,77 @@ object fmMain: TfmMain
         Caption = '-'
       end
       object mnuGr1: TMenuItem
-        Caption = 'O&ne group'
+        Caption = '一个群组'
         RadioItem = True
       end
       object mnuGr2V: TMenuItem
-        Caption = '&2 vert'
+        Caption = '2 垂直'
         RadioItem = True
       end
       object mnuGr2H: TMenuItem
-        Caption = '2 &horz'
+        Caption = '2 水平'
         RadioItem = True
       end
       object mnuGr3V: TMenuItem
-        Caption = '&3 vert'
+        Caption = '3 垂直'
         RadioItem = True
       end
       object mnuGr3H: TMenuItem
-        Caption = '3 h&orz'
+        Caption = '3 水平'
         RadioItem = True
       end
       object mnuGr1p2V: TMenuItem
-        Caption = '&1+2 vert'
+        Caption = '1+2 垂直'
         RadioItem = True
       end
       object mnuGr1p2H: TMenuItem
-        Caption = '1+2 ho&rz'
+        Caption = '1+2 水平'
         RadioItem = True
       end
       object mnuGr4V: TMenuItem
-        Caption = '&4 vert'
+        Caption = '4 垂直'
         RadioItem = True
       end
       object mnuGr4H: TMenuItem
-        Caption = '4 hor&z'
+        Caption = '4 水平'
         RadioItem = True
       end
       object mnuGr4G: TMenuItem
-        Caption = '4 &grid'
+        Caption = '4 网格'
         RadioItem = True
       end
       object mnuGr6V: TMenuItem
-        Caption = '6 vert'
+        Caption = '6 垂直'
         RadioItem = True
       end
       object mnuGr6H: TMenuItem
-        Caption = '6 horz'
+        Caption = '6 水平'
         RadioItem = True
       end
       object mnuGr6: TMenuItem
-        Caption = '&6 grid'
+        Caption = '6 网格'
         RadioItem = True
       end
     end
     object mnuHelp: TMenuItem
-      Caption = '&Help'
+      Caption = '帮助'
       object mnuHelpForum: TMenuItem
-        Caption = '&Forum'
+        Caption = '论坛'
       end
       object mnuHelpWiki: TMenuItem
-        Caption = '&Wiki'
+        Caption = 'wiki'
       end
       object mnuHelpIssues: TMenuItem
-        Caption = '&Report an issue'
+        Caption = '反馈问题'
       end
       object mnuHelpCheckUpd: TMenuItem
-        Caption = 'Check for &updates...'
+        Caption = '检查更新'
       end
       object mnuHelpSep2: TMenuItem
         Caption = '-'
       end
       object mnuHelpAbout: TMenuItem
-        Caption = '&About...'
+        Caption = '关于...'
       end
     end
   end
@@ -768,7 +765,7 @@ object fmMain: TfmMain
       Caption = '-'
     end
     object mnuTextGotoDef: TMenuItem
-      Caption = 'Go to definition'
+      Caption = '转到定义'
     end
   end
   object TimerTooltip: TTimer

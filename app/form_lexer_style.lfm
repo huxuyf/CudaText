@@ -6,7 +6,7 @@ object fmLexerStyle: TfmLexerStyle
   AutoSize = True
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Lexer style'
+  Caption = '词法分析器风格'
   ClientHeight = 376
   ClientWidth = 454
   Position = poMainFormCenter
@@ -65,7 +65,7 @@ object fmLexerStyle: TfmLexerStyle
       Height = 17
       Top = 52
       Width = 91
-      Caption = 'Color of font:'
+      Caption = '字体颜色：'
       FocusControl = edColorFont
       ParentColor = False
     end
@@ -94,7 +94,7 @@ object fmLexerStyle: TfmLexerStyle
       Height = 17
       Top = 0
       Width = 70
-      Caption = 'Style type:'
+      Caption = '风格类型：'
       FocusControl = edStyleType
       ParentColor = False
     end
@@ -107,7 +107,7 @@ object fmLexerStyle: TfmLexerStyle
       Top = 52
       Width = 81
       BorderSpacing.Top = 4
-      Caption = 'Color of BG:'
+      Caption = '背景颜色：'
       FocusControl = edColorBG
       ParentColor = False
     end
@@ -120,7 +120,7 @@ object fmLexerStyle: TfmLexerStyle
       Top = 104
       Width = 77
       BorderSpacing.Top = 4
-      Caption = 'Font styles:'
+      Caption = '字体风格：'
       ParentColor = False
     end
     object chkBold: TCheckBox
@@ -132,7 +132,7 @@ object fmLexerStyle: TfmLexerStyle
       Top = 123
       Width = 57
       BorderSpacing.Top = 2
-      Caption = 'Bold'
+      Caption = '粗体'
       TabOrder = 3
     end
     object chkItalic: TCheckBox
@@ -144,7 +144,7 @@ object fmLexerStyle: TfmLexerStyle
       Top = 123
       Width = 59
       BorderSpacing.Left = 10
-      Caption = 'Italic'
+      Caption = '斜体'
       TabOrder = 4
     end
     object chkStrik: TCheckBox
@@ -156,7 +156,7 @@ object fmLexerStyle: TfmLexerStyle
       Top = 123
       Width = 82
       BorderSpacing.Left = 10
-      Caption = 'Stikeout'
+      Caption = '删除线'
       TabOrder = 6
     end
     object chkUnder: TCheckBox
@@ -168,7 +168,7 @@ object fmLexerStyle: TfmLexerStyle
       Top = 123
       Width = 91
       BorderSpacing.Left = 10
-      Caption = 'Underline'
+      Caption = '下划线'
       TabOrder = 5
       Visible = False
     end
@@ -181,7 +181,7 @@ object fmLexerStyle: TfmLexerStyle
       Top = 152
       Width = 58
       BorderSpacing.Top = 6
-      Caption = 'Borders:'
+      Caption = '边框：'
       ParentColor = False
     end
     object cbBorderL: TComboBox
@@ -249,7 +249,7 @@ object fmLexerStyle: TfmLexerStyle
       Top = 171
       Width = 27
       BorderSpacing.Top = 2
-      Caption = 'Left'
+      Caption = '左'
       FocusControl = cbBorderL
       ParentColor = False
     end
@@ -260,7 +260,7 @@ object fmLexerStyle: TfmLexerStyle
       Height = 17
       Top = 171
       Width = 25
-      Caption = 'Top'
+      Caption = '顶部'
       FocusControl = cbBorderT
       ParentColor = False
     end
@@ -271,7 +271,7 @@ object fmLexerStyle: TfmLexerStyle
       Height = 17
       Top = 171
       Width = 35
-      Caption = 'Right'
+      Caption = '右'
       FocusControl = cbBorderR
       ParentColor = False
     end
@@ -282,7 +282,7 @@ object fmLexerStyle: TfmLexerStyle
       Height = 17
       Top = 171
       Width = 52
-      Caption = 'Bottom'
+      Caption = '底部'
       FocusControl = cbBorderB
       ParentColor = False
     end
@@ -295,7 +295,7 @@ object fmLexerStyle: TfmLexerStyle
       Top = 227
       Width = 109
       BorderSpacing.Top = 4
-      Caption = 'Color of border:'
+      Caption = '边框颜色：'
       FocusControl = edColorBorder
       ParentColor = False
     end
